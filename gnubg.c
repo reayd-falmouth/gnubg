@@ -3315,6 +3315,9 @@ static void
 SaveMiscSettings(FILE * pf)
 {
     gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
+
+    fprintf(pf, "set browser \"%s\"\n", get_web_browser());
+
     fprintf(pf, "set tutor mode %s\n", fTutor ? "on" : "off");
     fprintf(pf, "set tutor cube %s\n", fTutorCube ? "on" : "off");
     fprintf(pf, "set tutor chequer %s\n", fTutorChequer ? "on" : "off");
@@ -3348,9 +3351,9 @@ SaveMiscSettings(FILE * pf)
     fprintf(pf, "set output digits %d\n", fOutputDigits);
     fprintf(pf, "set output errorratefactor %s\n",
             g_ascii_formatd(buf, G_ASCII_DTOSTR_BUF_SIZE, "%f", rErrorRateFactor));
-    fprintf(pf, "set prompt %s\n", szPrompt);
-    fprintf(pf, "set browser \"%s\"\n", get_web_browser());
     fprintf(pf, "set priority nice %d\n", nThreadPriority);
+         // g_message ("save settings: set priority nice %d",nThreadPriority);
+    fprintf(pf, "set prompt %s\n", szPrompt);
     fprintf(pf, "set ratingoffset %s\n", g_ascii_formatd(buf, G_ASCII_DTOSTR_BUF_SIZE, "%f", rRatingOffset));
 
     fprintf(pf, "set usekeynames %s\n", fUseKeyNames ? "on" : "off");

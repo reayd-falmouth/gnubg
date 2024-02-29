@@ -191,6 +191,10 @@ extern void SetSwitchModeMenuText(void);
 
 extern void AddText(GtkWidget* pwBox, char* Text);
 extern void drawArrow (cairo_t *cr, double start_x, double start_y, double end_x, double end_y);
+extern void
+BuildRadioButtons(GtkWidget* pwvbox, GtkWidget* apwScoreMapFrame[], const char* frameTitle, const char* frameToolTip, const char* labelStrings[],
+    int labelStringsLen, int toggleDefault);
+
 
 extern gchar* underscore_escape(const gchar*);
 #endif
