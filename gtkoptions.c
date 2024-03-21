@@ -1463,7 +1463,8 @@ const char* aszPriorityCommands[NUM_PRIORITY]  = { "19", "10", "0", "-10", "-19"
 static void
 append_other_options(optionswidget * pow)
 {
-    GtkWidget *pwvbox;
+    GtkWidget *pwvbox, *pwvbox2;
+    GtkWidget *pwf;
     GtkWidget *pwev;
     GtkWidget *pwhbox;
 #if GTK_CHECK_VERSION(3,0,0)
@@ -1636,9 +1637,21 @@ append_other_options(optionswidget * pow)
 
     gtk_box_pack_start(GTK_BOX(pwvbox), pwhbox, FALSE, FALSE, 3);
 
+    /* start of Performance frame */
+
+    pwf = gtk_frame_new(_("Performance"));
+    gtk_box_pack_start(GTK_BOX(pwvbox), pwf, FALSE, FALSE, 0);
+
+#if GTK_CHECK_VERSION(3,0,0)
+    pwvbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+#else
+    pwvbox2 = gtk_vbox_new(FALSE, 0);
+#endif
+    gtk_container_add(GTK_CONTAINER(pwf), pwvbox2);
+
     pwev = gtk_event_box_new();
     gtk_event_box_set_visible_window(GTK_EVENT_BOX(pwev), FALSE);
-    gtk_box_pack_start(GTK_BOX(pwvbox), pwev, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pwvbox2), pwev, FALSE, FALSE, 0);
 #if GTK_CHECK_VERSION(3,0,0)
     pw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 #else
@@ -1675,7 +1688,7 @@ append_other_options(optionswidget * pow)
 #if defined(USE_MULTITHREAD)
     pwev = gtk_event_box_new();
     gtk_event_box_set_visible_window(GTK_EVENT_BOX(pwev), FALSE);
-    gtk_box_pack_start(GTK_BOX(pwvbox), pwev, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pwvbox2), pwev, FALSE, FALSE, 0);
 #if GTK_CHECK_VERSION(3,0,0)
     pwhbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 #else
@@ -1691,24 +1704,20 @@ append_other_options(optionswidget * pow)
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(pw), TRUE);
     gtk_box_pack_start(GTK_BOX(pwhbox), gtk_label_new(_("threads")), FALSE, FALSE, 0);
     gtk_widget_set_tooltip_text(pwev,
-                                _("The number of threads to use in multi-threaded operations,"
-                                  " this should be set to the number of logical processing units available"));
+                                _("The number of threads to use in multi-threaded operations. "
+                                  "This should be set to the number of logical processing units available or less."));
 #endif
 
 #if defined(HAVE_SETPRIORITY) || WIN32
-    BuildRadioButtons(pwvbox, pow->pwPriority,
-        _("Set GNUBG process priority:"),
-        _("Select what priority to use for the GNUBG process. "
-        "For example, set a low priority so rollouts and analysis don't bother other applications. "
-#if defined(HAVE_SETPRIORITY)
-        "Careful! In Linux, you can only change priority within the assigned user limits. "
-        "To change these, edit \'/etc/security/limits.conf\' with sudo rights. "
-#elif WIN32
-        "In Windows, you need to start gnubg with administrator rights to assign a realtime priority."
-#endif
+    BuildRadioButtons(pwvbox2, pow->pwPriority,
+        _("Set gnubg process priority:"),
+        _("Select what priority to use for the gnubg process. "
+        "For example, set a low priority so rollouts and analysis don't bother other applications."
         ),
         aszPriority, NUM_PRIORITY, DefaultPriority);
 #endif
+
+    /* end of Performance frame */
 
 #if GTK_CHECK_VERSION(3,0,0)
     pwhbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
