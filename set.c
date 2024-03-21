@@ -309,7 +309,7 @@ SetMoveFilter(char *sz, movefilter aamf[MAX_FILTER_PLIES][MAX_FILTER_PLIES])
     if (accept < 0) {
         pmfFilter->Accept = -1;
         pmfFilter->Extra = 0;
-        pmfFilter->Threshold = 0.0;
+        pmfFilter->Threshold = 0.0f;
         return;
     }
 
@@ -4085,8 +4085,12 @@ SetPriority(int n)
     // int pri = getpriority(PRIO_PROCESS, getpid());
     // g_message("The original priority of process is :%d", pri);
 
+    errno = 0;
     if (setpriority(PRIO_PROCESS, getpid(), n)) {
-        outputerr("setpriority");
+        if (errno == EACCES)
+            outputf(_("You are not allowed to raise the scheduling priority.\n"));
+        else
+            outputerr("setpriority");
         // g_message ("part 1: nThreadPriority is at %d",nThreadPriority);
     } else {
         outputf(_("Scheduling priority set to %d.\n"), n);
