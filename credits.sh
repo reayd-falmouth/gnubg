@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Copyright (C) 1998-2004 Gary Wong <gtw@gnu.org>
-# Copyright (C) 2004-2024 the AUTHORS
+# Copyright (C) 2004-2025 the AUTHORS
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -268,7 +268,7 @@ cat > credits.c <<EOF
 #include "credits.h"
 
 const char aszCOPYRIGHT[] = N_("Copyright (C) 1999-2004 Gary Wong.\n"
-                               "Copyright (C) 2004-2024 the AUTHORS; for details type \`show version'.");
+                               "Copyright (C) 2004-2025 the AUTHORS; for details type \`show version'.");
 
 credEntry ceAuthors[] = {
 EOF
