@@ -1358,9 +1358,9 @@ GetLuckAnalysis(const matchstate * pms, float rLuck)
     if (fOutputMWC && pms->nMatchTo) {
         GetMatchStateCubeInfo(&ci, pms);
 
-        sprintf(sz, "%+0.3f%%", 100.0f * (eq2mwc(rLuck, &ci) - eq2mwc(0.0f, &ci)));
+        sprintf(sz, "%+0.*f%%", fOutputDigits, 100.0f * (eq2mwc(rLuck, &ci) - eq2mwc(0.0f, &ci)));
     } else
-        sprintf(sz, "%+0.3f", rLuck);
+        sprintf(sz, "%+0.*f", fOutputDigits, rLuck);
 
     return sz;
 }

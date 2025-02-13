@@ -1288,9 +1288,9 @@ SetAnnotation(moverecord * pmr)
 
             if (pmr->rLuck != ERR_VAL) {
                 if (fOutputMWC && ms.nMatchTo)
-                    sprintf(pch, " (%+0.3f%%)", 100.0f * (eq2mwc(pmr->rLuck, &ci) - eq2mwc(0.0f, &ci)));
+                    sprintf(pch, " (%+0.*f%%)", fOutputDigits, 100.0f * (eq2mwc(pmr->rLuck, &ci) - eq2mwc(0.0f, &ci)));
                 else
-                    sprintf(pch, " (%+0.3f)", pmr->rLuck);
+                    sprintf(pch, " (%+0.*f)", fOutputDigits, pmr->rLuck);
             }
 #if GTK_CHECK_VERSION(3,0,0)
             gtk_grid_attach(GTK_GRID(pwBox), gtk_label_new(sz), 1, 0, 1, 1);

@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: text.c,v 1.133 2023/05/18 15:50:31 plm Exp $
  */
 
 #include "config.h"
@@ -396,10 +394,12 @@ TextPrintMoveAnalysis(GString * gsz, const matchstate * pms, moverecord * pmr)
         g_string_append_printf(gsz, _("Alert: %s move"), gettext(aszSkillType[pmr->n.stMove]));
 
         if (!pms->nMatchTo || !fOutputMWC)
-            g_string_append_printf(gsz, " (%+7.3f)\n",
+            g_string_append_printf(gsz, " (%+*.*f)\n",
+                                   fOutputDigits + 4, fOutputDigits,
                                    pmr->ml.amMoves[pmr->n.iMove].rScore - pmr->ml.amMoves[0].rScore);
         else
-            g_string_append_printf(gsz, " (%+6.3f%%)\n",
+            g_string_append_printf(gsz, " (%+*.*f%%)\n",
+                                   fOutputDigits + 3, fOutputDigits,
                                    100.0f *
                                    eq2mwc(pmr->ml.amMoves[pmr->n.iMove].rScore, &ci) -
                                    100.0f * eq2mwc(pmr->ml.amMoves[0].rScore, &ci));
@@ -413,9 +413,11 @@ TextPrintMoveAnalysis(GString * gsz, const matchstate * pms, moverecord * pmr)
         g_string_append_printf(gsz, _("Alert: %s roll!"), gettext(aszLuckType[pmr->lt]));
 
         if (!pms->nMatchTo || !fOutputMWC)
-            g_string_append_printf(gsz, " (%+7.3f)\n", pmr->rLuck);
+            g_string_append_printf(gsz, " (%+*.*f)\n", fOutputDigits + 4, fOutputDigits, pmr->rLuck);
         else
-            g_string_append_printf(gsz, " (%+6.3f%%)\n", 100.0f * eq2mwc(pmr->rLuck, &ci) - 100.0f * eq2mwc(0.0f, &ci));
+            g_string_append_printf(gsz, " (%+*.*f%%)\n",
+                                   fOutputDigits + 3, fOutputDigits,
+                                   100.0f * eq2mwc(pmr->rLuck, &ci) - 100.0f * eq2mwc(0.0f, &ci));
 
     }
 

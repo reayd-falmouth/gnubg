@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: html.c,v 1.273 2023/10/18 20:30:47 plm Exp $
  */
 
 #include "config.h"
@@ -2127,9 +2125,10 @@ HTMLPrintMoveAnalysis(FILE * pf, matchstate * pms, moverecord * pmr,
         fprintf(pf, _("Alert: %s move"), gettext(aszSkillType[pmr->n.stMove]));
 
         if (!pms->nMatchTo || !fOutputMWC)
-            fprintf(pf, " (%+7.3f)</span></p>\n", pmr->ml.amMoves[pmr->n.iMove].rScore - pmr->ml.amMoves[0].rScore);
+            fprintf(pf, " (%+*.*f)</span></p>\n", fOutputDigits + 4, fOutputDigits, pmr->ml.amMoves[pmr->n.iMove].rScore - pmr->ml.amMoves[0].rScore);
         else
-            fprintf(pf, " (%+6.3f%%)</span></p>\n",
+            fprintf(pf, " (%+*.*f%%)</span></p>\n",
+                    fOutputDigits + 3, fOutputDigits,
                     100.0f *
                     eq2mwc(pmr->ml.amMoves[pmr->n.iMove].rScore, &ci) -
                     100.0f * eq2mwc(pmr->ml.amMoves[0].rScore, &ci));
@@ -2144,9 +2143,9 @@ HTMLPrintMoveAnalysis(FILE * pf, matchstate * pms, moverecord * pmr,
         fprintf(pf, _("Alert: %s roll!"), gettext(aszLuckType[pmr->lt]));
 
         if (!pms->nMatchTo || !fOutputMWC)
-            fprintf(pf, " (%+7.3f)</span></p>\n", pmr->rLuck);
+            fprintf(pf, " (%+*.*f)</span></p>\n", fOutputDigits + 4, fOutputDigits, pmr->rLuck);
         else
-            fprintf(pf, " (%+6.3f%%)</span></p>\n", 100.0f * eq2mwc(pmr->rLuck, &ci) - 100.0f * eq2mwc(0.0f, &ci));
+            fprintf(pf, " (%+*.*f%%)</span></p>\n", fOutputDigits + 3, fOutputDigits, 100.0f * eq2mwc(pmr->rLuck, &ci) - 100.0f * eq2mwc(0.0f, &ci));
 
     }
 
