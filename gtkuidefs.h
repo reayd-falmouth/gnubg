@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtkuidefs.h,v 1.9 2023/09/05 20:34:21 plm Exp $
  */
 
 #define GNUBG_MAIN_UI \
@@ -75,8 +73,8 @@
 	        "<menuitem name='HideToolBar' action='HideToolBarAction' />" \
 	        "<menuitem name='ShowToolBar' action='ShowToolBarAction' />" \
 	        "<separator/>" \
-	        "<menuitem name='TextOnly' action='TextOnlyToolBarAction' />" \
 	        "<menuitem name='IconsOnly' action='IconsOnlyToolBarAction' />" \
+	        "<menuitem name='TextOnly' action='TextOnlyToolBarAction' />" \
 	        "<menuitem name='Both' action='BothToolBarAction' />" \
 	      "</menu>" \
 	      \

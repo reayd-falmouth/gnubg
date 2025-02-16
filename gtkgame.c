@@ -1953,14 +1953,14 @@ ShowToolbar(void)
 #if !defined(USE_GTKITEMFACTORY)
     gtk_widget_show((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/HideToolBar")));
     gtk_widget_hide((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/ShowToolBar")));
-    gtk_widget_set_sensitive((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/TextOnly")), TRUE);
     gtk_widget_set_sensitive((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/IconsOnly")), TRUE);
+    gtk_widget_set_sensitive((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/TextOnly")), TRUE);
     gtk_widget_set_sensitive((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/Both")), TRUE);
 #else
     gtk_widget_show(gtk_item_factory_get_widget(pif, "/View/Toolbar/Hide Toolbar"));
     gtk_widget_hide(gtk_item_factory_get_widget(pif, "/View/Toolbar/Show Toolbar"));
-    gtk_widget_set_sensitive(gtk_item_factory_get_widget(pif, "/View/Toolbar/Text only"), TRUE);
     gtk_widget_set_sensitive(gtk_item_factory_get_widget(pif, "/View/Toolbar/Icons only"), TRUE);
+    gtk_widget_set_sensitive(gtk_item_factory_get_widget(pif, "/View/Toolbar/Text only"), TRUE);
     gtk_widget_set_sensitive(gtk_item_factory_get_widget(pif, "/View/Toolbar/Both"), TRUE);
 #endif
     fToolbarShowing = TRUE;
@@ -1977,14 +1977,14 @@ HideToolbar(void)
 #if !defined(USE_GTKITEMFACTORY)
     gtk_widget_hide((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/HideToolBar")));
     gtk_widget_show((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/ShowToolBar")));
-    gtk_widget_set_sensitive((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/TextOnly")), FALSE);
     gtk_widget_set_sensitive((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/IconsOnly")), FALSE);
+    gtk_widget_set_sensitive((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/TextOnly")), FALSE);
     gtk_widget_set_sensitive((gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/Both")), FALSE);
 #else
     gtk_widget_hide(gtk_item_factory_get_widget(pif, "/View/Toolbar/Hide Toolbar"));
     gtk_widget_show(gtk_item_factory_get_widget(pif, "/View/Toolbar/Show Toolbar"));
-    gtk_widget_set_sensitive(gtk_item_factory_get_widget(pif, "/View/Toolbar/Text only"), FALSE);
     gtk_widget_set_sensitive(gtk_item_factory_get_widget(pif, "/View/Toolbar/Icons only"), FALSE);
+    gtk_widget_set_sensitive(gtk_item_factory_get_widget(pif, "/View/Toolbar/Text only"), FALSE);
     gtk_widget_set_sensitive(gtk_item_factory_get_widget(pif, "/View/Toolbar/Both"), FALSE);
 #endif
     fToolbarShowing = FALSE;
@@ -4135,8 +4135,8 @@ static GtkToggleActionEntry toggleActionEntries[] = {
 };
 
 static GtkRadioActionEntry toolbarRadioActionEntries[] = {
-    { "TextOnlyToolBarAction", NULL, N_("_Text only"), NULL, NULL, VIEW_TOOLBAR_TEXTONLY },
     { "IconsOnlyToolBarAction", NULL, N_("_Icons only"), NULL, NULL, VIEW_TOOLBAR_ICONSONLY },
+    { "TextOnlyToolBarAction", NULL, N_("_Text only"), NULL, NULL, VIEW_TOOLBAR_TEXTONLY },
     { "BothToolBarAction", NULL, N_("_Both"), NULL, NULL, VIEW_TOOLBAR_BOTH }
 };
 
@@ -4214,12 +4214,12 @@ static GtkItemFactoryEntry aife[] = {
     { N_("/_View/_Toolbar/_Hide Toolbar"), NULL, HideToolbar, 0, NULL, NULL },
     { N_("/_View/_Toolbar/_Show Toolbar"), NULL, ShowToolbar, 0, NULL, NULL },
     { N_("/_View/_Toolbar/-"), NULL, NULL, 0, "<Separator>", NULL },
-    { N_("/_View/_Toolbar/_Text only"), NULL, G_CALLBACK(ToolbarStyle), TOOLBAR_ACTION_OFFSET + GTK_TOOLBAR_TEXT,
-     "<RadioItem>", NULL },
     { N_("/_View/_Toolbar/_Icons only"), NULL, G_CALLBACK(ToolbarStyle), TOOLBAR_ACTION_OFFSET + GTK_TOOLBAR_ICONS,
-     "/View/Toolbar/Text only", NULL },
+     "<RadioItem>", NULL },
+    { N_("/_View/_Toolbar/_Text only"), NULL, G_CALLBACK(ToolbarStyle), TOOLBAR_ACTION_OFFSET + GTK_TOOLBAR_TEXT,
+     "/View/Toolbar/Icons only", NULL },
     { N_("/_View/_Toolbar/_Both"), NULL, G_CALLBACK(ToolbarStyle), TOOLBAR_ACTION_OFFSET + GTK_TOOLBAR_BOTH,
-     "/View/Toolbar/Text only", NULL },
+     "/View/Toolbar/Icons only", NULL },
     { N_("/_View/Full screen"), "F11", G_CALLBACK(DoFullScreenMode), 0, "<CheckItem>", NULL },
     { N_("/_View/-"), NULL, NULL, 0, "<Separator>", NULL },
     { N_("/_View/Play _Clockwise"), NULL, click_swapdirection, 0, "<CheckItem>", NULL },
