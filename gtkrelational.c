@@ -637,7 +637,7 @@ extern void ComputeHistory(int usePlayerName)
                     "player_id0, player_id1 " 
                     "FROM matchstat NATURAL JOIN player NATURAL JOIN session "
                     "WHERE name = '%s' "
-                    "ORDER BY matchstat_id DESC "
+                    "ORDER BY date DESC, matchstat_id DESC "
                     "LIMIT %d",
                     quote_escape(playerName),
                     NUM_PLOT);
