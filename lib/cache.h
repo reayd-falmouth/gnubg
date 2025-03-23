@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: cache.h,v 1.28 2022/02/19 21:39:59 plm Exp $
  */
 
 #ifndef CACHE_H
@@ -35,7 +33,7 @@ typedef unsigned int uint32_t;
 #define CACHE_STATS 0
 
 typedef struct {
-    positionkey key;
+    positionkey key;	/* size = 28 */
     int nEvalContext;
     float ar[6];
 } cacheNodeDetail;

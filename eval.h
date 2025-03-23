@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: eval.h,v 1.200 2023/12/20 23:09:54 plm Exp $
  */
 
 #ifndef EVAL_H
@@ -73,11 +71,12 @@ typedef enum {
 #define MAX_INCOMPLETE_MOVES 3875
 #define MAX_MOVES 3060
 
-typedef struct movefilter_s {
-    int Accept;                 /* always allow this many moves. 0 means don't use this */
-    /* level, since at least 1 is needed when used. */
-    int Extra;                  /* and add up to this many more... */
-    float Threshold;            /* ...if they are within this equity difference */
+typedef struct {
+    int Accept;                 /* always allow this many moves.
+                                   0 means don't use this level,
+                                   since at least 1 is needed when used. */
+    int Extra;                  /* and add up to this many more */
+    float Threshold;            /* if they are within this equity difference */
 } movefilter;
 
 /* we'll have filters for 1..4 ply evaluation */

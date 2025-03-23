@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: external_y.y,v 1.36 2020/02/20 21:19:52 plm Exp $
  */
 
 #ifndef EXTERNAL_Y_H
@@ -168,6 +166,12 @@ void yyerror(scancontext *scanner, const char *str)
 %destructor { if ($$) { g_value_unsetfree($$); }} <gv>
 %destructor { if ($$) { g_free($$); }} <cmd>
 %%
+
+/*
+ * A combination of recent clang and early bison 3
+ * leads to an unused-but-set-variable warning here.
+ * This is fixed in bison 3.8.2.
+ */
 
 commands:
     EOL
@@ -586,7 +590,7 @@ list_elements:
  * gcc -Ilib -I. -Wall `pkg-config  gobject-2.0 --cflags --libs` external_l.c external_y.c  glib-ext.c -DEXTERNAL_TEST -o exttest
  *
  */
- 
+
 #define BUFFERSIZE 1024
 
 int fJacoby = TRUE;
@@ -597,14 +601,14 @@ int main()
     scancontext scanctx;
 
     memset(&scanctx, 0, sizeof(scanctx));
-    g_type_init ();
+    g_type_init();
     ExtInitParse((void **)&scanctx);
 
-    while(fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+    while (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
         ExtStartParse(scanctx.scanner, buffer);
-        if(scanctx.ct == COMMAND_EXIT)
+        if (scanctx.ct == COMMAND_EXIT)
             return 0;
-        
+
         if (scanctx.bi.gsName)
             g_string_free(scanctx.bi.gsName, TRUE);
         if (scanctx.bi.gsOpp)
