@@ -275,13 +275,13 @@ printRolloutTable(FILE * pf,
         fputs("<tr>", pf);
 
         if (asz)
-            fputs("<td>&nbsp;</td>", pf);
+            fputs("<td></td>", pf);
 
         fprintf(pf,
                 "<td>%s</td>"
                 "<td>%s</td>"
                 "<td>%s</td>"
-                "<td>&nbsp;</td>"
+                "<td></td>"
                 "<td>%s</td>"
                 "<td>%s</td>"
                 "<td>%s</td>"
@@ -1861,7 +1861,7 @@ HTMLPrintCubeAnalysisTable(FILE * pf,
                 _("Money"), GetStyle(CLASS_CUBE_EQUITY, hecss),
 		OutputMoneyEquity(aarOutput[0], TRUE));
     else
-        fprintf(pf, " %s</td><td>%s</td><td>&nbsp;</td>\n",
+        fprintf(pf, " %s</td><td>%s</td><td></td>\n",
 		_("cubeless equity"),
 		OutputMoneyEquity(aarOutput[0], TRUE));
 
@@ -1871,7 +1871,7 @@ HTMLPrintCubeAnalysisTable(FILE * pf,
 
     if (exsExport.fCubeDetailProb && pes->et == EVAL_EVAL) {
 
-        fprintf(pf, "<tr><td>&nbsp;</td>" "<td colspan=\"3\" %s>", GetStyle(CLASS_CUBE_PROBABILITIES, hecss));
+        fprintf(pf, "<tr><td></td>" "<td colspan=\"3\" %s>", GetStyle(CLASS_CUBE_PROBABILITIES, hecss));
 
         fputs(OutputPercents(aarOutput[0], TRUE), pf);
 
@@ -1887,7 +1887,7 @@ HTMLPrintCubeAnalysisTable(FILE * pf,
 
     if (pes->et == EVAL_EVAL && exsExport.afCubeParameters[0]) {
 
-        fputs("<tr><td>&nbsp;</td>" "<td colspan=\"3\">", pf);
+        fputs("<tr><td></td>" "<td colspan=\"3\">", pf);
         fputs(OutputEvalContext(&pes->ec, FALSE), pf);
         fputs("</td></tr>\n", pf);
 
@@ -1904,14 +1904,14 @@ HTMLPrintCubeAnalysisTable(FILE * pf,
             if (i)
                 fprintf(pf, "<td>%s</td>", OutputEquityDiff(arDouble[ai[i]], arDouble[OUTPUT_OPTIMAL], pci));
             else
-                fputs("<td>&nbsp;</td>", pf);
+                fputs("<td></td>", pf);
         } else { /* take or drop */
             fprintf(pf, "<td %s>%s</td>", GetStyle(CLASS_CUBE_EQUITY, hecss), OutputEquity(-arDouble[ai[i]], pci, TRUE));
 
             if (i)
                 fprintf(pf, "<td>%s</td>", OutputEquityDiff(-arDouble[ai[i]], -arDouble[OUTPUT_OPTIMAL], pci));
             else
-                fputs("<td>&nbsp;</td>", pf);
+                fputs("<td></td>", pf);
         }
 
         fputs("</tr>\n", pf);
@@ -1994,7 +1994,7 @@ HTMLPrintCubeAnalysisTable(FILE * pf,
 
     fprintf(pf, "</table>\n");
 
-    fputs("<p>&nbsp;</p>\n", pf);
+    fputs("<p></p>\n", pf);
 
     fputs("\n<!-- End Cube Analysis -->\n\n", pf);
 
@@ -2246,7 +2246,7 @@ HTMLPrintMoveAnalysis(FILE * pf, matchstate * pms, moverecord * pmr,
                 else
                     fputs("<tr>\n", pf);
 
-                fputs("<td colspan=\"3\">&nbsp;</td>\n", pf);
+                fputs("<td colspan=\"3\"></td>\n", pf);
 
 
                 fputs("<td>", pf);
@@ -2268,7 +2268,7 @@ HTMLPrintMoveAnalysis(FILE * pf, matchstate * pms, moverecord * pmr,
 
                 fputs("</td>\n", pf);
 
-                fputs("<td>&nbsp;</td>\n", pf);
+                fputs("<td></td>\n", pf);
 
                 fputs("</tr>\n", pf);
             }
@@ -2291,13 +2291,13 @@ HTMLPrintMoveAnalysis(FILE * pf, matchstate * pms, moverecord * pmr,
                     else
                         fputs("<tr>\n", pf);
 
-                    fprintf(pf, "<td colspan=\"3\">&nbsp;</td>\n");
+                    fprintf(pf, "<td colspan=\"3\"></td>\n");
 
                     fputs("<td>", pf);
                     fputs(OutputEvalContext(&pes->ec, TRUE), pf);
                     fputs("</td>\n", pf);
 
-                    fputs("<td>&nbsp;</td>\n", pf);
+                    fputs("<td></td>\n", pf);
 
                     fputs("</tr>\n", pf);
 
@@ -2319,13 +2319,13 @@ HTMLPrintMoveAnalysis(FILE * pf, matchstate * pms, moverecord * pmr,
                             else
                                 fputs("<tr>\n", pf);
 
-                            fprintf(pf, "<td colspan=\"3\">&nbsp;</td>\n");
+                            fprintf(pf, "<td colspan=\"3\"></td>\n");
 
                             fputs("<td>", pf);
                             fputs(pcS, pf);
                             fputs("</td>\n", pf);
 
-                            fputs("<td>&nbsp;</td>\n", pf);
+                            fputs("<td></td>\n", pf);
 
                             fputs("</tr>\n", pf);
 
@@ -2354,15 +2354,15 @@ HTMLPrintMoveAnalysis(FILE * pf, matchstate * pms, moverecord * pmr,
         if (pmr->n.anMove[0] >= 0)
             /* no movelist saved */
             fprintf(pf,
-                    "<tr %s><td>&nbsp;</td><td>&nbsp;</td>"
-                    "<td>&nbsp;</td><td>%s</td><td>&nbsp;</td></tr>\n",
+                    "<tr %s><td></td><td></td>"
+                    "<td></td><td>%s</td><td></td></tr>\n",
                     GetStyle(CLASS_MOVETHEMOVE, hecss), FormatMove(sz, (ConstTanBoard) pms->anBoard, pmr->n.anMove));
         else
             /* no legal moves */
             /* FIXME: output equity?? */
             fprintf(pf,
-                    "<tr %s><td>&nbsp;</td><td>&nbsp;</td>"
-                    "<td>&nbsp;</td><td>%s</td><td>&nbsp;</td></tr>\n",
+                    "<tr %s><td></td><td></td>"
+                    "<td></td><td>%s</td><td></td></tr>\n",
                     GetStyle(CLASS_MOVETHEMOVE, hecss), _("Cannot move"));
 
     }
