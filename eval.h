@@ -73,8 +73,7 @@ typedef enum {
 
 typedef struct {
     int Accept;                 /* always allow this many moves.
-                                   0 means don't use this level,
-                                   since at least 1 is needed when used. */
+                                   -1 means don't use this level */
     int Extra;                  /* and add up to this many more */
     float Threshold;            /* if they are within this equity difference */
 } movefilter;
@@ -98,7 +97,7 @@ typedef struct {
  * early (pre extending rollouts) had no version numbers
  * extendable rollouts have a version number of 1
  * with pruning nets, we have two possibilities - reduction could still
- * be enabled (version = 2) or, given the speedup and performance 
+ * be enabled (version = 2) or, given the speedup and performance
  * improvements, I assume we will drop reduction entirely. (ver = 3 or more)
  * When presented with an .sgf file, gnubg will attempt to work out what
  * data is present in the file based on the version number
