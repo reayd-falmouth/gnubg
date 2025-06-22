@@ -47,6 +47,7 @@ Kaoru Takahashi
 Stein Kulseth
 Ingo Macherius
 Jeremy Moore
+Nikolas Nyby
 Rod Roark
 Aaron Tikuisis
 EOF
