@@ -2125,7 +2125,7 @@ UseDesign(void)
         /* light */
 
         rElevation = asinf(newPrefs.arLight[2]) * 180.0f / F_PI;
-        if (fabs(newPrefs.arLight[2] - 1.0f) < 1e-5)
+        if (fabsf(newPrefs.arLight[2] - 1.0f) < 1e-5f)
             rAzimuth = 0.0;
         else
             rAzimuth = acosf(newPrefs.arLight[0] / sqrtf(1.0f - newPrefs.arLight[2] * newPrefs.arLight[2])) * 180.0f / F_PI;
@@ -2363,7 +2363,7 @@ WriteDesignString(boarddesign * pbde, renderdata * prd)
         buf3[G_ASCII_DTOSTR_BUF_SIZE], buf4[G_ASCII_DTOSTR_BUF_SIZE];
 
     float rElevation = asinf(prd->arLight[2]) * 180.0f / F_PI;
-    float rAzimuth = (fabs(prd->arLight[2] - 1.0f) < 1e-5) ? 0.0f :
+    float rAzimuth = (fabsf(prd->arLight[2] - 1.0f) < 1e-5f) ? 0.0f :
         acosf(prd->arLight[0] / sqrtf(1.0f - prd->arLight[2] * prd->arLight[2])) * 180.0f / F_PI;
 
     if (prd->arLight[1] < 0)
