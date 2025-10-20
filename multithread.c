@@ -283,12 +283,7 @@ WaitForAllTasks(int time)
     int j = 0;
 
     while (!MT_SafeCompare(&td.doneTasks, td.totalTasks)) {
-        
-        // if (pmrCurAnn != NULL) {
-        //     g_message("in the loop: pmrCurAnn exists");
-        // }
-        // SetAnnotation(pmrCurAnn);
-        // ChangeGame(NULL);
+
         if (j == 10)
             return FALSE;       /* Not done yet */
 
@@ -308,20 +303,16 @@ MT_WaitForTasks(gboolean(*pCallback) (gpointer), int callbackTime, int autosave)
 
     char tmp1[200];
     char tmp2[200];
-    // TanBoard anBoard;
     moverecord * pmr1;
     moverecord * pmr2;
     int start1 = 1;
     int start2 = 1;
-    //int myPage;
     int i=0;
 
     /* Set total tasks to wait for */
     td.totalTasks = td.addedTasks;
 #if defined(USE_GTK)
-        // g_message("MT_WaitForTasks\n");
     GTKSuspendInput();
-        // GTKResumeInput();
 #endif
 
     if (autosave)
@@ -334,31 +325,31 @@ MT_WaitForTasks(gboolean(*pCallback) (gpointer), int callbackTime, int autosave)
             pCallback(NULL);
         }
         ProcessEvents();
-        /* 
+
+        /*
         VERSION 1: When analysis runs in the background:
-        Every so often, we make sure it displays the result of the analysis, 
+        Every so often, we make sure it displays the result of the analysis,
         else the analysis result of the first move is not shown automatically.
         Likewise it automatically shows the colors of the marked (wrong) moves,
         which looks really nice.
         - This could probably be improved, no need to check so often,
         it may slow down gnubg
-        - It is less frequent than in the loop of the above function: 
+        - It is less frequent than in the loop of the above function:
             WaitForAllTasks(); so maybe it's not too bad
 
         VERSION 2: periodically (every 3 times we go through the loop):
-        (1) at the start, we record pmr1 of our move. (We call start1 
+        (1) at the start, we record pmr1 of our move. (We call start1
         this single step.)
-        (2) As long as the user doesn't move, i.e. we stay at pmr2==pmr1, then 
+        (2) As long as the user doesn't move, i.e. we stay at pmr2==pmr1, then
         we keep running ChangeGame(). (We call this start2.)
-        (3) If the user moves, i.e. gets to some pmr2 !=pmr1, and the move analysis 
+        (3) If the user moves, i.e. gets to some pmr2 !=pmr1, and the move analysis
         is available there, then we stop. It may be a move with cube+move decisions, and
-        if the user looks at some cube decision, ChangeGame() will change the page 
+        if the user looks at some cube decision, ChangeGame() will change the page
         to the move decision instead, bothering the user.
-        In this last step, we don't update colors anymore. We could modulate 
+        In this last step, we don't update colors anymore. We could modulate
         in the future based on what the user is doing.
         */
-        // if (pwMoveAnalysis!=NULL)       
-        //        g_message("sensitive:%d", gtk_widget_is_sensitive(pwAnalysis));
+
         if(fAnalysisRunning) {
             i++;
             if (i==3) {
@@ -375,53 +366,26 @@ MT_WaitForTasks(gboolean(*pCallback) (gpointer), int callbackTime, int autosave)
                         pmr2 = get_current_moverecord(NULL);
                         if (pmr2 != NULL)
                             FormatMove(tmp2, msBoard(), pmr2->n.anMove);
-                        // g_message("pmr2: move index i=%u; move=%s\n",pmr2->n.iMove, tmp2);
-                        // if (pwMoveAnalysis!=NULL)
-                        //     g_message("new results");
 #if defined(USE_GTK)
                         if (strcmp(tmp1, tmp2) != 0 && pwMoveAnalysis!=NULL) {
 #else
                         if (strcmp(tmp1, tmp2) != 0) {
 #endif
-                            // g_message("STOP");
                             start2 = 0;
                         } else {
-                            // g_message("change");
-                            ChangeGame(NULL); 
+                            ChangeGame(NULL);
                         }
                     }
                 }
             }
         }
-        // myPage=gtk_notebook_get_current_page(GTK_NOTEBOOK(gtk_widget_get_parent(pwAnalysis)));
-        // g_message("notebook page=%d",myPage);
 
 
-            // if (pwMoveAnalysis!=NULL)
-            // g_message("yeah!");
-            // if (pwCubeAnalysis!=NULL)
-            // g_message("oop cube!");
             /* at the start pmr_cur->n.iMove is not valid and returns an
-            arbitrary large number (even though pmr_cur is not NULL), then 
+            arbitrary large number (even though pmr_cur is not NULL), then
             the first time it's valid it looks like it returns smaller numbers...
-            also it seems that it's valid for analysed games 
+            also it seems that it's valid for analysed games
             */
-            // if(pmr_cur->n.iMove<100){
-                // ChangeGame(NULL); 
-                // waitToDisplay=0;
-            // }  
-
-
-
-        //         // if (pmrCurAnn != NULL) {
-        //     // g_message("in the loop: pmrCurAnn exists");
-        //                 // FormatMove(sz + strlen(_("Moved ")), msBoard(), pmr->n.anMove);
-        //                 
-        //                 // FormatMove(tmp, msBoard(), pmrCurAnn->n.anMove);
-        // // g_message("move=%s\n", tmp);
-        // 
-        // }
-        // SetAnnotation(pmrCurAnn);
 
     }
     if (autosave) {
@@ -500,11 +464,6 @@ MT_SyncEnd(void)
 }
 
 #else	/* !defined(USE_MULTITHREAD) */
-#include "multithread.h"
-#include <stdlib.h>
-#if defined(USE_GTK)
-#include <gtkgame.h>
-#endif
 
 int asyncRet;
 void
