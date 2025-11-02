@@ -3889,7 +3889,7 @@ init_game_info(Board *board, BoardData *bd)
 static void
 board_init(Board * board)
 {
-    BoardData *bd = g_malloc(sizeof(*bd));
+    BoardData *bd = g_malloc0(sizeof(*bd));
     int signals;
 
 #if GTK_CHECK_VERSION(3,0,0)
