@@ -39,6 +39,7 @@
 #include "renderprefs.h"
 #include "gtkwindows.h"
 #include "openurl.h"
+#include "set.h"
 #if defined(USE_BOARD3D)
 #include "inc3d.h"
 #endif
@@ -1455,10 +1456,6 @@ append_dice_options(optionswidget * pow)
     /* get the sensitivity of the widgets right */
     DiceToggled(NULL, pow);
 }
-
-priority DefaultPriority = BELOW_NORMAL;
-const char* aszPriority[NUM_PRIORITY] = { N_("Idle"), N_("Below normal"), N_("Normal"), N_("Above normal"), N_("High"), N_("Realtime")};
-const char* aszPriorityCommands[NUM_PRIORITY]  = { "19", "10", "0", "-10", "-19", "-20"};
 
 static void
 append_other_options(optionswidget * pow)

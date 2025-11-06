@@ -58,6 +58,7 @@
 #include "eval.h"
 #include "external.h"
 #include "export.h"
+#include "set.h"
 
 #if defined(USE_GTK)
 #include "gtklocdefs.h"
@@ -4075,7 +4076,6 @@ CommandSetSoundSoundTake(char *sz)
 
 }
 
-
 static void
 SetPriority(int n)
 {
@@ -4173,35 +4173,14 @@ CommandSetPriorityIdle(char *UNUSED(sz))
     SetPriority(19);
 }
 
+priority DefaultPriority = BELOW_NORMAL;
+const char* aszPriority[NUM_PRIORITY] = { N_("Idle"), N_("Below normal"), N_("Normal"), N_("Above normal"), N_("High"), N_("Realtime")};
+const char* aszPriorityCommands[NUM_PRIORITY]  = { "19", "10", "0", "-10", "-19", "-20"};
+
 extern void
 CommandSetPriorityNice(char *sz)
 {
-
     int n;
-    // outputerrf("CommandSetPriorityNice: priority string:%s",sz);
-
-    // for (int i=0; i<NUM_PRIORITY; i++){
-    //         //g_message("in CommandSetPriorityNice: i=%d, aszPriorityCommands[i]=%s, sz=%s",i, aszPriorityCommands[i],sz);
-    //     if (strcmp(sz, aszPriorityCommands[i]) == 0) {
-    //         DefaultPriority = (priority) i;
-    //         // outputerrf("in CommandSetPriorityNice, DefaultPriority:%d, i:%d, set priority nice %s",DefaultPriority,i, aszPriorityCommands[i]);
-
-    //     //     if (i==0)
-    //     //         CommandSetPriorityIdle(NULL);
-    //     //     else if (i==1)
-    //     //         CommandSetPriorityBelowNormal(NULL);
-    //     //     else if (i==2)
-    //     //         CommandSetPriorityNormal(NULL);
-    //     //     else if (i==3)
-    //     //         CommandSetPriorityAboveNormal(NULL);
-    //     //     else if (i==4)
-    //     //         CommandSetPriorityHighest(NULL);
-    //     //     else
-    //     //         g_assert_not_reached();
-    //     //    return; 
-    //        break;
-    //     }
-    // }
 
     if ((n = ParseNumber(&sz)) < -20 || n > 20) {
         outputl(_("You must specify a priority between -20 and 20."));
@@ -4223,34 +4202,7 @@ CommandSetPriorityNice(char *sz)
     }
 
     SetPriority(n);
-    // g_message("in CommandSetPriorityNice: SetPriority(%d)", n);
 }
-
-
-// extern void
-// CommandSetPriority(char* sz)
-// {
-
-//     for (int i=0; i<NUM_PRIORITY; i++){
-//         if (strcmp(sz, aszPriorityCommands[i]) == 0) {
-//             DefaultPriority = (priority) i;
-//             if (i==0)
-//                 CommandSetPriorityIdle(NULL);
-//             else if (i==1)
-//                 CommandSetPriorityBelowNormal(NULL);
-//             else if (i==2)
-//                 CommandSetPriorityNormal(NULL);
-//             else if (i==3)
-//                 CommandSetPriorityAboveNormal(NULL);
-//             else if (i==4)
-//                 CommandSetPriorityHighest(NULL);
-//             else
-//                 g_assert_not_reached();
-//            return;
-//         }
-//     }
-//     outputl(_("Wrong option."));
-// }
 
 extern void
 CommandSetPriorityNormal(char *UNUSED(sz))
