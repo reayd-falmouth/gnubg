@@ -2610,8 +2610,9 @@ CommandSetScore(char *sz)
         }
     }
 
-    if (ms.gs < GAME_OVER && plGame && (pmr = (moverecord *) plGame->plNext->p) && (pmgi = &pmr->g)) {
+    if (ms.gs < GAME_OVER && plGame && (pmr = (moverecord *) plGame->plNext->p)) {
         g_assert(pmr->mt == MOVE_GAMEINFO);
+        pmgi = &pmr->g;
         pmgi->anScore[0] = ms.anScore[0];
         pmgi->anScore[1] = ms.anScore[1];
         pmgi->fCrawfordGame = ms.fCrawford;
@@ -2770,7 +2771,6 @@ CommandSetCrawford(char *sz)
     if (ms.nMatchTo > 0) {
         if ((ms.nMatchTo - ms.anScore[0] == 1) || (ms.nMatchTo - ms.anScore[1] == 1)) {
             moverecord *pmr;
-            xmovegameinfo *pmgi;
 
             if (SetToggle("crawford", &ms.fCrawford, sz,
                           _("This game is the Crawford game (no doubling allowed)."),
@@ -2783,8 +2783,11 @@ CommandSetCrawford(char *sz)
             if (ms.fCrawford)
                 CancelCubeAction();
 
-            if (plGame && (pmr = plGame->plNext->p) && (pmgi = &pmr->g)) {
+            if (plGame && (pmr = plGame->plNext->p)) {
+                xmovegameinfo *pmgi;
+
                 g_assert(pmr->mt == MOVE_GAMEINFO);
+                pmgi = &pmr->g;
                 pmgi->fCrawfordGame = ms.fCrawford;
             }
         } else {
@@ -2811,7 +2814,6 @@ CommandSetPostCrawford(char *sz)
     if (ms.nMatchTo > 0) {
         if ((ms.nMatchTo - ms.anScore[0] == 1) || (ms.nMatchTo - ms.anScore[1] == 1)) {
             moverecord *pmr;
-            xmovegameinfo *pmgi;
 
             SetToggle("postcrawford", &ms.fPostCrawford, sz,
                       _("This is post-Crawford play (doubling allowed)."), _("This is not post-Crawford play."));
@@ -2822,8 +2824,11 @@ CommandSetPostCrawford(char *sz)
             if (ms.fCrawford)
                 CancelCubeAction();
 
-            if (plGame && (pmr = plGame->plNext->p) && (pmgi = &pmr->g)) {
+            if (plGame && (pmr = plGame->plNext->p)) {
+                xmovegameinfo *pmgi;
+
                 g_assert(pmr->mt == MOVE_GAMEINFO);
+                pmgi = &pmr->g;
                 pmgi->fCrawfordGame = ms.fCrawford;
             }
         } else {
@@ -4623,7 +4628,7 @@ SetXGID(char *sz)
         c = strchr(c, '\n');
         if (c != NULL) {
             *c = '\0';
-	}
+        }
     }
 
     for (i = 0; i < 9 && (c = strrchr(s, ':')); i++) {
@@ -4777,7 +4782,7 @@ SetXGID(char *sz)
     g_free(posid);
 
     if ((anDice[0] == 0 && fSidesSwapped) || (anDice[0] && !fMove))
-	return 2;	/* position has player on roll appearing on top */
+        return 2;        /* position has player on roll appearing on top */
     return 0;
 }
 
@@ -4817,8 +4822,8 @@ CommandSetXGID(char *sz)
     if (rc == 1)
         outputerrf(_("Not a valid XGID '%s'"), sz);
     else {
-	if (rc == 2)
-	    if (GetInputYN (_
+        if (rc == 2)
+            if (GetInputYN (_
              ("This position has player on roll appearing on top. \nSwap players so the player on roll appears on the bottom? ")))
                 CommandSwapPlayers(NULL);
 
@@ -4836,7 +4841,7 @@ SetGNUbgID(char *sz)
     case 0:
         return 0;
     case 2:
-	return 2;
+        return 2;
     default:
         ; /* continue below */
     }
@@ -4885,8 +4890,8 @@ CommandSetGNUbgID(char *sz)
 
     if (rc == 2)
         if (GetInputYN (_
-	    ("This position has player on roll appearing on top. \nSwap players so the player on roll appears on the bottom? ")))
-	    CommandSwapPlayers(NULL);
+            ("This position has player on roll appearing on top. \nSwap players so the player on roll appears on the bottom? ")))
+            CommandSwapPlayers(NULL);
 }
 
 extern void
