@@ -78,12 +78,12 @@ jobs:
       # -------------------------
       # Autogen (if needed)
       # -------------------------
-      - name: Run autogen.sh
-        shell: bash
-        run: |
-          if [ -f ./autogen.sh ]; then
-            ./autogen.sh
-          fi
+#      - name: Run autogen.sh
+#        shell: bash
+#        run: |
+#          if [ -f ./autogen.sh ]; then
+#            ./autogen.sh
+#          fi
 
       # -------------------------
       # Configure
@@ -100,7 +100,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          make -j$(nproc || sysctl -n hw.ncpu)
+          make
 
       # -------------------------
       # Install to staging dir
