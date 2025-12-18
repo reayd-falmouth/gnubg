@@ -64,31 +64,43 @@ jobs:
             
 
       #      # -------------------------
-#      # Windows (MSYS2)
-#      # -------------------------
-#      - name: Setup MSYS2
-#        if: runner.os == 'Windows'
-#        uses: msys2/setup-msys2@v2
-#        with:
-#          update: true
-#          install: >
-#            base-devel
-#            autoconf
-#            automake
-#            libtool
-#            make
-#            gcc
-#            bison
-#            flex
-#            pkg-config
-#            mingw-w64-x86_64-glib2
-#            mingw-w64-x86_64-readline
-#            mingw-w64-x86_64-python
+      # Windows (MSYS2)
+      # -------------------------
+      # -------------------------
+      # Windows (MSYS2 / MinGW)
+      # -------------------------
+      - name: Setup MSYS2
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          msystem: MINGW64
+          install: >
+            base-devel
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-glib2
+            mingw-w64-x86_64-readline
+            mingw-w64-x86_64-gettext
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-pkg-config
+            autoconf
+            automake
+            libtool
+            bison
+            flex
+            gawk
 
       # -------------------------
       # Autogen (if needed)
       # -------------------------
+      - name: Run autogen.sh (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          ./autogen.sh
+
       - name: Run autogen.sh
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           if [ -f ./autogen.sh ]; then
@@ -99,16 +111,29 @@ jobs:
       # Configure
       # -------------------------
       - name: Configure GNUBG
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           ./configure
-  
 
-  # -------------------------
+      - name: Configure GNUBG (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          ./configure      
+
+      # -------------------------
       # Build
       # -------------------------
       - name: Build
+        if: runner.os != 'Windows'
         shell: bash
+        run: |
+          make
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
         run: |
           make
 
@@ -116,7 +141,15 @@ jobs:
       # Install to staging dir
       # -------------------------
       - name: Install to staging
+        if: runner.os != 'Windows'
         shell: bash
+        run: |
+          mkdir -p dist
+          make install DESTDIR="$(pwd)/dist"
+
+      - name: Install to staging (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
         run: |
           mkdir -p dist
           make install DESTDIR="$(pwd)/dist"
@@ -125,6 +158,7 @@ jobs:
       # Collect artefacts
       # -------------------------
       - name: Collect binaries
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           mkdir -p artifact/bin
@@ -134,10 +168,19 @@ jobs:
           
           ls -lah artifact/bin
 
+      - name: Collect Windows binaries
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          mkdir -p artifact/bin
+          find dist -type f -iname "gnubg*.exe" -exec cp {} artifact/bin/ \;
+          ls -lah artifact/bin
+
       # -------------------------
       # Test packaged artefact
       # -------------------------
       - name: Test packaged gnubg binary
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           set -e
@@ -160,6 +203,24 @@ jobs:
           "$GNUBG_BIN" -t -q -h
 
           echo "Packaged gnubg artifact smoke test passed"
+
+      - name: Test Windows packaged artefact
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -e
+
+          GNUBG_BIN="$(find artifact/bin -iname 'gnubg*.exe' | head -n 1)"
+
+          if [ -z "$GNUBG_BIN" ]; then
+            echo "ERROR: gnubg.exe not found"
+            exit 1
+          fi
+
+          echo "Running Windows smoke test"
+          "$GNUBG_BIN" -t -q -h > /dev/null
+
+          echo "Windows gnubg smoke test passed"
 
       # -------------------------
       # Upload artefact
