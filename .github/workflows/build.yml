@@ -135,6 +135,33 @@ jobs:
           ls -lah artifact/bin
 
       # -------------------------
+      # Test packaged artefact
+      # -------------------------
+      - name: Test packaged gnubg binary
+        shell: bash
+        run: |
+          set -e
+
+          if [ ! -d artifact/bin ]; then
+            echo "ERROR: artifact/bin not found"
+            exit 1
+          fi
+
+          # Resolve gnubg binary inside artefact
+          GNUBG_BIN="$(find artifact/bin -type f -name 'gnubg*' -perm -111 | head -n 1)"
+
+          if [ -z "$GNUBG_BIN" ]; then
+            echo "ERROR: gnubg binary not found in artifact/bin"
+            ls -lah artifact/bin
+            exit 1
+          fi
+
+          echo "Running artifact smoke test: $GNUBG_BIN -t -q -h"
+          "$GNUBG_BIN" -t -q -h > /dev/null
+
+          echo "Packaged gnubg artifact smoke test passed"
+
+      # -------------------------
       # Upload artefact
       # -------------------------
       - name: Upload artefact
