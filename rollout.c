@@ -50,7 +50,7 @@ int log_rollouts = 0;
 char *log_file_name = 0;
 static unsigned int initial_game_count;
 
-/* make sgf files of rollouts if log_rollouts is true and we have a file 
+/* make sgf files of rollouts if log_rollouts is true and we have a file
  * name template to work with
  */
 
@@ -300,7 +300,7 @@ static volatile unsigned int initial_game_count;
 static void initRolloutstat(rolloutstat * prs);
 #endif
 
-/* called with 
+/* called with
  * cube decision                  move rollout
  * aanBoard       2 copies of same board         1 board
  * aarOutput      2 arrays for eval              1 array
@@ -313,9 +313,9 @@ static void initRolloutstat(rolloutstat * prs);
  * cci            2 (number of rollouts to do)   1
  * prc            1 rollout context              same
  * aarsStatistics 2 arrays of stats for the      NULL
- * two alternatives of 
- * cube rollouts 
- * 
+ * two alternatives of
+ * cube rollouts
+ *
  * returns -1 on error/interrupt, fInterrupt TRUE if stopped by user
  * aarOutput array(s) contain results
  */
@@ -380,8 +380,8 @@ BasicCubefulRollout(unsigned int aanBoard[][2][25],
     float aaar[6][6][NUM_ROLLOUT_OUTPUTS];
 #endif
 
-    evalcontext ecCubeless0ply = { FALSE, 0, FALSE, TRUE, 0.0 };
-    evalcontext ecCubeful0ply = { TRUE, 0, FALSE, TRUE, 0.0 };
+    evalcontext ecCubeless0ply = { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
+    evalcontext ecCubeful0ply = { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
 
     /* local pointers to the eval contexts to use */
     evalcontext *pecCube[2], *pecChequer[2];
@@ -509,7 +509,7 @@ BasicCubefulRollout(unsigned int aanBoard[][2][25],
                         for (i = 0; i <= OUTPUT_EQUITY; i++)
                             aarOutput[ici][i] = aar[0][i];
 
-                        /* 
+                        /*
                          * assign equity for double, pass:
                          * - mwc for match play
                          * - normalized equity for money play (i.e, rDP=1)
@@ -849,45 +849,45 @@ BasicCubefulRollout(unsigned int aanBoard[][2][25],
  * when called with a cube decision, the number of alternatives is always 2
  * (nodouble/double or take/drop). Otherwise the number of moves is
  * a parameter supplied (alternatives)
- * 
+ *
  * anBoard - an array[alternatives] of explicit pointers to Boards - the
  * individual boards are not in and of themselves a contiguous set of
  * arrays and can't be treated as int x[alternative][2][25]. 2 copies
  * of the same board for cube decisions, 1 per move for move rollouts
  * asz an array of pointers to strings. These will be a contiguous array of
- * text labels for displaying results. 2 pointers for cube decisions, 
+ * text labels for displaying results. 2 pointers for cube decisions,
  * 1 per move for move rollouts
  * aarOutput - an array[alternatives] of explicit pointers to arrays for the
- * results of the rollout. Again, these may not be contiguous. 2 arrays for 
+ * results of the rollout. Again, these may not be contiguous. 2 arrays for
  * cube decisions, 1 per move for move rollouts
  * aarStdDev - as above for std's of rollout
  * aarsStatistics - array of statistics used when rolling out cube decisions,
  * not maintained when doing move rollouts
  * pprc - an array of explicit pointers to rollout contexts. There will be
- * 2 pointers to the same context for cube decisions, 1 per move for move 
- * rollouts 
+ * 2 pointers to the same context for cube decisions, 1 per move for move
+ * rollouts
  * aci  - an array of explicit pointers cubeinfo's. 2 for cube decisions, one
  * per move for move rollouts
- * alternatives - a count of the number of things to be rolled out. 2 for 
+ * alternatives - a count of the number of things to be rolled out. 2 for
  * cube decisions, number of different moves for move rollouts
  * fInvert - flag if equities should be inverted (used when doing take/drop
  * decisions, we evaluate the double/nodouble and invert the equities
  * to get take/drop
- * fCubeRollout - set if this is a cube decision rollout. This is needed if 
+ * fCubeRollout - set if this is a cube decision rollout. This is needed if
  * we use RolloutGeneral to rollout an arbitrary list of moves (where not
  * all the moves correspond to a given game state, so that some moves will
  * have been made with a different cube owner or value or even come from
  * different games and have different match scores. If this happens,
  * calls to mwc2eq and se_mwc2eq need to be passed a pointer to the current
- * cubeinfo structure. If we're rolling out a cube decision, we need to 
+ * cubeinfo structure. If we're rolling out a cube decision, we need to
  * pass the cubeinfo structure before the double is given. This won't be
  * available
- * 
+ *
  * returns:
  * -1 on error or if no games were rolled out
  * no of games rolled out otherwise. aarOutput, aarStdDev aarsStatistic arrays
  * will contain results.
- * pprc rollout contexts will be updated with the number of games rolled out for 
+ * pprc rollout contexts will be updated with the number of games rolled out for
  * that position.
  */
 
@@ -984,7 +984,7 @@ check_jsds(int *active)
         qsort((void *) ajiJSD, ro_alternatives, sizeof(jsdinfo), comp_jsdinfo_equity);
 
         /* 3 replace the equities with the equity difference from the best move (ajiJSD[0]), the JSDs
-         * with the number of JSDs the equity difference represents and decide if we should either stop 
+         * with the number of JSDs the equity difference represents and decide if we should either stop
          * or resume rolling a move out */
         v = ajiJSD[0].rEquity;
         s = ajiJSD[0].rJSD;
@@ -1015,7 +1015,7 @@ check_jsds(int *active)
                      * with other moves, because it's been stopped for a few trials */
                     if (fNoMore[ajiJSD[alt].nOrder]) {
                         /* it was stopped, catch it up to the other moves and resume
-                         * rolling it out. While we're catching up, we don't want to do 
+                         * rolling it out. While we're catching up, we don't want to do
                          * these calculations any more so we'll change the minimum
                          * games to do */
                         fNoMore[ajiJSD[alt].nOrder] = 0;
@@ -1033,7 +1033,7 @@ check_jsds(int *active)
         qsort((void *) ajiJSD, ro_alternatives, sizeof(jsdinfo), comp_jsdinfo_order);
 
     } else {
-        float eq_dp = fOutputMWC ? eq2mwc(1.0, &aciLocal[0]) : 1.0f;
+        float eq_dp = fOutputMWC ? eq2mwc(1.0f, &aciLocal[0]) : 1.0f;
         float eq_dt = ajiJSD[1].rEquity;
 
         if (eq_dp < eq_dt) {
@@ -1654,7 +1654,7 @@ GeneralCubeDecisionR(float aarOutput[2][NUM_ROLLOUT_OUTPUTS],
     cubeinfo aci[2];
     const cubeinfo(*apci[2]);
     int nTrials;
-    int afCubeDecTop[] = { FALSE, FALSE };      /* no cube decision in 
+    int afCubeDecTop[] = { FALSE, FALSE };      /* no cube decision in
                                                  * iTurn = 0 */
     ConstTanBoard apBoard[2];
     float (*apOutput[2])[NUM_ROLLOUT_OUTPUTS];
@@ -1711,7 +1711,7 @@ GeneralCubeDecisionR(float aarOutput[2][NUM_ROLLOUT_OUTPUTS],
 /*
  * Initialise rollout stat with zeroes.
  *
- * Input: 
+ * Input:
  *    - prs: rollout stat to initialize
  *
  * Output:
@@ -1747,7 +1747,7 @@ initRolloutstat(rolloutstat * prs)
  *    -1 on error
  *     0 if we should not resign
  *     1,2, or 3 if we should resign normal, gammon, or backgammon,
- *     respectively.  
+ *     respectively.
  *
  */
 
@@ -1757,7 +1757,7 @@ getResignation(float arResign[NUM_ROLLOUT_OUTPUTS], TanBoard anBoard, cubeinfo *
 
     float arStdDev[NUM_ROLLOUT_OUTPUTS];
     rolloutstat arsStatistics[2];
-    float ar[NUM_OUTPUTS] = { 0.0, 0.0, 0.0, 1.0, 1.0 };
+    float ar[NUM_OUTPUTS] = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f };
 
     float rPlay;
 

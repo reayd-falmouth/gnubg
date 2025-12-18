@@ -93,7 +93,7 @@ static void
 ResetTheory(GtkWidget * UNUSED(pw), theorywidget * ptw)
 {
     float aarRates[2][2];
-    evalcontext ec = { FALSE, 0, FALSE, TRUE, 0.0 };
+    evalcontext ec = { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
     float arOutput[NUM_OUTPUTS];
     int i, j;
 
@@ -394,8 +394,8 @@ TheoryUpdated(GtkWidget * UNUSED(pw), theorywidget * ptw)
     /* update money play widget */
 
 
-    /* 
-     * update market window widgets 
+    /*
+     * update market window widgets
      */
 
     remove_mw_rows(ptw);
@@ -578,7 +578,7 @@ PlyClicked(GtkWidget * pw, theorywidget * ptw)
     int f = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pw));
     cubeinfo ci;
     decisionData dd;
-    evalcontext ec = { FALSE, 0, FALSE, TRUE, 0.0 };
+    evalcontext ec = { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
     int i, j;
 
     if (!f)
@@ -723,10 +723,10 @@ GTKShowTheory(const int fActivePage)
         gtk_widget_set_margin_left(pwx, 4);
         gtk_widget_set_margin_right(pwx, 4);
 #endif
-#else                 
+#else
         gtk_table_attach(GTK_TABLE(pwTable), pwx,
                          0, 1, 0 + i, 1 + i, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 4, 0);
-        gtk_misc_set_alignment(GTK_MISC(pwx), 0, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(pwx), 0, 0.5f);
 #endif
 
         ptw->apwScoreAway[i] = GTK_ADJUSTMENT(gtk_adjustment_new(1, 1, 64, 1, 5, 0));
@@ -759,7 +759,7 @@ GTKShowTheory(const int fActivePage)
                          1, 2, 0 + i, 1 + i, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 4, 0);
         gtk_table_attach(GTK_TABLE(pwTable), pwx,
                          2, 3, 0 + i, 1 + i, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 4, 0);
-        gtk_misc_set_alignment(GTK_MISC(pwx), 0, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(pwx), 0, 0.5f);
 #endif
 
         g_signal_connect(G_OBJECT(ptw->apwScoreAway[i]), "value-changed", G_CALLBACK(TheoryUpdated), ptw);
@@ -824,14 +824,14 @@ GTKShowTheory(const int fActivePage)
     gtk_widget_set_halign(pwz, GTK_ALIGN_START);
     gtk_widget_set_valign(pwz, GTK_ALIGN_CENTER);
 #else
-    gtk_misc_set_alignment(GTK_MISC(pwz), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(pwz), 0, 0.5f);
 #endif
     gtk_box_pack_start(GTK_BOX(pwx), pwz = gtk_label_new((char *) miCurrent.szFileName), FALSE, FALSE, 0);
 #if GTK_CHECK_VERSION(3,0,0)
     gtk_widget_set_halign(pwz, GTK_ALIGN_START);
     gtk_widget_set_valign(pwz, GTK_ALIGN_CENTER);
 #else
-    gtk_misc_set_alignment(GTK_MISC(pwz), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(pwz), 0, 0.5f);
 #endif
     gtk_box_pack_start(GTK_BOX(pwx), pwz = gtk_label_new((char *) miCurrent.szDescription), FALSE, FALSE, 0);
     gtk_label_set_line_wrap(GTK_LABEL(pwz), TRUE);
@@ -839,7 +839,7 @@ GTKShowTheory(const int fActivePage)
     gtk_widget_set_halign(pwz, GTK_ALIGN_START);
     gtk_widget_set_valign(pwz, GTK_ALIGN_CENTER);
 #else
-    gtk_misc_set_alignment(GTK_MISC(pwz), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(pwz), 0, 0.5f);
 #endif
 
     /* money play widget */
@@ -906,7 +906,7 @@ GTKShowTheory(const int fActivePage)
 #else
         gtk_table_attach(GTK_TABLE(pwTable), pw,
                          0, 1, 1 + i, 2 + i, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 4, 0);
-        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
 #endif
 
         /* column title */
@@ -929,7 +929,7 @@ GTKShowTheory(const int fActivePage)
 #else
         gtk_table_attach(GTK_TABLE(pwTable), pw,
                          1 + i, 2 + i, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 4, 0);
-        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
 #endif
 
         for (j = 0; j < 2; j++) {
@@ -1047,7 +1047,7 @@ GTKShowTheory(const int fActivePage)
         gtk_widget_set_valign(ptw->apwGraph[i], GTK_ALIGN_CENTER);
 	/* FIXME? gtk_container_set_border_width(...) */
 #else
-        gtk_container_add(GTK_CONTAINER(pwFrame), pwAlign = gtk_alignment_new(0.5, 0.5, 1, 0));
+        gtk_container_add(GTK_CONTAINER(pwFrame), pwAlign = gtk_alignment_new(0.5f, 0.5f, 1, 0));
         gtk_container_add(GTK_CONTAINER(pwAlign), ptw->apwGraph[i]);
         gtk_container_set_border_width(GTK_CONTAINER(pwAlign), 4);
 #endif

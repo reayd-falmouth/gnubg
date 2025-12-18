@@ -29,13 +29,13 @@ feature, together with a new button in the main toolbar: "Analyse"
             * Unchecked = like today, vs
             * Checked = automatic add-to-db at end of analysis (and we remove the add-to-db
                 button from the statistics page)
-- 2nd button: "Analyze file": 
-    - This is for a file, e.g. a match that we just played online. 
+- 2nd button: "Analyze file":
+    - This is for a file, e.g. a match that we just played online.
     - Can launch either one of 3 options (defined in Settings>Analysis):
         1) Regular "batch analysis": blocking, like today (+add-to-db)
-        2) "Single-file analysis": analysis of 1 chosen file, can be in 
+        2) "Single-file analysis": analysis of 1 chosen file, can be in
             background and/or add-to-db based on defined settings
-        3) "Smart analysis": pick the newest file in the preferred folder that gnubg 
+        3) "Smart analysis": pick the newest file in the preferred folder that gnubg
             recognizes, then can be in background and/or add-to-db based on defined settings
 When analyzing in the background, various menus are disabled so the user does not launch
     another analysis in the middle.
@@ -91,7 +91,7 @@ static const float arThrsRating[RAT_SUPERNATURAL + 1] = {
 
 int afAnalysePlayers[2] = { TRUE, TRUE };
 
-evalcontext ecLuck = { TRUE, 0, FALSE, TRUE, 0.0 };
+evalcontext ecLuck = { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
 
 extern ratingtype
 GetRating(const float rError)
@@ -361,7 +361,7 @@ updateStatcontext(statcontext * psc, const moverecord * pmr, const matchstate * 
 
     case MOVE_NORMAL:
 
-        /* 
+        /*
          * Cube analysis; check for
          *   - missed doubles
          */
@@ -423,7 +423,7 @@ updateStatcontext(statcontext * psc, const moverecord * pmr, const matchstate * 
 
 
         /*
-         * update chequerplay statistics 
+         * update chequerplay statistics
          */
 
         /* Count total regradless of analysis */
@@ -1344,14 +1344,14 @@ IniStatcontext(statcontext * psc)
 
         for (j = 0; j < 2; j++) {
 
-            psc->arErrorCheckerplay[i][j] = 0.0;
-            psc->arErrorMissedDoubleDP[i][j] = 0.0;
-            psc->arErrorMissedDoubleTG[i][j] = 0.0;
-            psc->arErrorWrongDoubleDP[i][j] = 0.0;
-            psc->arErrorWrongDoubleTG[i][j] = 0.0;
-            psc->arErrorWrongTake[i][j] = 0.0;
-            psc->arErrorWrongPass[i][j] = 0.0;
-            psc->arLuck[i][j] = 0.0;
+            psc->arErrorCheckerplay[i][j] = 0.0f;
+            psc->arErrorMissedDoubleDP[i][j] = 0.0f;
+            psc->arErrorMissedDoubleTG[i][j] = 0.0f;
+            psc->arErrorWrongDoubleDP[i][j] = 0.0f;
+            psc->arErrorWrongDoubleTG[i][j] = 0.0f;
+            psc->arErrorWrongTake[i][j] = 0.0f;
+            psc->arErrorWrongPass[i][j] = 0.0f;
+            psc->arLuck[i][j] = 0.0f;
 
         }
 

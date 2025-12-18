@@ -39,6 +39,7 @@
 #include "renderprefs.h"
 #include "gtkwindows.h"
 #include "openurl.h"
+#include "set.h"
 #if defined(USE_BOARD3D)
 #include "inc3d.h"
 #endif
@@ -86,6 +87,7 @@ typedef struct {
     GtkAdjustment *padjDelay;
     GtkAdjustment *padjSeed;
     GtkAdjustment *padjThreads;
+    GtkWidget *pwPriority[NUM_PRIORITY];
     GtkWidget *pwAutoSaveTime;
     GtkWidget *pwAutoSaveRollout;
     GtkWidget *pwAutoSaveAnalysis;
@@ -172,7 +174,7 @@ GetSelectedName(GtkTreeView * treeview)
     /* Sets selected_iter to the currently selected node: */
     gtk_tree_selection_get_selected(sel, &model, &selected_iter);
 
-    /* Gets the value of the char* cell (in column 0) in the row 
+    /* Gets the value of the char* cell (in column 0) in the row
         referenced by selected_iter */
     gtk_tree_model_get(model, &selected_iter, 0, &keyName, -1);
     // g_message("GetSelectedName gives keyName=%s",keyName);
@@ -209,7 +211,7 @@ GTKCommandEditKeyNames(GtkWidget * UNUSED(pw), GtkWidget * UNUSED(pwParent))
     GtkTreeViewColumn *column;
     // GtkListStore *store;
     GtkTreeIter iter;
- 
+
     pwScrolled = gtk_scrolled_window_new(NULL, NULL);
 
     pwDialog = GTKCreateDialog(_("Edit key player names"), DT_INFO, NULL, DIALOG_FLAG_MODAL | DIALOG_FLAG_CLOSEBUTTON, NULL, NULL);
@@ -1458,7 +1460,8 @@ append_dice_options(optionswidget * pow)
 static void
 append_other_options(optionswidget * pow)
 {
-    GtkWidget *pwvbox;
+    GtkWidget *pwvbox, *pwvbox2;
+    GtkWidget *pwf;
     GtkWidget *pwev;
     GtkWidget *pwhbox;
 #if GTK_CHECK_VERSION(3,0,0)
@@ -1631,9 +1634,21 @@ append_other_options(optionswidget * pow)
 
     gtk_box_pack_start(GTK_BOX(pwvbox), pwhbox, FALSE, FALSE, 3);
 
+    /* start of Performance frame */
+
+    pwf = gtk_frame_new(_("Performance"));
+    gtk_box_pack_start(GTK_BOX(pwvbox), pwf, FALSE, FALSE, 0);
+
+#if GTK_CHECK_VERSION(3,0,0)
+    pwvbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+#else
+    pwvbox2 = gtk_vbox_new(FALSE, 0);
+#endif
+    gtk_container_add(GTK_CONTAINER(pwf), pwvbox2);
+
     pwev = gtk_event_box_new();
     gtk_event_box_set_visible_window(GTK_EVENT_BOX(pwev), FALSE);
-    gtk_box_pack_start(GTK_BOX(pwvbox), pwev, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pwvbox2), pwev, FALSE, FALSE, 0);
 #if GTK_CHECK_VERSION(3,0,0)
     pw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 #else
@@ -1670,7 +1685,7 @@ append_other_options(optionswidget * pow)
 #if defined(USE_MULTITHREAD)
     pwev = gtk_event_box_new();
     gtk_event_box_set_visible_window(GTK_EVENT_BOX(pwev), FALSE);
-    gtk_box_pack_start(GTK_BOX(pwvbox), pwev, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pwvbox2), pwev, FALSE, FALSE, 0);
 #if GTK_CHECK_VERSION(3,0,0)
     pwhbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 #else
@@ -1686,9 +1701,21 @@ append_other_options(optionswidget * pow)
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(pw), TRUE);
     gtk_box_pack_start(GTK_BOX(pwhbox), gtk_label_new(_("threads")), FALSE, FALSE, 0);
     gtk_widget_set_tooltip_text(pwev,
-                                _("The number of threads to use in multi-threaded operations,"
-                                  " this should be set to the number of logical processing units available"));
+                                _("The number of threads to use in multi-threaded operations. "
+                                  "This should be set to the number of logical processing units available or less."));
 #endif
+
+#if defined(HAVE_SETPRIORITY) || WIN32
+    BuildRadioButtons(pwvbox2, pow->pwPriority,
+        _("Set gnubg process priority:"),
+        _("Select what priority to use for the gnubg process. "
+        "For example, set a low priority so rollouts and analysis don't bother other applications."
+        ),
+        aszPriority, NUM_PRIORITY, DefaultPriority);
+#endif
+
+    /* end of Performance frame */
+
 #if GTK_CHECK_VERSION(3,0,0)
     pwhbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 #else
@@ -1703,8 +1730,7 @@ append_other_options(optionswidget * pow)
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(pow->pwAutoSaveTime), TRUE);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(pow->pwAutoSaveTime), nAutoSaveTime);
     gtk_widget_set_tooltip_text(pow->pwAutoSaveTime,
-                                _
-                                ("Set the auto save frequency. You must also enable backup during analysis and/or during rollout"));
+                                _("Set the auto save frequency. You must also enable backup during analysis and/or during rollout"));
     gtk_box_pack_start(GTK_BOX(pwhbox), gtk_label_new(_("minute(s)")), FALSE, FALSE, 0);
 
     pow->pwAutoSaveRollout = gtk_check_button_new_with_label(_("Auto save rollouts"));
@@ -2050,6 +2076,18 @@ OptionsOK(GtkWidget * pw, optionswidget * pow)
     }
     g_free(newfolder);
 
+    // g_message("DefaultPriority:%d",DefaultPriority);
+
+    for (i = 0; i < NUM_PRIORITY; ++i){
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pow->pwPriority[i])) && DefaultPriority != (priority) i) {
+            // g_message("ibefore: DefaultPriority:%d, i:%d, set priority nice %s",DefaultPriority,i, aszPriorityCommands[i]);
+            sprintf(sz, "set priority nice %s", aszPriorityCommands[i]);
+            UserCommand(sz);
+            // g_message("after: DefaultPriority:%d, i:%d, set priority nice %s",DefaultPriority,i, aszPriorityCommands[i]);
+            break;
+        }
+    }
+
     new_browser = gtk_entry_get_text(GTK_ENTRY(pow->pwWebBrowser));
     if (new_browser && (!get_web_browser() || strcmp(new_browser, get_web_browser()))) {
         tmp = g_strdup_printf("set browser \"%s\"", new_browser);
@@ -2119,6 +2157,12 @@ OptionsSet(optionswidget * pow)
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pow->pwGotoFirstGame), fGotoFirstGame);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pow->pwGameListStyles), fStyledGamelist);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pow->pwMarkedSamePlayer), fMarkedSamePlayer);
+
+    // g_message("DefaultPriority at display:%d",DefaultPriority);
+
+    for (i = 0; i < NUM_PRIORITY; ++i)
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pow->pwPriority[i]), DefaultPriority == (priority)i);
+
 }
 
 static void

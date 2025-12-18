@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: neuralnetsse.c,v 1.43 2021/10/30 19:42:20 plm Exp $
  */
 
 #include "config.h"
@@ -53,9 +51,9 @@ sse_malloc(size_t size)
 #if defined(HAVE_POSIX_MEMALIGN)
     void *ptr = NULL;
     int ret;
-    
+
     ret = posix_memalign(&ptr, ALIGN_SIZE, size);
-    
+
     if (ret == 0)
         return (float *)ptr;
 
@@ -97,25 +95,25 @@ my_handler(int status)
 int
 CheckNEON(void)
 {
-   void (*oldsig)(int);
+    void (*oldsig)(int);
 
-   oldsig = signal(SIGILL, my_handler);
-   if (setjmp(env)) {
-       signal(SIGILL, oldsig);
-       return 0;
-   } else {
+    oldsig = signal(SIGILL, my_handler);
+    if (setjmp(env)) {
+        signal(SIGILL, oldsig);
+        return 0;
+    } else {
 #if defined(__ARM_FEATURE_SIMD32)
-       /* v7 */
-       __asm__ __volatile__ ("vmin.f32 q0, q0, q0");
+        /* v7 */
+        __asm__ __volatile__ ("vmin.f32 q0, q0, q0");
 #elif defined(__ARM_NEON)
-       /* aarch64 */
-       __asm__ __volatile__ ("fmin v0.4s, v0.4s, v0.4s");
+        /* aarch64 */
+        __asm__ __volatile__ ("fmin v0.4s, v0.4s, v0.4s");
 #else
-       #error "Unexpected ARM architecture"
+        #error "Unexpected ARM architecture"
 #endif
-       signal(SIGILL, oldsig);
-       return 1;
-   }
+        signal(SIGILL, oldsig);
+        return 1;
+    }
 }
 #endif
 
@@ -244,20 +242,20 @@ sigmoid_ps(float_vector xin)
     float_vector c;
     xin = _mm256_and_ps(xin, abs_mask.ps);      /* Abs. value by clearing signbit */
     c = sigmoid_positive_ps(xin);
-    return _mm256_blendv_ps(_mm256_sub_ps(ones.ps, c), c, mask);
+    return _mm256_blendv_ps(c, _mm256_sub_ps(ones.ps, c), mask);
 #elif defined(HAVE_SSE)
     float_vector mask = _mm_cmplt_ps(xin, _mm_setzero_ps());
     float_vector c;
     xin = _mm_and_ps(xin, abs_mask.ps); /* Abs. value by clearing signbit */
     c = sigmoid_positive_ps(xin);
     /* _mm_blendv_ps() is only available with SSE4.1 or later */
-    return _mm_or_ps(_mm_and_ps(mask, c), _mm_andnot_ps(mask, _mm_sub_ps(ones.ps, c)));
+    return _mm_or_ps(_mm_andnot_ps(mask, c), _mm_and_ps(mask, _mm_sub_ps(ones.ps, c)));
 #else
     int_vector mask = (int_vector)vcltq_f32(xin, vdupq_n_f32(0.0f));
     float_vector c;
     xin = (float_vector)vandq_s32((int_vector)xin, (int_vector)abs_mask.ps); /* Abs. value by clearing signbit */
     c = sigmoid_positive_ps(xin);
-    return vbslq_f32((uint32x4_t)mask, c, vsubq_f32(ones.ps, c));
+    return vbslq_f32((uint32x4_t)mask, vsubq_f32(ones.ps, c), c);
 #endif
 }
 
@@ -460,11 +458,11 @@ EvaluateSSE(const neuralnet * restrict pnn, const float arInput[], float ar[], f
 
 #if defined(USE_SSE2) || defined(USE_AVX) || defined(USE_NEON)
 #if defined(USE_AVX)
-    scalevec = _mm256_set1_ps(pnn->rBetaHidden);
+    scalevec = _mm256_set1_ps(-pnn->rBetaHidden);
 #elif defined(HAVE_SSE)
-    scalevec = _mm_set1_ps(pnn->rBetaHidden);
+    scalevec = _mm_set1_ps(-pnn->rBetaHidden);
 #else
-    scalevec = vdupq_n_f32(pnn->rBetaHidden);
+    scalevec = vdupq_n_f32(-pnn->rBetaHidden);
 #endif
 
     for (par = ar, i = (cHidden >> LOG2VEC_SIZE); i; i--, par += VEC_SIZE) {
@@ -547,17 +545,17 @@ EvaluateSSE(const neuralnet * restrict pnn, const float arInput[], float ar[], f
         arOutput[i] = sigmoid(-pnn->rBetaOutput * (r + pnn->arOutputThreshold[i]));
 
 #else
-       {
-       float32x2_t vec0_h, vec0_l, vec1;
+        {
+            float32x2_t vec0_h, vec0_l, vec1;
 
-       vec0_h = vget_high_f32(sum);
-       vec0_l = vget_low_f32(sum);
-       vec1 = vpadd_f32(vec0_h, vec0_l);
-       vec1 = vpadd_f32(vec1, vec1);
-       vst1_lane_f32(&r, vec1, 0);
+            vec0_h = vget_high_f32(sum);
+            vec0_l = vget_low_f32(sum);
+            vec1 = vpadd_f32(vec0_h, vec0_l);
+            vec1 = vpadd_f32(vec1, vec1);
+            vst1_lane_f32(&r, vec1, 0);
 
-       arOutput[i] = sigmoid(-pnn->rBetaOutput * (r + pnn->arOutputThreshold[i]));
-       }
+            arOutput[i] = sigmoid(-pnn->rBetaOutput * (r + pnn->arOutputThreshold[i]));
+        }
 #endif
     }
 #if defined(USE_AVX)

@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: renderprefs.c,v 1.64 2022/10/02 12:46:41 plm Exp $
  */
 
 #include "config.h"
@@ -496,9 +494,8 @@ RenderPreferencesParam(renderdata * prd, const char *szParam, char *szValue)
         }
     } else if (!StrNCaseCmp(szParam, "piecetexturetype", c))
         prd->pieceTextureType = (PieceTextureType) atoi(szValue);
-    else if ((!StrNCaseCmp(szParam, "chequers3d", strlen("chequers3d")) ||
-              !StrNCaseCmp(szParam, "checkers3d", strlen("checkers3d"))) &&
-             (szParam[c - 1] == '0' || szParam[c - 1] == '1'))
+    else if (!StrNCaseCmp(szParam, "chequers3d", strlen("chequers3d"))
+             && (szParam[c - 1] == '0' || szParam[c - 1] == '1'))
         fValueError = SetMaterial(&prd->ChequerMat[szParam[c - 1] - '0'], szValue);
     else if (!StrNCaseCmp(szParam, "dice3d", strlen("dice3d"))
              && (szParam[c - 1] == '0' || szParam[c - 1] == '1'))
@@ -524,23 +521,18 @@ RenderPreferencesParam(renderdata * prd, const char *szParam, char *szValue)
     else if (!StrNCaseCmp(szParam, "background3d", c))
         fValueError = SetMaterial(&prd->BackGroundMat, szValue);
 #endif
-    else if (c > 1 &&
-             (!StrNCaseCmp(szParam, "chequers", c - 1) ||
-              !StrNCaseCmp(szParam, "checkers", c - 1)) && (szParam[c - 1] == '0' || szParam[c - 1] == '1'))
+    else if (c > 1 && !StrNCaseCmp(szParam, "chequers", c - 1)
+             && (szParam[c - 1] == '0' || szParam[c - 1] == '1'))
         /* chequers=colour;alpha;refrac;shine;spec */
         fValueError = SetColourARSS(prd->aarColour,
                                     prd->arRefraction,
                                     prd->arCoefficient, prd->arExponent, szValue, szParam[c - 1] - '0');
-    else if (c > 1 &&
-             (!StrNCaseCmp(szParam, "dice", c - 1) ||
-              !StrNCaseCmp(szParam, "dice", c - 1)) && (szParam[c - 1] == '0' || szParam[c - 1] == '1'))
+    else if (c > 1 && !StrNCaseCmp(szParam, "dice", c - 1) && (szParam[c - 1] == '0' || szParam[c - 1] == '1'))
         /* dice=colour;shine;spec;flag */
         fValueError = SetColourSSF(prd->aarDiceColour,
                                    prd->arDiceCoefficient,
                                    prd->arDiceExponent, prd->afDieColour, szValue, szParam[c - 1] - '0');
-    else if (c > 1 &&
-             (!StrNCaseCmp(szParam, "dot", c - 1) ||
-              !StrNCaseCmp(szParam, "dot", c - 1)) && (szParam[c - 1] == '0' || szParam[c - 1] == '1'))
+    else if (c > 1 && !StrNCaseCmp(szParam, "dot", c - 1) && (szParam[c - 1] == '0' || szParam[c - 1] == '1'))
         /* dot=colour */
         fValueError = SetColourF(prd->aarDiceDotColour[szParam[c - 1] - '0'], szValue);
     else if (c > 1 && !StrNCaseCmp(szParam, "points", c - 1) && (szParam[c - 1] == '0' || szParam[c - 1] == '1'))

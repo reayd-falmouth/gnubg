@@ -165,7 +165,13 @@ extern void DoHideAllPanels(int updateEvents);
 #if defined(USE_GTKITEMFACTORY)
 extern void ToggleDockPanels(gpointer p, guint n, GtkWidget * pw);
 #else
+
+#if GTK_CHECK_VERSION(3,0,0)
+extern void ToggleEdit(GtkToggleButton *widget, gpointer user_data);
+#else
 extern void ToggleEdit(GtkToggleAction * action, gpointer user_data);
+#endif
+
 extern void ToggleClockwise(GtkToggleAction * action, gpointer user_data);
 extern void ToggleDockPanels(GtkToggleAction * action, gpointer user_data);
 #endif
@@ -185,6 +191,10 @@ extern void SetSwitchModeMenuText(void);
 
 extern void AddText(GtkWidget* pwBox, char* Text);
 extern void drawArrow (cairo_t *cr, double start_x, double start_y, double end_x, double end_y);
+extern void
+BuildRadioButtons(GtkWidget* pwvbox, GtkWidget* apwScoreMapFrame[], const char* frameTitle, const char* frameToolTip, const char* labelStrings[],
+    int labelStringsLen, int toggleDefault);
+
 
 extern gchar* underscore_escape(const gchar*);
 #endif

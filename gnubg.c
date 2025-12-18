@@ -20,7 +20,7 @@
  * 02/2023: Isaac Keslassy: introduced the "SmartSit" feature
  * that enables users to automatically sit at the bottom of
  * the board (i.e. as player1) in opened matches.
- * 
+ *
  * It works as follows:
  * 1) In Settings > Options > Display, the user can enable this option
  * 2) The user can define "key player names" in two ways:
@@ -292,32 +292,31 @@ rngcontext *rngctxRollout = NULL;
 rolloutcontext rcRollout = {
     {
      /* player 0/1 cube decision */
-     {TRUE, 2, TRUE, TRUE, 0.0},
-     {TRUE, 2, TRUE, TRUE, 0.0}
-     },
+     { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
+     { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }
+    },
     {
      /* player 0/1 chequerplay */
-     {TRUE, 0, TRUE, TRUE, 0.0},
-     {TRUE, 0, TRUE, TRUE, 0.0}
-     },
-
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }
+    },
     {
      /* player 0/1 late cube decision */
-     {TRUE, 2, TRUE, TRUE, 0.0},
-     {TRUE, 2, TRUE, TRUE, 0.0}
-     },
+     { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
+     { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }
+    },
     {
      /* player 0/1 late chequerplay */
-     {TRUE, 0, TRUE, TRUE, 0.0},
-     {TRUE, 0, TRUE, TRUE, 0.0}
-     },
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }
+    },
     /* truncation point cube and chequerplay */
-    {TRUE, 2, TRUE, TRUE, 0.0},
-    {TRUE, 2, TRUE, TRUE, 0.0},
+    { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
+    { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
 
     /* move filters */
-    {MOVEFILTER_NORMAL, MOVEFILTER_NORMAL},
-    {MOVEFILTER_NORMAL, MOVEFILTER_NORMAL},
+    { MOVEFILTER_NORMAL, MOVEFILTER_NORMAL },
+    { MOVEFILTER_NORMAL, MOVEFILTER_NORMAL },
 
     TRUE,                       /* cubeful */
     TRUE,                       /* variance reduction */
@@ -350,27 +349,27 @@ rolloutcontext rcRollout = {
   /* evaltype */ \
   EVAL_EVAL, \
   /* evalcontext */ \
-  { TRUE, 2, TRUE, TRUE, 0.0 }, \
+  { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, \
   /* rolloutcontext */ \
   { \
     { \
-      { FALSE, 2, TRUE, TRUE, 0.0 }, /* player 0 cube decision */ \
-      { FALSE, 2, TRUE, TRUE, 0.0 } /* player 1 cube decision */ \
+      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* player 0 cube decision */ \
+      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* player 1 cube decision */ \
     }, \
     { \
-      { FALSE, 0, TRUE, TRUE, 0.0 }, /* player 0 chequerplay */ \
-      { FALSE, 0, TRUE, TRUE, 0.0 } /* player 1 chequerplay */ \
+      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* player 0 chequerplay */ \
+      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* player 1 chequerplay */ \
     }, \
     { \
-      { FALSE, 2, TRUE, TRUE, 0.0 }, /* p 0 late cube decision */ \
-      { FALSE, 2, TRUE, TRUE, 0.0 } /* p 1 late cube decision */ \
+      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* p 0 late cube decision */ \
+      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* p 1 late cube decision */ \
     }, \
     { \
-      { FALSE, 0, TRUE, TRUE, 0.0 }, /* p 0 late chequerplay */ \
-      { FALSE, 0, TRUE, TRUE, 0.0 } /* p 1 late chequerplay */ \
+      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* p 0 late chequerplay */ \
+      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* p 1 late chequerplay */ \
     }, \
-    { FALSE, 2, TRUE, TRUE, 0.0 }, /* truncate cube decision */ \
-    { FALSE, 2, TRUE, TRUE, 0.0 }, /* truncate chequerplay */ \
+    { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* truncate cube decision */ \
+    { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* truncate chequerplay */ \
     { MOVEFILTER_NORMAL, MOVEFILTER_NORMAL }, \
     { MOVEFILTER_NORMAL, MOVEFILTER_NORMAL }, \
   FALSE, /* cubeful */ \
@@ -405,27 +404,27 @@ rolloutcontext rcRollout = {
   /* evaltype */ \
   EVAL_EVAL, \
   /* evalcontext */ \
-  { TRUE, 2, TRUE, TRUE, 0.0 }, \
+  { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, \
   /* rolloutcontext */ \
   { \
     { \
-      { FALSE, 2, TRUE, TRUE, 0.0 }, /* player 0 cube decision */ \
-      { FALSE, 2, TRUE, TRUE, 0.0 } /* player 1 cube decision */ \
+      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* player 0 cube decision */ \
+      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* player 1 cube decision */ \
     }, \
     { \
-      { FALSE, 0, TRUE, TRUE, 0.0 }, /* player 0 chequerplay */ \
-      { FALSE, 0, TRUE, TRUE, 0.0 } /* player 1 chequerplay */ \
+      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* player 0 chequerplay */ \
+      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* player 1 chequerplay */ \
     }, \
     { \
-      { FALSE, 2, TRUE, TRUE, 0.0 }, /* p 0 late cube decision */ \
-      { FALSE, 2, TRUE, TRUE, 0.0 } /* p 1 late cube decision */ \
+      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* p 0 late cube decision */ \
+      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* p 1 late cube decision */ \
     }, \
     { \
-      { FALSE, 0, TRUE, TRUE, 0.0 }, /* p 0 late chequerplay */ \
-      { FALSE, 0, TRUE, TRUE, 0.0 } /* p 1 late chequerplay */ \
+      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* p 0 late chequerplay */ \
+      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* p 1 late chequerplay */ \
     }, \
-    { FALSE, 2, TRUE, TRUE, 0.0 }, /* truncate cube decision */ \
-    { FALSE, 2, TRUE, TRUE, 0.0 }, /* truncate chequerplay */ \
+    { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* truncate cube decision */ \
+    { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* truncate chequerplay */ \
     { MOVEFILTER_NORMAL, MOVEFILTER_NORMAL }, \
     { MOVEFILTER_NORMAL, MOVEFILTER_NORMAL }, \
   FALSE, /* cubeful */ \
@@ -660,39 +659,39 @@ GetBuildInfoString(void)
  ptr to extracted token if found. Token is in original location
  in input string, but null terminated if not quoted, token
  will have been moved forward over quote character when quoted
- ie: 
+ ie:
  input:  '  abcd efgh'
  output  '  abcd\0efgh'
  return value points to abcd, ppch points to efgh
  input   '  "jklm" nopq'
  output  ;  jklm\0 nopq'
- return value points to jklm, ppch points to space before 
+ return value points to jklm, ppch points to space before
  the 'n'
  ppch points past null terminator
- 
+
  ignores leading whitespace, advances ppch over token and trailing
  whitespace
- 
+
  matching single or double quotes are allowed, any character outside
  of quotes or in doubly quoted strings can be escaped with a
  backslash and will be taken as literal.  Backslashes within single
  quoted strings are taken literally. Multiple quoted strings can be
- concatenated.  
- 
+ concatenated.
+
  For example: input ' abc\"d"e f\"g h i"jk'l m n \" o p q'rst uvwzyz'
  with the terminator list ' \t\r\n\v\f'
  The returned token will be the string
  <abc"de f"g h j ijkl m n \" o p qrst>
  ppch will point to the 'u'
- The \" between c and d is not in a single quoted string, so is reduced to 
+ The \" between c and d is not in a single quoted string, so is reduced to
  a double quote and is *not* the start of a quoted string.
  The " before the 'd' begins a double quoted string, so spaces and tabs are
- not terminators. The \" between f and g is reduced to a double quote and 
- does not terminate the quoted string. which ends with the double quote 
+ not terminators. The \" between f and g is reduced to a double quote and
+ does not terminate the quoted string. which ends with the double quote
  between i and j. The \" between n and o is taken as a pair of literal
  characters because they are within the single quoted string beginning
  before l and ending after q.
- It is not possible to put a single quote within a single quoted string. 
+ It is not possible to put a single quote within a single quoted string.
  You can have single quotes unescaped within double quoted strings and
  double quotes unescaped within single quoted strings.
  */
@@ -808,15 +807,15 @@ NextTokenGeneral(char **ppch, const char *szTokens)
 
 }
 
-/* extract a token from a string. Tokens are terminated by tab, newline, 
+/* extract a token from a string. Tokens are terminated by tab, newline,
  * carriage return, vertical tab or form feed.
  * Input:
- * 
+ *
  * ppch = pointer to pointer to input string. This will be updated
- * to point past any token found. If the string is exhausetd, 
+ * to point past any token found. If the string is exhausetd,
  * the pointer at ppch will point to the terminating NULL, so it is
  * safe to call this function repeatedly after failure
- * 
+ *
  * Output:
  * null terminated token if found or NULL if no tokens present.
  */
@@ -858,8 +857,8 @@ CountTokens(char *pch)
     return c;
 }
 
-/* extract a token and convert to double. On error or no token, return 
- * ERR_VAL (a very large negative double.
+/* extract a token and convert to double. On error or no token, return
+ * ERR_VAL (a very large negative double).
  */
 
 extern float
@@ -929,14 +928,14 @@ ParsePlayer(char *sz)
 /* Convert a string to a board array.  Currently allows the string to
  * be a position ID, a gnubg-nn position string, "=n" notation,
  * or empty (in which case the current board is used).
- * 
+ *
  * The input string should be specified in *ppch; this string must be
  * modifiable, and the pointer will be updated to point to the token
  * following a board specification if possible (see NextToken()).  The
  * board will be returned in an, and if pchDesc is non-NULL, then
  * descriptive text (the position ID, formatted move, or "Current
  * position", depending on the input) will be stored there.
- * 
+ *
  * Returns -1 on failure, 0 on success, or 1 on success if the position
  * specified has the opponent on roll (e.g. because it used "=n" notation). */
 extern int
@@ -961,8 +960,8 @@ ParsePosition(TanBoard an, char **ppch, char *pchDesc)
         /* board given as 26 integers.
          * integer 1   : # of my chequers on the bar
          * integer 2-25: number of chequers on point 1-24
-         *               positive ints: my chequers 
-         *               negative ints: opp chequers 
+         *               positive ints: my chequers
+         *               negative ints: opp chequers
          * integer 26  : # of opp chequers on the bar
          */
 
@@ -1095,7 +1094,7 @@ UpdateSettings(void)
 /* handle turning a setting on / off
  * inputs: szName - the setting being adjusted
  * pf = pointer to current on/off state (will be updated)
- * sz = pointer to command line - a token will be extracted, 
+ * sz = pointer to command line - a token will be extracted,
  * but further calls to NextToken will return only the on/off
  * value, so you can't have commands in the form
  * set something on <more tokens>
@@ -3316,6 +3315,9 @@ static void
 SaveMiscSettings(FILE * pf)
 {
     gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
+
+    fprintf(pf, "set browser \"%s\"\n", get_web_browser());
+
     fprintf(pf, "set tutor mode %s\n", fTutor ? "on" : "off");
     fprintf(pf, "set tutor cube %s\n", fTutorCube ? "on" : "off");
     fprintf(pf, "set tutor chequer %s\n", fTutorChequer ? "on" : "off");
@@ -3349,9 +3351,9 @@ SaveMiscSettings(FILE * pf)
     fprintf(pf, "set output digits %d\n", fOutputDigits);
     fprintf(pf, "set output errorratefactor %s\n",
             g_ascii_formatd(buf, G_ASCII_DTOSTR_BUF_SIZE, "%f", rErrorRateFactor));
-    fprintf(pf, "set prompt %s\n", szPrompt);
-    fprintf(pf, "set browser \"%s\"\n", get_web_browser());
     fprintf(pf, "set priority nice %d\n", nThreadPriority);
+         // g_message ("save settings: set priority nice %d",nThreadPriority);
+    fprintf(pf, "set prompt %s\n", szPrompt);
     fprintf(pf, "set ratingoffset %s\n", g_ascii_formatd(buf, G_ASCII_DTOSTR_BUF_SIZE, "%f", rRatingOffset));
 
     fprintf(pf, "set usekeynames %s\n", fUseKeyNames ? "on" : "off");
@@ -4584,6 +4586,7 @@ null_debug(const gchar * UNUSED(dom), GLogLevelFlags UNUSED(logflags), const gch
 
 static char *pchPythonScript = NULL;
 static int fPython = FALSE;
+static int fNoX = FALSE;
 
 static gboolean
 callback_parse_python_option(const gchar *UNUSED(name), const gchar *value, gpointer UNUSED(data), GError **UNUSED(error))
@@ -4594,6 +4597,7 @@ callback_parse_python_option(const gchar *UNUSED(name), const gchar *value, gpoi
         pchPythonScript = NULL;
 
     fPython = TRUE;
+    fNoX |= pchPythonScript != NULL;
 
     return TRUE;
 }
@@ -4610,7 +4614,7 @@ main(int argc, char *argv[])
     char *met = NULL;
 
     static char *pchCommands = NULL, *lang = NULL;
-    static int fNoBearoff = FALSE, fNoX = FALSE, fSplash = FALSE, fNoTTY = FALSE, show_version = FALSE, debug = FALSE;
+    static int fNoBearoff = FALSE, fSplash = FALSE, fNoTTY = FALSE, show_version = FALSE, debug = FALSE;
     GOptionEntry ao[] = {
         {"no-bearoff", 'b', 0, G_OPTION_ARG_NONE, &fNoBearoff,
          N_("Do not use bearoff database"), NULL},
@@ -4619,7 +4623,7 @@ main(int argc, char *argv[])
         {"lang", 'l', 0, G_OPTION_ARG_STRING, &lang,
          N_("Set language to LANG"), "LANG"},
         {"python", 'p', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK, callback_parse_python_option,
-         N_("Start in Python mode or evaluate code in FILE and exit"), "FILE"},
+         N_("Start in Python mode or evaluate code in FILE and exit. Implies --tty if used with a FILE argument."), "FILE"},
         {"quiet", 'q', 0, G_OPTION_ARG_NONE, &fQuiet,
          N_("Disable sound effects"), NULL},
         {"no-rc", 'r', 0, G_OPTION_ARG_NONE, &fNoRC,
@@ -4848,7 +4852,7 @@ main(int argc, char *argv[])
  * FIXME: implement GTK version.
  * FIXME: allow more parameters (match score, match length)
  *
- * Input: 
+ * Input:
  *   sz: string with equity
  *
  * Output:
@@ -4891,7 +4895,7 @@ CommandEq2MWC(char *sz)
  * FIXME: implement GTK version.
  * FIXME: allow more parameters (match score, match length)
  *
- * Input: 
+ * Input:
  *   sz: string with match winning chance
  *
  * Output:
@@ -5027,7 +5031,7 @@ DeleteKeyName(const char sz[])
                 UserCommand("save settings");
                 return 1;
             } else {
-                strcpy(keyNames[i],keyNames[keyNamesFirstEmpty-1]); 
+                strcpy(keyNames[i],keyNames[keyNamesFirstEmpty-1]);
                 keyNamesFirstEmpty--;
                 // DisplayKeyNames();
                 UserCommand("save settings");
@@ -5038,7 +5042,7 @@ DeleteKeyName(const char sz[])
     return 0;
 }
 
-/*  add a new key name to the keyNames array 
+/*  add a new key name to the keyNames array
 return 1 if success, 0 if problem */
 extern int
 AddKeyName(const char sz[])
@@ -5068,7 +5072,7 @@ AddKeyName(const char sz[])
                 return 0;
             }
         }
-        strcpy(keyNames[keyNamesFirstEmpty],sz); 
+        strcpy(keyNames[keyNamesFirstEmpty],sz);
         keyNamesFirstEmpty++;
     }
     // DisplayKeyNames();
@@ -5085,8 +5089,8 @@ CommandSwapPlayers(char *UNUSED(sz))
 
     /* VERSION1: if fUseKeyNames enabled, then add the new player1 to the key players
     (now still player0)
-    VERSION2: also add if fUseKeyNames is not enabled yet, so users don't think they 
-    need to add names manually. We only check that the permutation wasn't launched 
+    VERSION2: also add if fUseKeyNames is not enabled yet, so users don't think they
+    need to add names manually. We only check that the permutation wasn't launched
    by the SmartSit() function, which would mean the name is already in the list.
    */
    // if (fUseKeyNames && !fWithinSmartSit) {
@@ -5219,7 +5223,7 @@ DisectPath(const char *path, const char *extension, char **name, char **folder)
 }
 
 
-/* ask for confirmation if this is a sub-optimal play 
+/* ask for confirmation if this is a sub-optimal play
  * returns TRUE if player wants to re-think the move
  */
 
@@ -5350,15 +5354,15 @@ CommandClearHint(char *UNUSED(sz))
 /*
  * Description:  Calculate Effective Pip Counts (EPC), either
  *               by lookup in one-sided databases or by doing a
- *               one-sided rollout.  
- * Parameters :  
+ *               one-sided rollout.
+ * Parameters :
  *   Input       anBoard (the board)
  *               fOnlyRace: only calculate EPCs for race positions
  *   Output      arEPC (the calculate EPCs)
  *               pfSource (source of EPC; 0 = database, 1 = OSR)
  *
- * Returns:      0 on success, non-zero otherwise 
- *               
+ * Returns:      0 on success, non-zero otherwise
+ *
  */
 
 extern int

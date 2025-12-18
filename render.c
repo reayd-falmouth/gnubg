@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: render.c,v 1.116 2023/12/16 10:42:24 plm Exp $
  */
 
 #include "config.h"
@@ -43,6 +41,7 @@
 #if defined(USE_GTK)
 #include <gtk/gtk.h>
 #include <cairo.h>
+#include "gtkboard.h"
 #endif
 
 #if defined(USE_BOARD3D)
@@ -2388,6 +2387,31 @@ DrawChequers(renderdata * prd, unsigned char *puch, int nStride,
                      0, 4 * prd->nSize * (n - 4), 4 * prd->nSize, 4 * prd->nSize);
 }
 
+#if defined(USE_GTK)
+static void DrawSingleChequer(renderdata *prd, unsigned char *puch, int nStride, renderimages *pri,
+                      int px, int py, int colour, int x, int y, int cx, int cy) {
+    int chequer_w = CHEQUER_WIDTH * prd->nSize;
+    int chequer_h = CHEQUER_HEIGHT * prd->nSize;
+    int colidx = (colour > 0) ? 1 : 0;
+
+    if (!pri || !pri->achChequer[colidx] || !pri->asRefract[colidx])
+        return;
+
+    RefractBlendClip(
+        puch, nStride,
+        px - x - chequer_w / 2, py - y - chequer_h / 2,
+        cx, cy,
+        puch, nStride,
+        px - x - chequer_w / 2, py - y - chequer_h / 2,
+        pri->achChequer[colidx],
+        chequer_w * 4,
+        0, 0,
+        pri->asRefract[colidx],
+        chequer_w, chequer_w, chequer_h
+    );
+}
+#endif
+
 extern void
 CalculateArea(renderdata * prd, unsigned char *puch, int nStride,
               renderimages * pri, TanBoard anBoard,
@@ -2397,11 +2421,17 @@ CalculateArea(renderdata * prd, unsigned char *puch, int nStride,
               int nLogCube, int nCubeOrientation,
               const int anResignPosition[2],
               int fResign, int nResignOrientation,
-              int anArrowPosition[2], int UNUSED(fPlaying), int nPlayer, int x, int y, int cx, int cy)
+              int anArrowPosition[2], int UNUSED(fPlaying), int nPlayer, int x, int y, int cx, int cy,
+              void * board_data)
 {
 
     int i, xPoint, yPoint, cxPoint, cyPoint, nc;
     int anOffCalc[2];
+#if defined(USE_GTK)
+    BoardData *bd = (BoardData *)board_data;
+#else
+    (void)board_data;	/* suppress unused parameter compiler warning */
+#endif
 
     if (x < 0) {
         puch -= x * 3;
@@ -2490,10 +2520,20 @@ CalculateArea(renderdata * prd, unsigned char *puch, int nStride,
                 nc = anBoard[1][i - 1] - anBoard[0][24 - i];
                 break;
             }
-            if (nc)
-                DrawChequers(prd, puch, nStride, pri, i, abs(nc), nc > 0, x, y, cx, cy);
+            if (nc) {
+                int n = abs(nc);
+
+                if (n > 0)
+                    DrawChequers(prd, puch, nStride, pri, i, n, nc > 0, x, y, cx, cy);
+            }
         }
     }
+
+#if defined(USE_GTK)
+    if (bd && bd->drag_point >= 0) {
+        DrawSingleChequer(prd, puch, nStride, pri, bd->x_drag, bd->y_drag, bd->drag_colour, x, y, cx, cy);
+    }
+#endif
 
     /* draw dice */
     for (i = 0; i < 2; i++)

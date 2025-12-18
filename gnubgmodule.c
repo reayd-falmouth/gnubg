@@ -726,7 +726,7 @@ PythonCubeInfo(PyObject * UNUSED(self), PyObject * args)
     int anScore[2];
     int fCrawford = ms.fCrawford;
     int fJacobyRule = ms.fJacoby;
-    int fBeavers = ms.cBeavers;
+    int fBeavers = (ms.cBeavers > 0);
     bgvariation bgv = ms.bgv;
     anScore[0] = ms.anScore[0];
     anScore[1] = ms.anScore[1];
@@ -3282,10 +3282,10 @@ static PyMethodDef gnubgMethods[] = {
      "return none \n" "    arguments: a list of movefilters\n" "    returns: none"}
     ,
     {"gnubgid", PythonGnubgID, METH_VARARGS,
-     "return GNUBGID from current position, or from board, cube-info, pos-info\n"
+     "return GNUbgID from current position, or from board, cube-info, pos-info\n"
      "    arguments: [board, cube-info dictionary, pos-info dictionary]\n"
      "        board, cube-info: see 'cfevaluate'\n"
-     "        pos-info: see 'posinfo'\n" "    returns: GNUBGID as string"}
+     "        pos-info: see 'posinfo'\n" "    returns: GNUbgID as string"}
     ,
     {"movetupletostring", PythonMoveTuple2String, METH_VARARGS,
      "Convert a move tuple to a move string\n"
@@ -3315,8 +3315,8 @@ static PyMethodDef gnubgMethods[] = {
     ,
     {"match", (PyCFunction) (void (*)(void)) (PyCFunctionWithKeywords) PythonMatch, METH_VARARGS | METH_KEYWORDS,
      "Get the current match\n"
-     "    arguments: [ include-analysis = 0/1, include-boards = 0/1,\n"
-     "       include-statistics = 0/1, verbose = 0/1 ]\n"
+     "    arguments: [ analysis = 0/1(default), boards = 0/1(default),\n"
+     "       statistics = 0(default)/1, verbose = 0(default)/1 ]\n"
      "    returns: dictionary of match info:\n"
      "       'games' => list of dictionaries, one per game\n"
      "         'info' => dictionary\n"
@@ -3342,7 +3342,7 @@ static PyMethodDef gnubgMethods[] = {
      "               'wrong-double-below-dp'=>int, 'wrong-drop'=>int,\n"
      "               'wrong-take'=>int\n"
      "             'moves'=>dictionary\n"
-     "               'marked'=>dictionarly\n"
+     "               'marked'=>dictionary\n"
      "                  'good'=> int, 'unmarked'->int, 'doubtful'=>int,\n"
      "                  'bad'=>int, 'very bad'=>int\n"
      "               'total-moves'=>int, 'unforced-moves'=>int,\n"
@@ -3353,10 +3353,7 @@ static PyMethodDef gnubgMethods[] = {
      "               'marked-rolls'=>dictionary\n"
      "                 'verygood'=>int, 'good'=>int, 'unmarked'=>int,\n"
      "                 'bad'=>int, 'verybad'=>int\n"
-     "              'time'=>dictionary\n"
-     "                'time-penalty'=>int, 'time-penalty-cost'=>float,\n"
-     "                'time-penalty-skill'=>float\n"
-     "            'O'=>  player 1 dicrtionary of stats - see 'X; above\n"
+     "            'O'=>  player 1 dictionary of stats - see 'X; above\n"
      "         'game'=>list of dictionaries, one per move\n"
      "            'dice'=>(int, int), move=>((int, int),[(int, int),...])\n"
      "            'player'=>'X'/'O', 'board'=>board-id-string,\n"
@@ -3367,7 +3364,7 @@ static PyMethodDef gnubgMethods[] = {
      "                 'score'=>equity for move, 'type'=>'eval''rollout'\n"
      "                 'move'=>((int, int),[(int, int),...])\n"
      "                 'probs'=> tuple (5 floats - P(win),\n"
-     "                 P(win gammon)..P(lose bkgammon)\n"
+     "                 P(win gammon)..P(lose backgammon)\n"
      "                 [ 'evalcontext' = dictionary describing eval context\n"
      "                        if not default\n"
      "        'match-info' = dictionary \n"

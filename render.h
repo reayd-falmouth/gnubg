@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: render.h,v 1.44 2020/05/26 19:55:54 plm Exp $
  */
 
 #ifndef RENDER_H
@@ -161,7 +159,8 @@ extern void CalculateArea(renderdata * prd, unsigned char *puch, int nStride,
                           int nLogCube, int nCubeOrientation,
                           const int anResignPosition[2],
                           int fResign, int fResignOrientation,
-                          int anArrowPosition[2], int fPlaying, int nPlayer, int x, int y, int cx, int cy);
+                          int anArrowPosition[2], int fPlaying, int nPlayer, int x, int y, int cx, int cy,
+                          void *board_data);
 
 #if defined(USE_BOARD3D)
 extern gboolean widget3dValid;

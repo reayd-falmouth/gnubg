@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: neuralnet.c,v 1.94 2019/10/08 19:32:12 plm Exp $
  */
 
 #include "config.h"
@@ -421,12 +419,12 @@ check_for_cpuid(void)
 "cpuid_success:"
         "xor %%eax, %%eax\n\t"
         "cpuid\n\t"
-        "cmp $1, %%eax\n\t" 
+        "cmp $1, %%eax\n\t"
         /* If 0 returned processor doesn't hav feature test */
         "jge feature_success\n\t"
 
         /* Unlucky - somehow cpuid 1 isn't supported */
-        "mov $-2, %%eax\n\t" 
+        "mov $-2, %%eax\n\t"
         "jmp cpuid_finished\n\t"
 
 "feature_success:"
@@ -440,8 +438,8 @@ check_for_cpuid(void)
         :
         : "%ecx",
 #if !defined(ENVIRONMENT32) || !defined(__PIC__)
-          "%ebx", 
-#endif 
+          "%ebx",
+#endif
           "%edx");
     return result;
 }
@@ -462,8 +460,8 @@ CheckSSE(void)
         /* We have to be careful to not destroy ebx if using PIC on 32bit builds */
         "pushl %%ebx\n\t"
 #endif
-        "mov $1, %%eax\n\t" 
-        "cpuid\n\t" 
+        "mov $1, %%eax\n\t"
+        "cpuid\n\t"
         "and $0x018000000, %%ecx\n\t" /* Check bit 27 (OS uses XSAVE/XRSTOR)*/
         "cmp $0x018000000, %%ecx\n\t" /* and bit 28 (AVX supported by CPU) */
         "jne avx_unsupported\n\t"
@@ -484,9 +482,9 @@ CheckSSE(void)
 #endif
         : "=a"(result) /* Result returned in result variable */
         :
-        : "%ecx", 
+        : "%ecx",
 #if !defined(ENVIRONMENT32) || !defined(__PIC__)
-          "%ebx", 
+          "%ebx",
 #endif
           "%edx"); /* These are all destroyed by cpuid */
 
@@ -511,7 +509,7 @@ CheckSSE(void)
 #endif
         /* Check if sse is supported (bit 25/26 in edx from cpuid 1) */
         "mov $1, %%eax\n\t"
-        "cpuid\n\t" 
+        "cpuid\n\t"
         "mov $1, %%eax\n\t"
 #if defined(USE_SSE2)
         "shl $26, %%eax\n\t"
@@ -535,9 +533,9 @@ CheckSSE(void)
 
         : "=a"(result)
         :
-        : "%ecx", 
+        : "%ecx",
 #if !defined(ENVIRONMENT32) || !defined(__PIC__)
-          "%ebx", 
+          "%ebx",
 #endif
 	  "%edx");
 #endif /* APPLE/BSD */

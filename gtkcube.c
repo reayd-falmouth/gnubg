@@ -54,15 +54,15 @@ typedef struct {
     int did_take;
     int hist;
     GtkWidget *pwMWC;       // Remember the pwMWC and pwCmark buttons because they should be deactivated during money eval
-    GtkWidget *pwCmark; 
+    GtkWidget *pwCmark;
     int evalAtMoney;        // Whether evalAtMoney is toggled
 } cubehintdata;
 
 // These two variables are extern, and used for the temperature map when the MoneyEval button is toggled on.
 // The temperature map can then provide an eval at money play rather than at the current score
 // The second variable determines whether to use a Jacoby rule or not
-int cubeTempMapAtMoney = 0;   
-int cubeTempMapJacoby = 0;     
+int cubeTempMapAtMoney = 0;
+int cubeTempMapJacoby = 0;
 
 // Text to display when using MoneyEval
 static const char *MONEY_EVAL_TEXT=N_("(Hypothetical money game)");
@@ -255,8 +255,8 @@ GetMoneyCubeInfo(cubeinfo * pci, const matchstate * pms) {
 }
 
 // this function is used for the beavers in money play for example, and
-//      for the take decision frame; see the next CubeAnalysis function for 
-//      explanations, as the two functions are very similar 
+//      for the take decision frame; see the next CubeAnalysis function for
+//      explanations, as the two functions are very similar
 static GtkWidget *
 TakeAnalysis(cubehintdata * pchd)
 {
@@ -290,9 +290,8 @@ TakeAnalysis(cubehintdata * pchd)
     else
         GetMoneyCubeInfo(&ci, &pchd->ms);
 
-  
-    cd = FindCubeDecision(arDouble, cdec->aarOutput, &ci); 
-    
+    cd = FindCubeDecision(arDouble, cdec->aarOutput, &ci);
+
     /* header */
 
     sz = g_strdup_printf("%s %s", _("Take analysis"), pchd->evalAtMoney ? Q_(MONEY_EVAL_TEXT) : "");
@@ -359,7 +358,7 @@ TakeAnalysis(cubehintdata * pchd)
 #endif
 #else
     gtk_table_attach(GTK_TABLE(pwTable), pw, 0, 4, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 0);
-    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
 #endif
     g_free(sz);
 
@@ -443,7 +442,7 @@ TakeAnalysis(cubehintdata * pchd)
     gtk_widget_set_margin_top(pw, 4);
     gtk_widget_set_margin_bottom(pw, 4);
 #else
-    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
     gtk_table_attach(GTK_TABLE(pwTable), pw, 0, 4, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
 #endif
     iRow++;
@@ -478,7 +477,7 @@ TakeAnalysis(cubehintdata * pchd)
         gtk_widget_set_margin_right(pw, 8);
 #endif
 #else
-        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
         gtk_table_attach(GTK_TABLE(pwTable), pw,
                          0, 1, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 0);
 #endif
@@ -501,7 +500,7 @@ TakeAnalysis(cubehintdata * pchd)
         gtk_widget_set_margin_right(pw, 8);
 #endif
 #else
-        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
         gtk_table_attach(GTK_TABLE(pwTable), pw,
                          1, 2, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 0);
 #endif
@@ -528,7 +527,7 @@ TakeAnalysis(cubehintdata * pchd)
         gtk_widget_set_margin_right(pw, 8);
 #endif
 #else
-        gtk_misc_set_alignment(GTK_MISC(pw), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(pw), 1, 0.5f);
         gtk_table_attach(GTK_TABLE(pwTable), pw,
                          2, 3, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 0);
 #endif
@@ -559,7 +558,7 @@ TakeAnalysis(cubehintdata * pchd)
             gtk_widget_set_margin_right(pw, 8);
 #endif
 #else
-            gtk_misc_set_alignment(GTK_MISC(pw), 1, 0.5);
+            gtk_misc_set_alignment(GTK_MISC(pw), 1, 0.5f);
             gtk_table_attach(GTK_TABLE(pwTable), pw,
                              3, 4, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 0);
 #endif
@@ -590,7 +589,7 @@ TakeAnalysis(cubehintdata * pchd)
     gtk_widget_set_margin_top(pw, 8);
     gtk_widget_set_margin_bottom(pw, 8);
 #else
-    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
     gtk_table_attach(GTK_TABLE(pwTable), pw, 0, 2, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 8);
 #endif
 
@@ -647,13 +646,13 @@ TakeAnalysis(cubehintdata * pchd)
     gtk_widget_set_margin_top(pw, 8);
     gtk_widget_set_margin_bottom(pw, 8);
 #else
-    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
     gtk_table_attach(GTK_TABLE(pwTable), pw, 2, 4, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 8);
 #endif
 
     iRow++;
 
-    /* Jacoby rule */ 
+    /* Jacoby rule */
     if (pchd->ms.nMatchTo && pchd->evalAtMoney) {
 
         GtkWidget *pwJ = gtk_check_button_new_with_label(_("Jacoby"));
@@ -674,7 +673,7 @@ TakeAnalysis(cubehintdata * pchd)
 #else
         gtk_table_attach(GTK_TABLE(pwTable), pwJ, 0, 2, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 8);
 #endif
-        g_signal_connect(G_OBJECT (pwJ), "toggled", G_CALLBACK(JacobyToggled), pchd); 
+        g_signal_connect(G_OBJECT (pwJ), "toggled", G_CALLBACK(JacobyToggled), pchd);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pwJ), moneyEvalJacoby);
         gtk_widget_set_tooltip_text(pwJ, _("Toggle Jacoby rule for money play"));
         // gtk_widget_set_sensitive(pwJ, !pchd->ms.nMatchTo && pchd->pmr->evalAtMoney);
@@ -749,13 +748,13 @@ CubeAnalysis(cubehintdata * pchd)
     //  *
     //  * Returns:
     //  *    cube decision
-    // Namely, the function takes aarOutput to get the 3 equities of ND,DT and DP, 
+    // Namely, the function takes aarOutput to get the 3 equities of ND,DT and DP,
     // (eg from aarOutput[5,6])
     // then converts into mwc (when NMatchTo!=0) then stores them in arDouble[1,2,3]
     // and stores the best in arDouble[0]
     //reminder: typedef struct _cubedecisiondata {float aarOutput[2][NUM_ROLLOUT_OUTPUTS]; float aarStdDev[2][NUM_ROLLOUT_OUTPUTS];
     //                      evalsetup esDouble; CMark cmark; } cubedecisiondata;
-    cd = FindCubeDecision(arDouble, cdec->aarOutput, &ci); 
+    cd = FindCubeDecision(arDouble, cdec->aarOutput, &ci);
 
     if (!GetDPEq(NULL, NULL, &ci) && !(pchd->pmr->mt == MOVE_DOUBLE))
         /* No cube action possible */
@@ -839,7 +838,7 @@ CubeAnalysis(cubehintdata * pchd)
     gtk_widget_set_margin_right(pw, 8);
 #endif
 #else
-    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
     gtk_table_attach(GTK_TABLE(pwTable), pw, 0, 4, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 0);
 #endif
     g_free(sz);
@@ -890,7 +889,7 @@ CubeAnalysis(cubehintdata * pchd)
     gtk_widget_set_margin_top(pw, 4);
     gtk_widget_set_margin_bottom(pw, 4);
 #else
-    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
     gtk_table_attach(GTK_TABLE(pwTable), pw, 0, 4, iRow, iRow + 1, GTK_EXPAND |
 GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
 #endif
@@ -918,7 +917,7 @@ GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
         gtk_widget_set_margin_right(pw, 8);
 #endif
 #else
-        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
         gtk_table_attach(GTK_TABLE(pwTable), pw,
                          0, 1, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 0);
 #endif
@@ -941,7 +940,7 @@ GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
         gtk_widget_set_margin_right(pw, 8);
 #endif
 #else
-        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
         gtk_table_attach(GTK_TABLE(pwTable), pw,
                          1, 2, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 0);
 #endif
@@ -965,7 +964,7 @@ GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
         gtk_widget_set_margin_right(pw, 8);
 #endif
 #else
-        gtk_misc_set_alignment(GTK_MISC(pw), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(pw), 1, 0.5f);
         gtk_table_attach(GTK_TABLE(pwTable), pw,
                          2, 3, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 0);
 #endif
@@ -990,7 +989,7 @@ GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
             gtk_widget_set_margin_right(pw, 8);
 #endif
 #else
-            gtk_misc_set_alignment(GTK_MISC(pw), 1, 0.5);
+            gtk_misc_set_alignment(GTK_MISC(pw), 1, 0.5f);
             gtk_table_attach(GTK_TABLE(pwTable), pw,
                              3, 4, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 0);
 #endif
@@ -1006,7 +1005,7 @@ GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
             /*        probably along with rollout details */
 
             pw = gtk_label_new(OutputPercents(cdec->aarOutput[ai[i] - 1], TRUE));
-            
+
 #if GTK_CHECK_VERSION(3,0,0)
             gtk_widget_set_halign(pw, GTK_ALIGN_CENTER);
             gtk_widget_set_valign(pw, GTK_ALIGN_CENTER);
@@ -1023,7 +1022,7 @@ GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
             gtk_widget_set_margin_top(pw, 4);
             gtk_widget_set_margin_bottom(pw, 4);
 #else
-            gtk_misc_set_alignment(GTK_MISC(pw), 0.5, 0.5);
+            gtk_misc_set_alignment(GTK_MISC(pw), 0.5f, 0.5f);
             gtk_table_attach(GTK_TABLE(pwTable), pw,
                              0, 4, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
 #endif
@@ -1052,7 +1051,7 @@ GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
     gtk_widget_set_margin_top(pw, 8);
     gtk_widget_set_margin_bottom(pw, 8);
 #else
-    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
     gtk_table_attach(GTK_TABLE(pwTable), pw, 0, 2, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 8);
 #endif
 
@@ -1073,7 +1072,7 @@ GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
     gtk_widget_set_margin_top(pw, 8);
     gtk_widget_set_margin_bottom(pw, 8);
 #else
-    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(pw), 0, 0.5f);
     gtk_table_attach(GTK_TABLE(pwTable), pw, 2, 3, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 8);
 #endif
 
@@ -1100,7 +1099,7 @@ GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
         gtk_widget_set_margin_top(pw, 8);
         gtk_widget_set_margin_bottom(pw, 8);
 #else
-        gtk_misc_set_alignment(GTK_MISC(pw), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(pw), 1, 0.5f);
         gtk_table_attach(GTK_TABLE(pwTable), pw,
                          3, 4, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 8);
 #endif
@@ -1128,7 +1127,7 @@ GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 4);
 #else
         gtk_table_attach(GTK_TABLE(pwTable), pwJ, 0, 2, iRow, iRow + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 8, 8);
 #endif
-        g_signal_connect(G_OBJECT (pwJ), "toggled", G_CALLBACK(JacobyToggled), pchd); 
+        g_signal_connect(G_OBJECT (pwJ), "toggled", G_CALLBACK(JacobyToggled), pchd);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pwJ), moneyEvalJacoby);
         gtk_widget_set_tooltip_text(pwJ, _("Toggle Jacoby rule for money play"));
     }
@@ -1143,13 +1142,13 @@ It is called after something in pchd has changed, e.g., eval at different ply.
 */
 {
     GtkWidget *pw = 0;
-    //doubletype dt = DoubleType(ms.fDoubled, ms.fMove, ms.fTurn);//for the beaver etc; ms is extern (global) 
+    //doubletype dt = DoubleType(ms.fDoubled, ms.fMove, ms.fTurn);//for the beaver etc; ms is extern (global)
     /* ^ this is the original code. It does not make sense that we should be looking at the double type of ms, instead of pchd->ms!!
     */
     doubletype dt = DoubleType(pchd->ms.fDoubled, pchd->ms.fMove, pchd->ms.fTurn);
 
-    if(!pchd->evalAtMoney) 
-        find_skills(pchd->pmr, &pchd->ms, pchd->did_double, pchd->did_take);//gnubg.c / backgammon.h: 
+    if(!pchd->evalAtMoney)
+        find_skills(pchd->pmr, &pchd->ms, pchd->did_double, pchd->did_take);//gnubg.c / backgammon.h:
     // Don't find skills for hypothetical money decision, because this is not relevant.
 
     switch (pchd->pmr->mt) {
@@ -1181,7 +1180,7 @@ It is called after something in pchd has changed, e.g., eval at different ply.
         break;
 
     }
-   
+
     g_assert(pchd->pw != NULL);
 
     /* Remove old analysis */
@@ -1191,7 +1190,7 @@ It is called after something in pchd has changed, e.g., eval at different ply.
     /* Insert new analysis */
     if (pw != NULL) // This is null if there is no cube decision (see TakeAnalysis() and CubeAnalysis())
         gtk_box_pack_start(GTK_BOX(pchd->pw), pchd->pwFrame = pw, FALSE, FALSE, 0);
-    
+
     gtk_widget_show_all(pchd->pw);
 }
 
@@ -1218,7 +1217,7 @@ CubeAnalysisRollout(GtkWidget * pw, cubehintdata * pchd)
     }
 #else
     g_assert(cdec != NULL);
-#endif 
+#endif
 
     pes = &cdec->esDouble;   // see function EvalCube for explanations on esDouble
 
@@ -1236,7 +1235,7 @@ CubeAnalysisRollout(GtkWidget * pw, cubehintdata * pchd)
 
     if (!pchd->evalAtMoney)
         GetMatchStateCubeInfo(&ci, &pchd->ms);
-    else 
+    else
         GetMoneyCubeInfo(&ci, &pchd->ms);
 
     FormatCubePositions(&ci, asz);
@@ -1277,8 +1276,8 @@ EvalCube(cubehintdata * pchd, const evalcontext * pec)
     decisionData dd;
     cubedecisiondata *cdec = (pchd->evalAtMoney ? pchd->pmr->MoneyCubeDecPtr : pchd->pmr->CubeDecPtr);
     evalsetup *pes;
-    
-    if (cdec==NULL) {  
+
+    if (cdec==NULL) {
         /* This happens if money eval is toggled, and it hasn't been toggled before (for this move record).
            Initialize the MoneyCubeDecPtr for this move record. */
         g_assert(pchd->evalAtMoney);
@@ -1286,9 +1285,9 @@ EvalCube(cubehintdata * pchd, const evalcontext * pec)
         cdec->esDouble.et = EVAL_NONE;
         cdec->cmark = CMARK_NONE;
     }
-    
-    pes = &cdec->esDouble;   //eval.h: 
-                // evalsetup: struct {evaltype et; evalcontext ec; rolloutcontext rc; } 
+
+    pes = &cdec->esDouble;   //eval.h:
+                // evalsetup: struct {evaltype et; evalcontext ec; rolloutcontext rc; }
                 // evaltype: enum {EVAL_NONE, EVAL_EVAL, EVAL_ROLLOUT}
                 // likewise, evalcontext: fCubeful, nPlies, etc.; rolloutcontext for rollout
                 // => they only contain int, float, etc, no pointers
@@ -1323,7 +1322,7 @@ CubeAnalysisEvalPly(GtkWidget * pw, cubehintdata * pchd)
 */
 
     int *pi = (int *)g_object_get_data(G_OBJECT(pw), "ply");
-    evalcontext ec = { 0, 0, 0, TRUE, 0.0 };
+    evalcontext ec = { .fDeterministic = TRUE, .rNoise = 0.0f };
 
     ec.fCubeful = esAnalysisCube.ec.fCubeful; //from backgammon.h: extern evalsetup esAnalysisCube;
     ec.fUsePrune = esAnalysisCube.ec.fUsePrune;
@@ -1439,11 +1438,11 @@ GetContent(cubehintdata * pchd)
         GetMatchStateCubeInfo(&ci, &pchd->ms);
     else
         GetMoneyCubeInfo(&ci, &pchd->ms);
-    
+
     // g_message("move type: %d, player: %d",pchd->pmr->mt, pchd->pmr->fPlayer);
 
     switch (pchd->pmr->mt) {
-    case MOVE_NORMAL:    
+    case MOVE_NORMAL:
     case MOVE_DOUBLE:
         fTake = -1;
         break;
@@ -1464,7 +1463,7 @@ GetContent(cubehintdata * pchd)
 }
 
 static void
-CubeAnalysisMoneyEval(GtkWidget *pw, cubehintdata *pchd) 
+CubeAnalysisMoneyEval(GtkWidget *pw, cubehintdata *pchd)
 {
 /* Called by GTK when the money eval button is toggled. Should only be possible during match play.
 */
@@ -1472,13 +1471,13 @@ CubeAnalysisMoneyEval(GtkWidget *pw, cubehintdata *pchd)
     pchd->evalAtMoney = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pw));
 
     //we want to hide (resp. unhide) the MWC and cmark buttons when money eval is toggled
-    gtk_widget_set_sensitive(pchd->pwMWC, !pchd->evalAtMoney); 
-    gtk_widget_set_sensitive(pchd->pwCmark, !pchd->evalAtMoney); 
+    gtk_widget_set_sensitive(pchd->pwMWC, !pchd->evalAtMoney);
+    gtk_widget_set_sensitive(pchd->pwCmark, !pchd->evalAtMoney);
 
     if (pchd->evalAtMoney && (pchd->pmr->MoneyCubeDecPtr==NULL)) // Test if money eval has been toggled before for this move record
         EvalCube(pchd, &GetEvalCube()->ec); // If not, eval at current settings - this forces MoneyCubeDecPtr to be created.
     else
-        UpdateCubeAnalysis(pchd);            
+        UpdateCubeAnalysis(pchd);
 }
 
 static void
@@ -1541,8 +1540,8 @@ CreateCubeAnalysisTools(cubehintdata * pchd)
     GtkWidget *pwCopy = gtk_button_new_with_label(_("Copy"));
     GtkWidget *pwTempMap = gtk_button_new_with_label(_("Temp. Map"));
     GtkWidget *pwCmark = pchd->pwCmark = gtk_toggle_button_new_with_label(_("Cmark"));
-    GtkWidget *pwMoneyEval = gtk_toggle_button_new_with_label(_("Money Eval"));   
-    GtkWidget *pwScoreMap = gtk_button_new_with_label(_("ScoreMap"));     
+    GtkWidget *pwMoneyEval = gtk_toggle_button_new_with_label(_("Money Eval"));
+    GtkWidget *pwScoreMap = gtk_button_new_with_label(_("ScoreMap"));
     GtkWidget *pw;
     int i;
 
@@ -1555,8 +1554,8 @@ CreateCubeAnalysisTools(cubehintdata * pchd)
     gtk_style_context_add_class(gtk_widget_get_style_context(pwCopy), "gnubg-analysis-button");
     gtk_style_context_add_class(gtk_widget_get_style_context(pwTempMap), "gnubg-analysis-button");
     gtk_style_context_add_class(gtk_widget_get_style_context(pwCmark), "gnubg-analysis-button");
-    gtk_style_context_add_class(gtk_widget_get_style_context(pwMoneyEval), "gnubg-analysis-button");  
-    gtk_style_context_add_class(gtk_widget_get_style_context(pwScoreMap), "gnubg-analysis-button");      
+    gtk_style_context_add_class(gtk_widget_get_style_context(pwMoneyEval), "gnubg-analysis-button");
+    gtk_style_context_add_class(gtk_widget_get_style_context(pwScoreMap), "gnubg-analysis-button");
 #endif
 
     /* toolbox on the left with buttons for eval, rollout and more */
@@ -1587,7 +1586,7 @@ CreateCubeAnalysisTools(cubehintdata * pchd)
 
     for (i = 0; i < 5; ++i) {
 
-        gchar *sz;  
+        gchar *sz;
         int *pi = g_malloc(sizeof(int));
 
         sz = g_strdup_printf("%d", i);
@@ -1718,15 +1717,15 @@ CreateCubeAnalysisTools(cubehintdata * pchd)
                                                 // either in true money play or in a hypothetical one
     gtk_widget_set_sensitive(pwMoneyEval, pchd->ms.nMatchTo && !fAnalysisRunning); //i.e., the Money Eval
                                                           // button is not available at money play since it doesn't help there
-    //gtk_widget_set_sensitive(pwTempMap, !pchd->evalAtMoney);  
-    gtk_widget_set_sensitive(pwCmark, !pchd->evalAtMoney);   
+    //gtk_widget_set_sensitive(pwTempMap, !pchd->evalAtMoney);
+    gtk_widget_set_sensitive(pwCmark, !pchd->evalAtMoney);
 
 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pwCmark), pchd->pmr->CubeDecPtr->cmark);
 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pwMWC), fOutputMWC);
-    
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pwMoneyEval), pchd->evalAtMoney);   
+
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pwMoneyEval), pchd->evalAtMoney);
 
     /* signals */
 
@@ -1740,8 +1739,8 @@ CreateCubeAnalysisTools(cubehintdata * pchd)
     g_signal_connect(G_OBJECT(pwCmark), "toggled", G_CALLBACK(CubeAnalysisCmark), pchd);
     // clicking pwMoneyEval launches CubeAnalysisMoneyEval
     g_signal_connect(G_OBJECT(pwMoneyEval), "toggled", G_CALLBACK(CubeAnalysisMoneyEval), pchd);
-    g_signal_connect(G_OBJECT(pwScoreMap), "clicked", G_CALLBACK(CubeAnalysisScoreMap), pchd);    
-  
+    g_signal_connect(G_OBJECT(pwScoreMap), "clicked", G_CALLBACK(CubeAnalysisScoreMap), pchd);
+
     /* tool tips */
 
     // gtk_widget_set_tooltip_text(pwRollout, _("Rollout cube decision with current settings"));
@@ -1761,7 +1760,7 @@ CreateCubeAnalysisTools(cubehintdata * pchd)
     // gtk_widget_set_tooltip_text(pwTempMap, _("Show Sho Sengoku Temperature Map of position"));
 
     gtk_widget_set_tooltip_text(pwMoneyEval, _("Provide hypothetical cube decision in Money Play"));
-    
+
     gtk_widget_set_tooltip_text(pwScoreMap, _("Provide cube decision at different scores"));
 
     if (!pchd->evalAtMoney) {
@@ -1782,7 +1781,7 @@ CreateCubeAnalysisTools(cubehintdata * pchd)
         gtk_widget_set_tooltip_text(pwCopy, _("Copy cube decision in Money Play to clipboard"));
 
         gtk_widget_set_tooltip_text(pwTempMap, _("Temperature Map in Money Play of different rolls"));
-     
+
     }
 
 // g_print("matchstate.evalAtMoney EndOf CubeAnalysisTools:%d\n",pchd->evalAtMoney);
@@ -1817,7 +1816,6 @@ CreateCubeAnalysis(moverecord * pmr, const matchstate * pms, int did_double, int
     pchd->evalAtMoney=FALSE;
     if (moneyEvalJacoby==UNDEF)
         moneyEvalJacoby=fJacoby; // Initially use value from preferences
-        
 
 #if GTK_CHECK_VERSION(3,0,0)
     pchd->pw = pw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
@@ -1827,7 +1825,7 @@ CreateCubeAnalysis(moverecord * pmr, const matchstate * pms, int did_double, int
 #endif
 
     UpdateCubeAnalysis(pchd);
-    
+
     if (pchd->pwFrame == NULL) {
         g_free(pchd);
         return NULL;

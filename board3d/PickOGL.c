@@ -230,26 +230,17 @@ NearestHit(int hits, const unsigned int* ptr)
 	}
 	else {                    /* Find the highest/closest object */
 		int i, sel = -1;
-		float minDepth = FLT_MAX;
+		unsigned int minDepth = UINT_MAX;
 
 		for (i = 0; i < hits; i++) {    /* for each hit */
 			unsigned int names;
-			float depth;
+			unsigned int depth;
 
 			names = *ptr++;
-
-/*
- * Used to be (float)*ptr++ / 0x7fffffff
- *
- * This may be a bit pedantic but avoids clang builds getting
- * "implicit conversion from 'int' to 'float' changes value
- *  from 2147483647 to 2147483648" warning
- * with default-ish "-Wall -Wextra" CFLAGS
- */
-			depth = (float)*ptr++ / 2147483648.f;
-                        
+			depth = *ptr++;
 
 			ptr++;              /* Skip max depth value */
+
 			/* Ignore clicks on the board base as other objects must be closer */
 			if (/* *ptr >= POINT_DICE && !(*ptr == POINT_LEFT || *ptr == POINT_RIGHT) && */ depth < minDepth) {
 				minDepth = depth;

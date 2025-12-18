@@ -60,14 +60,14 @@ enum {
 /* Contact inputs -- see Berliner for most of these */
 enum {
     /* n - number of checkers off
-     * 
+     *
      * off1 -  1         n >= 5
      * n/5       otherwise
-     * 
+     *
      * off2 -  1         n >= 10
      * (n-5)/5   n < 5 < 10
      * 0         otherwise
-     * 
+     *
      * off3 -  (n-10)/5  n > 10
      * 0         otherwise
      */
@@ -75,12 +75,12 @@ enum {
     I_OFF1, I_OFF2, I_OFF3,
 
     /* Minimum number of pips required to break contact.
-     * 
+     *
      * For each checker x, N(x) is checker location,
      * C(x) is max({forall o : N(x) - N(o)}, 0)
-     * 
+     *
      * Break Contact : (sum over x of C(x)) / 152
-     * 
+     *
      * 152 is degree of contact of start position.
      */
     I_BREAK_CONTACT,
@@ -94,21 +94,21 @@ enum {
     I_BACK_ANCHOR,
 
     /* Forward anchor in opponents home.
-     * 
+     *
      * Normalized in the following way:  If there is an anchor in opponents
      * home at point k (1 <= k <= 6), value is k/6. Otherwise, if there is an
      * anchor in points (7 <= k <= 12), take k/6 as well. Otherwise set to 2.
-     * 
+     *
      * This is an attempt for some continuity, since a 0 would be the "same" as
      * a forward anchor at the bar.
      */
     I_FORWARD_ANCHOR,
 
     /* Average number of pips opponent loses from hits.
-     * 
+     *
      * Some heuristics are required to estimate it, since we have no idea what
      * the best move actually is.
-     * 
+     *
      * 1. If board is weak (less than 3 inner points made), don't consider
      *    hitting on points 23 and 24.
      * 2. Don't break inner points to hit.
@@ -127,9 +127,9 @@ enum {
      */
     I_BACKESCAPES,
 
-    /* Maximum containment of opponent checkers, from our points 9 to op back 
+    /* Maximum containment of opponent checkers, from our points 9 to op back
      * checker.
-     * 
+     *
      * Value is (1 - n/36), where n is number of rolls to escape.
      */
     I_ACONTAIN,
@@ -145,20 +145,20 @@ enum {
     /* Above squared */
     I_CONTAIN2,
 
-    /* For all checkers out of home, 
+    /* For all checkers out of home,
      * sum (Number of rolls that let x escape * distance from home)
-     * 
+     *
      * Normalized by dividing by 3600.
      */
     I_MOBILITY,
 
     /* One sided moment.
-     * Let A be the point of weighted average: 
+     * Let A be the point of weighted average:
      * A = sum of N(x) for all x) / nCheckers.
-     * 
+     *
      * Then for all x : A < N(x), M = (average (N(X) - A)^2)
-     * 
-     * Diveded by 400 to normalize. 
+     *
+     * Diveded by 400 to normalize.
      */
     I_MOMENT2,
 
@@ -274,7 +274,7 @@ const char *aszVariationCommands[NUM_VARIATIONS] = {
 };
 
 cubeinfo ciCubeless = { 1, 0, 0, 0, {0, 0}, FALSE, FALSE, FALSE,
-{1.0, 1.0, 1.0, 1.0}, VARIATION_STANDARD
+{1.0f, 1.0f, 1.0f, 1.0f}, VARIATION_STANDARD
 };
 
 const char *aszEvalType[] = {
@@ -283,7 +283,7 @@ const char *aszEvalType[] = {
     N_("Rollout")
 };
 
-evalcontext ecBasic = { FALSE, 0, FALSE, TRUE, 0.0 };
+evalcontext ecBasic = { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
 
 /* defaults for the filters  - 0 ply uses no filters */
 
@@ -296,7 +296,7 @@ movefilter defaultFilters[MAX_FILTER_PLIES][MAX_FILTER_PLIES] = MOVEFILTER_NORMA
 static randctx rc;
 
 /*
- * predefined settings 
+ * predefined settings
  */
 
 const char *aszSettings[NUM_SETTINGS] = {
@@ -313,15 +313,15 @@ const char *aszSettings[NUM_SETTINGS] = {
 
 /* which evaluation context does the predefined settings use */
 evalcontext aecSettings[NUM_SETTINGS] = {
-    {TRUE, 0, FALSE, TRUE, 0.060f},     /* beginner */
-    {TRUE, 0, FALSE, TRUE, 0.050f},     /* casual player */
-    {TRUE, 0, FALSE, TRUE, 0.040f},     /* intermediate */
-    {TRUE, 0, FALSE, TRUE, 0.015f},     /* advanced */
-    {TRUE, 0, FALSE, TRUE, 0.0f},       /* expert */
-    {TRUE, 2, TRUE, TRUE, 0.0f},        /* world class */
-    {TRUE, 2, TRUE, TRUE, 0.0f},        /* supremo */
-    {TRUE, 3, TRUE, TRUE, 0.0f},        /* grand master */
-    {TRUE, 4, TRUE, TRUE, 0.0f},        /* 4ply */
+    {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.060f},     /* beginner */
+    {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.050f},     /* casual player */
+    {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.040f},     /* intermediate */
+    {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.015f},     /* advanced */
+    {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f},       /* expert */
+    {.fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* world class */
+    {.fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* supremo */
+    {.fCubeful = TRUE, .nPlies = 3, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* grand master */
+    {.fCubeful = TRUE, .nPlies = 4, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* 4ply */
 };
 
 /* which move filter does the predefined settings use */
@@ -750,7 +750,7 @@ CalculateHalfInputs(const unsigned int anBoard[25], const unsigned int anBoardOp
 
     /* aanCombination[n] -
      * How many ways to hit from a distance of n pips.
-     * Each number is an index into aIntermediate below. 
+     * Each number is an index into aIntermediate below.
      */
     static const int aanCombination[24][5] = {
         {0, -1, -1, -1, -1},    /*  1 */
@@ -1403,8 +1403,8 @@ CalculateHalfInputs(const unsigned int anBoard[25], const unsigned int anBoardOp
             }
         }
 
-        afInput[I_BACKG] = 0.0;
-        afInput[I_BACKG1] = 0.0;
+        afInput[I_BACKG] = 0.0f;
+        afInput[I_BACKG1] = 0.0f;
 
         if (nAc >= 1) {
             unsigned int tot = 0;
@@ -1500,8 +1500,8 @@ menOffAll(const unsigned int *anBoard, float *afInput)
         afInput[1] = (float) (menOff - 5) / 5.0f;
         afInput[2] = 0.0f;
     } else {
-        afInput[0] = 1.0;
-        afInput[1] = 1.0;
+        afInput[0] = 1.0f;
+        afInput[1] = 1.0f;
         afInput[2] = ((float) menOff - 10) / 5.0f;
     }
 }
@@ -1960,7 +1960,7 @@ raceBGprob(const TanBoard anBoard, int side, const bgvariation bgv)
     }
 
     if (!((totMenHome + 3) / 4 - (side == 1 ? 1 : 0) <= (totPipsOp + 2) / 3)) {
-        return 0.0;
+        return 0.0f;
     }
 
     for (i = 0; i < 25; ++i) {
@@ -2091,9 +2091,9 @@ EvalRaceBG(const TanBoard anBoard, float arOutput[], const bgvariation bgv)
             }
         } else {
             if (side == 1) {
-                arOutput[OUTPUT_WINBACKGAMMON] = 0.0;
+                arOutput[OUTPUT_WINBACKGAMMON] = 0.0f;
             } else {
-                arOutput[OUTPUT_LOSEBACKGAMMON] = 0.0;
+                arOutput[OUTPUT_LOSEBACKGAMMON] = 0.0f;
             }
         }
     }
@@ -2166,30 +2166,30 @@ EvalOver(const TanBoard anBoard, float arOutput[], const bgvariation bgv, NNStat
 
     if (i == 25) {
         /* opponent has no pieces on board; player has lost */
-        arOutput[OUTPUT_WIN] = arOutput[OUTPUT_WINGAMMON] = arOutput[OUTPUT_WINBACKGAMMON] = 0.0;
+        arOutput[OUTPUT_WIN] = arOutput[OUTPUT_WINGAMMON] = arOutput[OUTPUT_WINBACKGAMMON] = 0.0f;
 
         for (i = 0, c = 0; i < 25; i++)
             c += anBoard[1][i];
 
         if (c == n) {
             /* player still has all pieces on board; loses gammon */
-            arOutput[OUTPUT_LOSEGAMMON] = 1.0;
+            arOutput[OUTPUT_LOSEGAMMON] = 1.0f;
 
             for (i = 18; i < 25; i++)
                 if (anBoard[1][i]) {
                     /* player still has pieces in opponent's home board;
                      * loses backgammon */
-                    arOutput[OUTPUT_LOSEBACKGAMMON] = 1.0;
+                    arOutput[OUTPUT_LOSEBACKGAMMON] = 1.0f;
 
                     return 0;
                 }
 
-            arOutput[OUTPUT_LOSEBACKGAMMON] = 0.0;
+            arOutput[OUTPUT_LOSEBACKGAMMON] = 0.0f;
 
             return 0;
         }
 
-        arOutput[OUTPUT_LOSEGAMMON] = arOutput[OUTPUT_LOSEBACKGAMMON] = 0.0;
+        arOutput[OUTPUT_LOSEGAMMON] = arOutput[OUTPUT_LOSEBACKGAMMON] = 0.0f;
 
         return 0;
     }
@@ -2200,31 +2200,31 @@ EvalOver(const TanBoard anBoard, float arOutput[], const bgvariation bgv, NNStat
 
     if (i == 25) {
         /* player has no pieces on board; wins */
-        arOutput[OUTPUT_WIN] = 1.0;
-        arOutput[OUTPUT_LOSEGAMMON] = arOutput[OUTPUT_LOSEBACKGAMMON] = 0.0;
+        arOutput[OUTPUT_WIN] = 1.0f;
+        arOutput[OUTPUT_LOSEGAMMON] = arOutput[OUTPUT_LOSEBACKGAMMON] = 0.0f;
 
         for (i = 0, c = 0; i < 25; i++)
             c += anBoard[0][i];
 
         if (c == n) {
             /* opponent still has all pieces on board; win gammon */
-            arOutput[OUTPUT_WINGAMMON] = 1.0;
+            arOutput[OUTPUT_WINGAMMON] = 1.0f;
 
             for (i = 18; i < 25; i++)
                 if (anBoard[0][i]) {
                     /* opponent still has pieces in player's home board;
                      * win backgammon */
-                    arOutput[OUTPUT_WINBACKGAMMON] = 1.0;
+                    arOutput[OUTPUT_WINBACKGAMMON] = 1.0f;
 
                     return 0;
                 }
 
-            arOutput[OUTPUT_WINBACKGAMMON] = 0.0;
+            arOutput[OUTPUT_WINBACKGAMMON] = 0.0f;
 
             return 0;
         }
 
-        arOutput[OUTPUT_WINGAMMON] = arOutput[OUTPUT_WINBACKGAMMON] = 0.0;
+        arOutput[OUTPUT_WINGAMMON] = arOutput[OUTPUT_WINBACKGAMMON] = 0.0f;
     }
 
     return 0;
@@ -2472,7 +2472,7 @@ Utility(float ar[NUM_OUTPUTS], const cubeinfo * pci)
 
 /*
  * UtilityME is identical to Utility for match play.
- * For money play it returns the money equity instead of the 
+ * For money play it returns the money equity instead of the
  * correct cubeless equity.
  */
 
@@ -2509,7 +2509,7 @@ mwc2eq(const float rMwc, const cubeinfo * pci)
     rMwcLose = getME(pci->anScore[0], pci->anScore[1], pci->nMatchTo,
                      pci->fMove, pci->nCube, !pci->fMove, pci->fCrawford, aafMET, aafMETPostCrawford);
 
-    /* 
+    /*
      * make linear inter- or extrapolation:
      * equity       mwc
      *  -1          rMwcLose
@@ -2729,7 +2729,7 @@ SaveMoves(movelist * pml, unsigned int cMoves, unsigned int cPip, int anMoves[],
     pm->cmark = CMARK_NONE;
 
     for (i = 0; i < NUM_OUTPUTS; i++)
-        pm->arEvalMove[i] = 0.0;
+        pm->arEvalMove[i] = 0.0f;
 
     pml->cMoves++;
 
@@ -3373,7 +3373,7 @@ FindBestCubeDecision(float arDouble[], float aarOutput[2][NUM_ROLLOUT_OUTPUTS], 
      *                      arDouble[ 0 ]: equity for optimal cube decision
      *
      * Returns:
-     *    cube decision 
+     *    cube decision
      *
      */
 
@@ -3430,7 +3430,7 @@ FindBestCubeDecision(float arDouble[], float aarOutput[2][NUM_ROLLOUT_OUTPUTS], 
 
             /* 4. DT >= DP >= ND: Double, pass */
 
-            /* 
+            /*
              * the double is optional if:
              * (1) equity(no double) = equity(drop)
              * (2) the player can win gammon
@@ -3564,7 +3564,7 @@ GetDPEq(int *pfCube, float *prDPEq, const cubeinfo * pci)
          * Take the double branch if the cube is centered or I own the cube. */
 
         if (prDPEq)
-            *prDPEq = 1.0;
+            *prDPEq = 1.0f;
 
         fCube = (pci->fCubeOwner == -1) || (pci->fCubeOwner == pci->fMove);
 
@@ -3786,10 +3786,10 @@ Cl2CfMatchCentered(float arOutput[NUM_OUTPUTS], cubeinfo * pci, float rCubeX)
 
         /* MWC(live cube) linear interpolation between the
          * points:
-         * 
+         *
          * p = TG, MWC = I win 1 point
          * p = 1, MWC = I win (normal, gammon, or backgammon)
-         * 
+         *
          */
 
         float rMWCWin = (1.0f - rG0 - rBG0) * aarMETResult[pci->fMove][NDW]
@@ -3838,8 +3838,8 @@ Cl2CfMatchOwned(float arOutput[NUM_OUTPUTS], cubeinfo * pci, float rCubeX)
         rG1 = (arOutput[OUTPUT_LOSEGAMMON] - arOutput[OUTPUT_LOSEBACKGAMMON]) / (1.0f - arOutput[OUTPUT_WIN]);
         rBG1 = arOutput[OUTPUT_LOSEBACKGAMMON] / (1.0f - arOutput[OUTPUT_WIN]);
     } else {
-        rG1 = 0.0;
-        rBG1 = 0.0;
+        rG1 = 0.0f;
+        rBG1 = 0.0f;
     }
 
     /* MWC(dead cube) = cubeless equity */
@@ -3861,10 +3861,10 @@ Cl2CfMatchOwned(float arOutput[NUM_OUTPUTS], cubeinfo * pci, float rCubeX)
 
         /* MWC(live cube) linear interpolation between the
          * points:
-         * 
+         *
          * p = 0, MWC = I lose (normal, gammon, or backgammon)
          * p = TG, MWC = I win 1 point
-         * 
+         *
          */
 
         float rMWCLose = (1.0f - rG1 - rBG1) * aarMETResult[pci->fMove][NDL]
@@ -3886,10 +3886,10 @@ Cl2CfMatchOwned(float arOutput[NUM_OUTPUTS], cubeinfo * pci, float rCubeX)
 
         /* MWC(live cube) linear interpolation between the
          * points:
-         * 
+         *
          * p = TG, MWC = I win 1 point
          * p = 1, MWC = I win (normal, gammon, or backgammon)
-         * 
+         *
          */
 
         float rMWCWin = (1.0f - rG0 - rBG0) * aarMETResult[pci->fMove][NDW]
@@ -3939,8 +3939,8 @@ Cl2CfMatchUnavailable(float arOutput[NUM_OUTPUTS], cubeinfo * pci, float rCubeX)
         rG1 = (arOutput[OUTPUT_LOSEGAMMON] - arOutput[OUTPUT_LOSEBACKGAMMON]) / (1.0f - arOutput[OUTPUT_WIN]);
         rBG1 = arOutput[OUTPUT_LOSEBACKGAMMON] / (1.0f - arOutput[OUTPUT_WIN]);
     } else {
-        rG1 = 0.0;
-        rBG1 = 0.0;
+        rG1 = 0.0f;
+        rBG1 = 0.0f;
     }
 
     /* MWC(dead cube) = cubeless equity */
@@ -3961,13 +3961,13 @@ Cl2CfMatchUnavailable(float arOutput[NUM_OUTPUTS], cubeinfo * pci, float rCubeX)
     if (arOutput[OUTPUT_WIN] <= rOppTG) {
 
         /* Opponent is too good to double.
-         * 
+         *
          * MWC(live cube) linear interpolation between the
          * points:
-         * 
+         *
          * p = 0, MWC = opp win normal, gammon, backgammon
          * p = OppTG, MWC = opp cashes
-         * 
+         *
          */
 
         float rMWCLose = (1.0f - rG1 - rBG1) * aarMETResult[pci->fMove][NDL]
@@ -3988,10 +3988,10 @@ Cl2CfMatchUnavailable(float arOutput[NUM_OUTPUTS], cubeinfo * pci, float rCubeX)
 
         /* MWC(live cube) linear interpolation between the
          * points:
-         * 
+         *
          * p = OppTG, MWC = opponent cashes
          * p = 1, MWC = I win (normal, gammon, or backgammon)
-         * 
+         *
          */
 
         float rMWCWin = (1.0f - rG0 - rBG0) * aarMETResult[pci->fMove][NDW]
@@ -4041,7 +4041,7 @@ Cl2CfMatch(float arOutput[NUM_OUTPUTS], cubeinfo * pci, float rCubeX)
 extern float
 EvalEfficiency(const TanBoard anBoard, positionclass pc, int ply)
 {
-    /* Since it's somewhat costly to call CalcInputs, the 
+    /* Since it's somewhat costly to call CalcInputs, the
      * inputs should preferably be cached to save time. */
 
     const int i = ply >= 2 ? 0 : 1;
@@ -4063,7 +4063,7 @@ EvalEfficiency(const TanBoard anBoard, positionclass pc, int ply)
         /* FIXME: calculate based on #rolls to get off.
          * For example, 15 rolls probably have cube eff. of
          * 0.7, and 1.25 rolls have cube eff. of 1.0.
-         * 
+         *
          * It's not so important to have cube eff. correct here as an
          * n-ply evaluation will take care of last-roll and 2nd-last-roll
          * situations. */
@@ -4666,7 +4666,7 @@ MakeCubePos(const cubeinfo aciCubePos[], const int cci, const int fTop, cubeinfo
  * Get take, double, take, and too good points for match play.
  *
  * Input:
- *   pci: cubeinfo 
+ *   pci: cubeinfo
  *   aarRates: gammon and backgammon rates (first index is player)
  *
  * Output:
@@ -4874,7 +4874,7 @@ getCubeDecisionOrdering(int aiOrder[3],
         /*
          * Optimal     : Double, take
          * Best for me : Double, pass
-         * Worst for me: No Double 
+         * Worst for me: No Double
          */
 
         aiOrder[0] = OUTPUT_TAKE;
@@ -4889,7 +4889,7 @@ getCubeDecisionOrdering(int aiOrder[3],
         /*
          * Optimal     : Double, pass
          * Best for me : Double, take
-         * Worst for me: no double 
+         * Worst for me: no double
          */
         aiOrder[0] = OUTPUT_DROP;
         aiOrder[1] = OUTPUT_TAKE;
@@ -4988,7 +4988,7 @@ getPercent(const cubedecision cd, const float arDouble[])
 
         /* how many doubles should be taken before it is correct to double */
         if (arDouble[OUTPUT_NODOUBLE] > arDouble[OUTPUT_TAKE])
-            /* strange match play scenario 
+            /* strange match play scenario
              * (see 3-ply eval on cAmgACAAGAAA/4HPkAUgzW8EBMA):
              * never correct to double! */
             return -1.0f;
@@ -5214,7 +5214,7 @@ equal_movefilters(movefilter aamf1[MAX_FILTER_PLIES][MAX_FILTER_PLIES],
 
 /*
  * Categorise double into normal, beaver, or raccoon.
- * 
+ *
  * The function is called before ApplyMoveRecord:
  *
  * fDoubled = FALSE:
@@ -5433,7 +5433,7 @@ EvaluatePositionFull(NNState * nnStates, const TanBoard anBoard, float arOutput[
         int const usePrune = pec->fUsePrune && pec->rNoise == 0.0f && pci->bgv == VARIATION_STANDARD;
 
         for (i = 0; i < NUM_OUTPUTS; i++)
-            arOutput[i] = 0.0;
+            arOutput[i] = 0.0f;
 
         /* loop over rolls */
 
@@ -5664,7 +5664,7 @@ ScoreMovesPruned(movelist * pml, const cubeinfo * pci, const evalcontext * pec, 
     return r;
 }
 
-static movefilter NullFilter = { -1, 0, 0.0 };
+static movefilter NullFilter = { -1, 0, 0.0f };
 
 static int
 FindBestMovePlied(int anMove[8], int nDice0, int nDice1,
@@ -5719,7 +5719,7 @@ FindnSaveBestMoves(movelist * pml, int nDice0, int nDice1, const TanBoard anBoar
                    movefilter aamf[MAX_FILTER_PLIES][MAX_FILTER_PLIES])
 {
 
-    /* Find best moves. 
+    /* Find best moves.
      * Ensure that keyMove is evaluated at the deepest ply. */
 
     unsigned int i;
@@ -5818,7 +5818,7 @@ FindnSaveBestMoves(movelist * pml, int nDice0, int nDice1, const TanBoard anBoar
     cOldMoves = pml->cMoves;
     pml->cMoves = nMoves;
 
-    /* Make sure that keyMove and top move are both  
+    /* Make sure that keyMove and top move are both
      * evaluated at the deepest ply. */
     if (keyMove) {
 
@@ -5999,10 +5999,10 @@ EvaluatePositionCubeful4(NNState * nnStates, const TanBoard anBoard,
         int const usePrune = pec->fUsePrune && pec->rNoise == 0.0f && pciMove->bgv == VARIATION_STANDARD;
 
         for (i = 0; i < NUM_OUTPUTS; i++)
-            arOutput[i] = 0.0;
+            arOutput[i] = 0.0f;
 
         for (i = 0; i < 2 * cci; i++)
-            arCf[i] = 0.0;
+            arCf[i] = 0.0f;
 
         /* construct next level cube positions */
 
@@ -6115,7 +6115,7 @@ EvaluatePositionCubeful4(NNState * nnStates, const TanBoard anBoard,
 
             arOutput[OUTPUT_WIN] = (arEquity[0] + 1.0f) / 2.0f;
             arOutput[OUTPUT_WINGAMMON] = arOutput[OUTPUT_WINBACKGAMMON] = arOutput[OUTPUT_LOSEGAMMON] =
-                arOutput[OUTPUT_LOSEBACKGAMMON] = 0.0;
+                arOutput[OUTPUT_LOSEBACKGAMMON] = 0.0f;
 
         } else {
 
@@ -6202,7 +6202,7 @@ EvaluatePositionCubeful4(NNState * nnStates, const TanBoard anBoard,
                         SetCubeInfoMoney(&ciMoney, 1, aci[ici].fCubeOwner, aci[ici].fMove, FALSE, FALSE, aci[ici].bgv);
 
                         rCl = Utility(arOutput, &ciMoney);
-                        rCubeX = 1.0;
+                        rCubeX = 1.0f;
                         rCf = Cl2CfMoney(arOutput, &ciMoney, rCubeX);
                         rCfMoney = CFHYPER(arEquity, &ciMoney);
 
@@ -6222,7 +6222,7 @@ EvaluatePositionCubeful4(NNState * nnStates, const TanBoard anBoard,
                         SetCubeInfoMoney(&ciMoney, 1, aci[ici].fCubeOwner, aci[ici].fMove, FALSE, FALSE, aci[ici].bgv);
 
                         rCl = arEquity[0];
-                        rCubeX = 1.0;
+                        rCubeX = 1.0f;
                         rCf = Cl2CfMoney(arOutput, &ciMoney, rCubeX);
                         rCfMoney = CFMONEY(arEquity, &ciMoney);
 
@@ -6251,7 +6251,7 @@ EvaluatePositionCubeful4(NNState * nnStates, const TanBoard anBoard,
                     case CLASS_CONTACT:
                     case CLASS_BEAROFF1:
                     case CLASS_BEAROFF_OS:
-                        /* approximate using Joern's generalisation of 
+                        /* approximate using Joern's generalisation of
                          * Janowski's formulae */
 
                         arCf[ici] = Cl2CfMatch(arOutput, &aci[ici], rCubeX);

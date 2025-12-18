@@ -187,7 +187,7 @@ GetPredefinedChequerplaySetting(const evalcontext * pec, const movefilter aamf[M
                         break;
                     }
 
-                    /* if they are both ignore this level, don't check 
+                    /* if they are both ignore this level, don't check
                      * the extra and threshold */
                     if (Accept < 0)
                         continue;
@@ -197,13 +197,13 @@ GetPredefinedChequerplaySetting(const evalcontext * pec, const movefilter aamf[M
                         break;
                     }
 
-                    if (fabs(aamf[nPlies - 1][i].Threshold - aaamfMoveFilterSettings[nPreset][nPlies - 1][i].Threshold)
+                    if (fabsf(aamf[nPlies - 1][i].Threshold - aaamfMoveFilterSettings[nPreset][nPlies - 1][i].Threshold)
                         > 0.1e-6) {
                         fSame = 0;
                         break;
                     }
                 }
-                /* the filters match (for this nPlies, so we may have a 
+                /* the filters match (for this nPlies, so we may have a
                  * preset */
                 if (fSame && (nFilter == nEval))
                     return nEval;
@@ -410,7 +410,7 @@ OutputRolloutContext(const char *szIndent, const rolloutcontext * prc)
  *    r: equity (either money equity for normalised money eq. for match play
  *    pci: cubeinfo
  *    f: indicates equity (TRUE) or std. error (FALSE)
- *    
+ *
  *
  * Important: function is not re-entrant. Caller must save output
  * if needed.
@@ -469,7 +469,7 @@ OutputMoneyEquity(const float ar[], const int f)
  *    r: equity (either money equity for normalised money eq. for match play
  *    pci: cubeinfo
  *    f: indicates equity (TRUE) or std. error (FALSE)
- *    
+ *
  *
  * Important: function is not re-entrant. Caller must save output
  * if needed.
@@ -976,7 +976,7 @@ extern char *
 FormatCubePosition(char *sz, cubeinfo * pci)
 {
     /* FIXME: functions showing rollout progress can call either
-     * FormatMove() from drawboard.c where we know that sz is 
+     * FormatMove() from drawboard.c where we know that sz is
      * shorter than FORMATEDMOVESIZE, or this one. Moreover they
      * depend on it to be this short.
      * Truncate the result if necessary to avoid crashes with long

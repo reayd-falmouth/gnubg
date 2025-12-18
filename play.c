@@ -18,7 +18,7 @@
 
 /*
 03/2024: Isaac Keslassy: new money games did not allow new player names.
-This bug is now solved. Also, CommandNewMatch and CommandNewSession have a new 
+This bug is now solved. Also, CommandNewMatch and CommandNewSession have a new
 shared subroutine.
 
 02/2024: Isaac Keslassy: introduced a better match title for new matches:
@@ -944,7 +944,7 @@ ShowAutoMove(const TanBoard anBoard, int anMove[8])
 static void
 get_eq_before_resign(cubeinfo * pci, decisionData * pdd)
 {
-    static const evalcontext ecResign = { FALSE, 0, FALSE, TRUE, 0.0 };
+    static const evalcontext ecResign = { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
 
     pdd->pboard = msBoard();
     pdd->pci = pci;
@@ -1015,7 +1015,7 @@ parsemove_to_anmove(int c, int anMove[])
 /*! \brief parses the move and finds the new board in the list of moves/
  * \param pml the list of moves
  * \param old_board the board before move
- * \param board the new board 
+ * \param board the new board
  * \return 1 if found, 0 otherwise
  */
 static gboolean
@@ -1098,8 +1098,8 @@ ComputerTurn(void)
 
             /* Consider cube action */
 
-            /* 
-             * We may get here in three different scenarios: 
+            /*
+             * We may get here in three different scenarios:
              * (1) normal double by opponent: fMove != fTurn and fCubeOwner is
              *     either -1 (centered cube) or = fMove.
              * (2) beaver by opponent: fMove = fTurn and fCubeOwner = !
@@ -1111,7 +1111,7 @@ ComputerTurn(void)
 
             if (ms.fMove != ms.fTurn && ms.fCubeOwner == ms.fTurn) {
 
-                /* raccoon: consider this a normal double, i.e. 
+                /* raccoon: consider this a normal double, i.e.
                  * fCubeOwner = fMove */
 
                 SetCubeInfo(&ci, ci.nCube,
@@ -1280,7 +1280,7 @@ ComputerTurn(void)
                 float arResign[NUM_ROLLOUT_OUTPUTS];
                 int nResign;
 
-                evalcontext ecResign = { FALSE, 0, FALSE, TRUE, 0.0 };
+                evalcontext ecResign = { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
                 evalsetup esResign;
 
                 esResign.et = EVAL_EVAL;
@@ -1818,7 +1818,7 @@ NextTurn(int fPlayNext)
 #if defined (USE_GTK)
         if (!fX || (fDisplay && !automaticTask))
 #endif
-            { 
+            {
                 CommandShowScore(NULL);
                 outputf("\n");
             }
@@ -1877,7 +1877,7 @@ NextTurn(int fPlayNext)
 
     if (ap[ms.fTurn].pt == PLAYER_HUMAN) {
         /* Roll for them, if:
-         * 
+         *
          * * "auto roll" is on;
          * * they haven't already rolled;
          * * they haven't just been doubled;
@@ -2608,7 +2608,7 @@ CommandListMatch(char *UNUSED(sz))
 /*! \brief finds the new board in the list of moves/
  * \param pml the list of moves
  * \param old_board the board before move
- * \param board the new board 
+ * \param board the new board
  * \return 1 if found, 0 otherwise
  */
 extern int
@@ -2864,7 +2864,7 @@ SetMatchDate(matchinfo * pmi)
 
 static void NewMatchName(void)
 {
-    szCurrentFileName = GetFilename(FALSE, EXPORT_SGF, FALSE);    
+    szCurrentFileName = GetFilename(FALSE, EXPORT_SGF, FALSE);
     if (!(szCurrentFolder && *szCurrentFolder)) {
         szCurrentFolder = g_strdup( (default_sgf_folder && (*default_sgf_folder)) ? default_sgf_folder : ".");
     }
@@ -2878,12 +2878,12 @@ static void NewMatchName(void)
 }
 
 /* IK: the following function groups the operations made by CommandNewMatch and CommandNewSession,
-which were largely duplicated. 
+which were largely duplicated.
 I assume that a match is for match-length n>0 and a session for n=0.
 Note that CommandNewSession still allows to define a limited number of games for the session.
 */
 
-static void NewMatchOrSession(int fMatch, int n) 
+static void NewMatchOrSession(int fMatch, int n)
 {
     if (!get_input_discard())
         return;
@@ -2984,7 +2984,7 @@ CommandNewMatch(char *sz)
 //     Then the filename should be Me_vs_gnubg_date, not A_vs_B_OldDate. */
 //     NewMatchName();
 
-// //     szCurrentFileName = GetFilename(FALSE, EXPORT_SGF, FALSE);    
+// //     szCurrentFileName = GetFilename(FALSE, EXPORT_SGF, FALSE);
 // //     if (!(szCurrentFolder && *szCurrentFolder)) {
 // //         szCurrentFolder = g_strdup( (default_sgf_folder && (*default_sgf_folder)) ? default_sgf_folder : ".");
 // //     }
@@ -3047,7 +3047,7 @@ CommandNewSession(char *sz)
 //     /* Let's say we open a match between A and B, then click on the "New" button to play a match against Gnubg.
 //     Then the filename should be Me_vs_gnubg_date, not A_vs_B_OldDate. */
 //     NewMatchName();
-//     // szCurrentFileName = GetFilename(FALSE, EXPORT_SGF, FALSE); 
+//     // szCurrentFileName = GetFilename(FALSE, EXPORT_SGF, FALSE);
 //     // if (!(szCurrentFolder && *szCurrentFolder)) {
 //     //     szCurrentFolder = g_strdup( (default_sgf_folder && (*default_sgf_folder)) ? default_sgf_folder : ".");
 //     // }
@@ -3535,7 +3535,7 @@ CommandEndGame(char *UNUSED(sz))
     const playertype pt_store[2] = { ap[0].pt, ap[1].pt };
     const evalcontext ec_cheq_store[2] = { ap[0].esChequer.ec, ap[1].esChequer.ec};
     const evalcontext ec_cube_store[2] = { ap[0].esCube.ec, ap[1].esCube.ec};
-    const evalcontext ec_quick = { .fCubeful=FALSE, .nPlies=0, .fUsePrune=FALSE, .fDeterministic=TRUE, .rNoise=0.0 };
+    const evalcontext ec_quick = { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
 
     int fAutoGame_store = fAutoGame;
     int fDisplay_store = fDisplay;
@@ -4485,7 +4485,7 @@ static int
 CheatDice(unsigned int anDice[2], matchstate * pms, const int fBest)
 {
 
-    static evalcontext ec0ply = { FALSE, 0, FALSE, TRUE, 0.0 };
+    static evalcontext ec0ply = { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
     static cubeinfo ci;
 
     GetMatchStateCubeInfo(&ci, pms);
@@ -4499,7 +4499,7 @@ CheatDice(unsigned int anDice[2], matchstate * pms, const int fBest)
 
 }
 
-/* 
+/*
  * find best (or worst roll possible)
  *
  */
@@ -4850,7 +4850,7 @@ getGameNumber(const listOLD * plGame)
  * get move number
  *
  * Input
- *    plGame: the game 
+ *    plGame: the game
  *    p: the move
  *
  * Returns:

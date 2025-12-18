@@ -139,6 +139,7 @@ gnubg_SOURCES = \
 		rollout.c \
 		rollout.h \
 		set.c \
+		set.h \
 		sgf.c \
 		sgf.h \
 		sgf_l.l \

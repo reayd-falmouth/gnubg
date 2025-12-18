@@ -373,7 +373,7 @@ ImportJF(FILE * fp, char *UNUSED(szFileName))
     int anDice[2] = { 0, 0 };
     TanBoard anBoard;
     int fCubeUsage = FALSE;
-    int fBeavers = 0;
+    int fBeavers = FALSE;
     char aszPlayer[2][MAX_NAME_LEN];
     int i;
 
@@ -1102,7 +1102,7 @@ ImportMatVariation(FILE * fp, char *szFilename, bgvariation bgVariation, int war
                 } else if (g_str_has_prefix(pch, "[Match ID ")) {
                                 /* discard */
                 } else if (g_str_has_prefix(pch, "[CubeLimit \"1\"")) {
-				fCubeUsage = FALSE;
+                                fCubeUsage = FALSE;
                 } else if (g_str_has_prefix(pch, "[CubeLimit ")) {
                                 /* discard ; maybe keep as comment if != 1024 ? */
                 } else if (g_str_has_prefix(pch, "[Variation \"Backgammon")) {
@@ -1422,8 +1422,8 @@ ImportOldmovesGame(FILE * pf, int iGame, int nLength, int n0, int n1)
      * Possible solution: read through file one time and collect match scores.
      * If the score is decreasing or the players's names changes stop.
      *
-     * Since we now know the score after every game it's easy to 
-     * have pmr->r.nResigned correct. 
+     * Since we now know the score after every game it's easy to
+     * have pmr->r.nResigned correct.
      *
      */
 
@@ -1695,9 +1695,9 @@ ImportSGGGame(FILE * pf, int i, int nLength, int n0, int n1,
                 if (anRoll[0]) {
 
                     /* check for
-                     * 1        43:  
+                     * 1        43:
                      * 1        43:             <---- check for this line
-                     * 1        43: 13/9, 13/10 
+                     * 1        43: 13/9, 13/10
                      */
 
                     if (*(pch + 4) == '\n' || !*(pch + 4))
@@ -1816,7 +1816,7 @@ ImportSGGGame(FILE * pf, int i, int nLength, int n0, int n1,
                                  * do is ignore them. */
 
                                 /* this catches:
-                                 * 1    43: 
+                                 * 1    43:
                                  * 1    43: 13/9, 13/10
                                  * 1    43: 13/9, 13/10 */
 
@@ -1959,14 +1959,14 @@ ImportSGGGame(FILE * pf, int i, int nLength, int n0, int n1,
             else {
 
                 /* check for automatic doubles:
-                 * 
+                 *
                  * 11: Automatic double
-                 * 
+                 *
                  */
 
                 if (strstr(pch, "Automatic double")) {
                     ++pmgi->g.nAutoDoubles;
-                    /* we've already called AddMoveRecord for pmgi, 
+                    /* we've already called AddMoveRecord for pmgi,
                      * so we manually update the cube value */
                     ms.nCube *= 2;
                 }
@@ -2389,7 +2389,7 @@ ImportSGG(FILE * pf, char *szFilename)
 }
 
 /*
- * Parse TMG files 
+ * Parse TMG files
  *
  */
 
@@ -2430,7 +2430,7 @@ ParseTMGOptions(const char *sz, matchinfo * pmi, int *pfCrawfordRule,
         return 0;
 
     case 3:                    /* Stake: */
-        /* ignore, however, we could read into pmi->szComment, but I guess 
+        /* ignore, however, we could read into pmi->szComment, but I guess
          * people do not want to see their stakes in, say, html export */
         break;
 
@@ -2590,7 +2590,7 @@ ImportTMGGame(FILE * pf, int i, int nLength, int n0, int n1,
 
         for (pch = sz; isspace(*pch); ++pch);
 
-        /* 
+        /*
          * is it:
          *   -1 4 13/11 24/23
          * or
@@ -2640,7 +2640,7 @@ ImportTMGGame(FILE * pf, int i, int nLength, int n0, int n1,
             case TMG_AUTO_DOUBLE:      /* automatic double:  0 2 Automatic to 2 */
 
                 ++pmgi->g.nAutoDoubles;
-                /* we've already called AddMoveRecord for pmgi, 
+                /* we've already called AddMoveRecord for pmgi,
                  * so we manually update the cube value */
                 ms.nCube *= 2;
 
@@ -3004,8 +3004,8 @@ ImportSnowieTxt(FILE * pf)
     }
 #endif
 
-    /* 
-     * Import Snowie .txt file 
+    /*
+     * Import Snowie .txt file
      */
 
     /* read file into string */

@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: formatgs.c,v 1.39 2021/06/30 22:02:39 plm Exp $
  */
 
 #include "config.h"
@@ -67,7 +65,7 @@ numberEntry(const char *sz, const int n0, const int n1)
 static char *
 errorRate(const float rn, const float ru, const int nMatchTo)
 {
-    int n = fOutputDigits - (int) (log10(rErrorRateFactor) - 0.5);
+    int n = fOutputDigits - (int) (log10f(rErrorRateFactor) - 0.5f);
     n = MAX(n, 0);
 
     if (nMatchTo) {
@@ -81,7 +79,7 @@ static char *
 errorRateMP(const float rn, const float ru, const int nMatchTo)
 {
 
-    int n = fOutputDigits - (int) (log10(rErrorRateFactor) - 0.5);
+    int n = fOutputDigits - (int) (log10f(rErrorRateFactor) - 0.5f);
     n = MAX(n, 0);
 
     if (nMatchTo) {

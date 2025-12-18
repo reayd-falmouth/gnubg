@@ -14,13 +14,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtktempmap.c,v 1.65 2022/09/02 13:43:30 plm Exp $
  */
 
 /*
  * Based on Sho Sengoku's Equity Temperature Map
- * https://bkgm.com/articles/Sengoku/TemperatureMap/index.html 
+ * https://bkgm.com/articles/Sengoku/TemperatureMap/index.html
  */
 
 #include "config.h"
@@ -497,7 +495,7 @@ TempMapPlyToggled(GtkWidget * pw, tempmapwidget * ptmw)
 {
     const int *pi = (int *) g_object_get_data(G_OBJECT(pw), "user_data");
 
-    evalcontext ec = { TRUE, 0, FALSE, TRUE, 0.0 };
+    evalcontext ec = { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
 
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pw))) {
 
@@ -569,7 +567,7 @@ extern void
 GTKShowTempMap(const matchstate ams[], const int n, gchar * aszTitle[], const int fInvert)
 {
 
-    evalcontext ec = { TRUE, 0, FALSE, TRUE, 0.0 };
+    evalcontext ec = { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
 
     tempmapwidget *ptmw;
     int *pi;
@@ -598,7 +596,6 @@ GTKShowTempMap(const matchstate ams[], const int n, gchar * aszTitle[], const in
         pwDialog = GTKCreateDialog(_("Temperature Map in Hypothetical Money Play"),
                                DT_INFO, NULL, DIALOG_FLAG_MODAL, NULL, NULL);
     }
-                               
 
     ptmw = (tempmapwidget *) g_malloc(sizeof(tempmapwidget));
     ptmw->fShowBestMove = fShowBestMove;

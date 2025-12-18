@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: export.c,v 1.99 2023/11/13 20:41:35 plm Exp $
  */
 
 #include "config.h"
@@ -63,7 +61,7 @@
  *
  * Garbage collect:
  *   Caller must g_free returned pointer
- * 
+ *
  */
 
 extern char *
@@ -636,7 +634,8 @@ GenerateImage(renderimages * pri, renderdata * prd,
                   LogCube(nCube) + (doubled != 0),
                   nOrient,
                   anResignPosition, fResign, nResignOrientation,
-                  anArrowPosition, ms.gs != GAME_NONE, fMove == 1, 0, 0, BOARD_WIDTH * nSize, BOARD_HEIGHT * nSize);
+                  anArrowPosition, ms.gs != GAME_NONE, fMove == 1, 0, 0, BOARD_WIDTH * nSize, BOARD_HEIGHT * nSize,
+                  NULL);
 
     /* crop */
 

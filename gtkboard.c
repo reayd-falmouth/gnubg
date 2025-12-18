@@ -71,7 +71,11 @@ int fGUIGrayEdit = TRUE;
 unsigned int nGUIAnimSpeed = 4;
 int animate_player, *animate_move_list, animation_finished = TRUE;
 
+#if GTK_CHECK_VERSION(3,0,0)
+static GtkBoxClass *parent_class = NULL;
+#else
 static GtkVBoxClass *parent_class = NULL;
+#endif
 
 typedef struct {
     unsigned char *TTachDice[2], *TTachPip[2], *TTachGrayDice[1], *TTachGrayPip[1];
@@ -94,11 +98,13 @@ G_DEFINE_TYPE(Board, board, GTK_TYPE_BOX)
 G_DEFINE_TYPE(Board, board, GTK_TYPE_VBOX)
 #endif
 
-static int inPreviewWindow;
+static gboolean inPreviewWindow = FALSE;
 
 extern GtkWidget *
-board_new(renderdata * prd, int inPreview)
+board_new(renderdata * prd, gboolean inPreview)
 {
+    inPreviewWindow = inPreview;
+
     /* Create widget */
     GtkWidget *board = g_object_new(TYPE_BOARD, NULL);
 
@@ -120,8 +126,6 @@ board_new(renderdata * prd, int inPreview)
 
     bd->x_dice[0] = bd->y_dice[0] = 0;
     bd->x_dice[1] = bd->y_dice[1] = 0;
-
-    inPreviewWindow = inPreview;
 
     InitialPos(bd);
 
@@ -291,7 +295,8 @@ RenderArea(BoardData * bd, unsigned char *puch, int x, int y, int
                   anDice, anDicePosition, bd->colour == bd->turn,
                   anCubePosition, LogCube(bd->cube) + (bd->doubled != 0),
                   nOrient, anResignPosition,
-                  abs(bd->resigned), nResignOrientation, anArrowPosition, bd->playing, bd->turn == 1, x, y, cx, cy);
+                  abs(bd->resigned), nResignOrientation, anArrowPosition, bd->playing, bd->turn == 1, x, y, cx, cy,
+                  bd);
 }
 
 static void
@@ -305,6 +310,23 @@ draw_rgb_image(cairo_t * cr, unsigned char *data, int x, int y, int width, int h
     g_object_unref(pixbuf);
 }
 
+/* draw the centered chequer only, leave the remainder of the pixbuf in the background color */
+
+static void
+draw_rgb_image_radial_clip(cairo_t * cr, unsigned char *data, int x, int y, int width, int height, int radius)
+{
+    GdkPixbuf *pixbuf;
+
+    pixbuf = gdk_pixbuf_new_from_data(data, GDK_COLORSPACE_RGB, FALSE, 8, width, height, width * 3, NULL, NULL);
+    gdk_cairo_set_source_pixbuf(cr, pixbuf, x, y);
+    cairo_arc(cr, (double)(x + width / 2), (double)(y + height / 2), (double)radius, 0.0, 2*M_PI);
+    cairo_clip(cr);
+    cairo_paint(cr);
+
+    g_object_unref(pixbuf);
+}
+
+
 static void
 board_draw_area(cairo_t * cr, gint x, gint y, gint cx, gint cy, BoardData * bd)
 {
@@ -314,17 +336,39 @@ board_draw_area(cairo_t * cr, gint x, gint y, gint cx, gint cy, BoardData * bd)
     RenderArea(bd, puch, x, y, cx, cy);
     draw_rgb_image(cr, puch, x, y, cx, cy);
     free(puch);
+
+#if defined(USE_BOARD3D)
+    if (bd && display_is_2d(bd->rd)) {
+#endif
+        if (bd && bd->DragTargetHelp) {
+            for (int i = 0; i <= 3; ++i) {
+                if (bd->iTargetHelpPoints[i] != -1) {
+                    int ptx, pty, ptcx, ptcy;
+                    point_area(bd, bd->iTargetHelpPoints[i], &ptx, &pty, &ptcx, &ptcy);
+                    cairo_save(cr);
+                    cairo_set_source_rgba(cr, 0, 1, 0, 1.0); // Opaque green
+                    cairo_set_line_width(cr, 2.0);
+                    cairo_rectangle(cr, ptx + 1, pty + 1, ptcx - 2, ptcy - 2);
+                    cairo_stroke(cr);
+                    cairo_restore(cr);
+                }
+            }
+        }
+#if defined(USE_BOARD3D)
+    }
+#endif
 }
 
 #if GTK_CHECK_VERSION(3,0,0)
 static gboolean
-board_draw(GtkWidget * drawing_area, cairo_t * cr, BoardData * bd)
+board_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 {
-    if (bd->rd->nSize == 0)
+    BoardData *bd = user_data;
+    if (!bd || !bd->rd || bd->rd->nSize == 0)
         return TRUE;
 
-    board_draw_area(cr, 0, 0, gtk_widget_get_allocated_width(drawing_area),
-                    gtk_widget_get_allocated_height(drawing_area), bd);
+    board_draw_area(cr, 0, 0, gtk_widget_get_allocated_width(widget),
+                    gtk_widget_get_allocated_height(widget), bd);
     return TRUE;
 }
 #else
@@ -975,13 +1019,8 @@ static void
 board_drag(GtkWidget * UNUSED(widget), BoardData * bd, int x, int y)
 #endif
 {
-    cairo_t *cr;
-    unsigned char *puch, *puchNew, *puchChequer;
-    int s = bd->rd->nSize;
-    GdkWindow *window = gtk_widget_get_window(bd->drawing_area);
-#if GTK_CHECK_VERSION(3,22,0)
-    GdkDrawingContext *context;
-#endif
+    g_assert(bd != NULL);
+    g_assert(bd->drawing_area != NULL);
 
 #if defined(USE_BOARD3D)
     if (display_is_3d(bd->rd)) {
@@ -991,64 +1030,21 @@ board_drag(GtkWidget * UNUSED(widget), BoardData * bd, int x, int y)
     }
 #endif
 
-    // gdk_window_process_updates is deprecated since GTK
-    // 3.22, but necessary on the 2D board for smooth
-    // animation.
-    gdk_window_process_updates(window, FALSE);
+    int chequer_w = CHEQUER_WIDTH * bd->rd->nSize;
+    int chequer_h = CHEQUER_HEIGHT * bd->rd->nSize;
+    int old_x = bd->x_drag;
+    int old_y = bd->y_drag;
 
-    if (s == 0)
-        return;
+    // Invalidate (redraw) the old chequer area if it's valid
+    if (old_x >= 0 && old_y >= 0)
+        gtk_widget_queue_draw_area(bd->drawing_area,
+            old_x - chequer_w/2, old_y - chequer_h/2, chequer_w, chequer_h);
 
-    puch = g_alloca(6 * s * 6 * s * 3);
-    puchNew = g_alloca(6 * s * 6 * s * 3);
-    puchChequer = g_alloca(6 * s * 6 * s * 3);
+    // Invalidate the new chequer area
+    gtk_widget_queue_draw_area(bd->drawing_area,
+        x - chequer_w/2, y - chequer_h/2, chequer_w, chequer_h);
 
-    RenderArea(bd, puch, bd->x_drag - 3 * s, bd->y_drag - 3 * s, 6 * s, 6 * s);
-    RenderArea(bd, puchNew, x - 3 * s, y - 3 * s, 6 * s, 6 * s);
-    RefractBlendClip(puchChequer, 6 * s * 3, 0, 0, 6 * s, 6 * s, puchNew,
-                     6 * s * 3, 0, 0,
-                     bd->ri.achChequer[bd->drag_colour > 0], 6 * s * 4, 0,
-                     0, bd->ri.asRefract[bd->drag_colour > 0], 6 * s, 6 * s, 6 * s);
-
-    {
-        gtk_locdef_region *pr;
-        gtk_locdef_rectangle r;
-
-        r.x = bd->x_drag - 3 * s;
-        r.y = bd->y_drag - 3 * s;
-        r.width = 6 * s;
-        r.height = 6 * s;
-        pr = gtk_locdef_create_rectangle(&r);
-
-        r.x = x - 3 * s;
-        r.y = y - 3 * s;
-        gtk_locdef_union_rectangle(pr, &r);
-
-#if GTK_CHECK_VERSION(3,22,0)
-        context = gdk_window_begin_draw_frame(window, pr);
-#else
-        gdk_window_begin_paint_region(window, pr);
-#endif
-
-        gtk_locdef_region_destroy(pr);
-    }
-
-#if GTK_CHECK_VERSION(3,22,0)
-    cr = gdk_drawing_context_get_cairo_context(context);
-#else
-    cr = gdk_cairo_create(window);
-#endif
-
-    draw_rgb_image(cr, puch, bd->x_drag - 3 * s, bd->y_drag - 3 * s, 6 * s, 6 * s);
-    draw_rgb_image(cr, puchChequer, x - 3 * s, y - 3 * s, 6 * s, 6 * s);
-
-#if GTK_CHECK_VERSION(3,22,0)
-    gdk_window_end_draw_frame(window, context);
-#else
-    cairo_destroy(cr);
-    gdk_window_end_paint(window);
-#endif
-
+    // Update drag position
     bd->x_drag = x;
     bd->y_drag = y;
 }
@@ -1090,6 +1086,11 @@ board_end_drag(GtkWidget * UNUSED(widget), BoardData * bd)
     cairo_region_destroy(cairoRegion);
 #else
     cairo_destroy(cr);
+#endif
+
+#if !GTK_CHECK_VERSION(3,0,0)
+    gtk_widget_queue_draw(bd->drawing_area);
+    gdk_window_process_updates(window, FALSE);
 #endif
 }
 
@@ -1921,7 +1922,7 @@ board_button_press(GtkWidget * board, GdkEventButton * event, BoardData * bd)
                     g_assert_not_reached();
                 }
                 /* Play a sound if any chequers have moved */
-                if (memcmp(old_points, bd->points, sizeof old_points))
+                if (memcmp(old_points, bd->points, sizeof old_points) != 0)
                     playSound(SOUND_CHEQUER);
             }
             return TRUE;
@@ -2137,6 +2138,10 @@ board_button_release(GtkWidget * board, GdkEventButton * event, BoardData * bd)
     bd->DragTargetHelp = 0;
     bd->drag_point = -1;
 
+#if !GTK_CHECK_VERSION(3,0,0)
+    gtk_widget_queue_draw(bd->drawing_area);
+#endif
+
     return TRUE;
 }
 
@@ -2171,72 +2176,7 @@ board_motion_notify(GtkWidget * board, GdkEventMotion * event, BoardData * bd)
         if ((ap[bd->drag_colour == -1 ? 0 : 1].pt == PLAYER_HUMAN)      /* not for computer turn */
             &&gdk_event_get_time((GdkEvent *) event) - bd->click_time > HINT_TIME) {
             bd->DragTargetHelp = legal_dest_points(bd, bd->iTargetHelpPoints);
-        }
-    }
-#if defined(USE_BOARD3D)
-    if (display_is_2d(bd->rd))
-#endif
-    {
-        if (bd->DragTargetHelp) {       /* Display 2d drag target help */
-            gint i, ptx, pty, ptcx, ptcy;
-            cairo_t *cr;
-            GdkWindow *window = gtk_widget_get_window(board);
-#if GTK_CHECK_VERSION(3,22,0)
-            cairo_region_t * cairoRegion = cairo_region_create();
-            GdkDrawingContext *context;
-#endif
-
-#if GTK_CHECK_VERSION(3,0,0)
-            GdkRGBA TargetHelpRGBA;
-
-            TargetHelpRGBA.red = 0.0;
-            TargetHelpRGBA.green = 1.0;
-            TargetHelpRGBA.blue = 0.0;
-            TargetHelpRGBA.alpha = 1.0;
-#else
-            GdkColor TargetHelpColor;
-
-            /* values of RGB components within GdkColor are
-             * taken from 0 to 65535, not 0 to 255. */
-            TargetHelpColor.red = 0 * (65535 / 255);
-            TargetHelpColor.green = 255 * (65535 / 255);
-            TargetHelpColor.blue = 0 * (65535 / 255);
-            TargetHelpColor.pixel = (guint32) (TargetHelpColor.red * 65536 +
-                                                TargetHelpColor.green * 256 + TargetHelpColor.blue);
-            /* get the closest color available in the colormap if no 24-bit */
-            gdk_colormap_alloc_color(gtk_widget_get_colormap(board), &TargetHelpColor, TRUE, TRUE);
-#endif
-
-#if GTK_CHECK_VERSION(3,22,0)
-            context = gdk_window_begin_draw_frame(window, cairoRegion);
-            cr = gdk_drawing_context_get_cairo_context(context);
-#else
-            cr = gdk_cairo_create(window);
-#endif
-
-#if GTK_CHECK_VERSION(3,0,0)
-            gdk_cairo_set_source_rgba(cr, &TargetHelpRGBA);
-#else
-            gdk_cairo_set_source_color(cr, &TargetHelpColor);
-#endif
-
-            /* draw help rectangles around target points */
-            for (i = 0; i <= 3; ++i) {
-                if (bd->iTargetHelpPoints[i] != -1) {
-                    /* calculate region coordinates for point */
-                    point_area(bd, bd->iTargetHelpPoints[i], &ptx, &pty, &ptcx, &ptcy);
-                    cairo_rectangle(cr, ptx + 1, pty + 1, ptcx - 2, ptcy - 2);
-                    cairo_set_line_width(cr, 1);
-                    cairo_stroke(cr);
-                }
-            }
-
-#if GTK_CHECK_VERSION(3,22,0)
-            gdk_window_end_draw_frame(window, context);
-            cairo_region_destroy(cairoRegion);
-#else
-            cairo_destroy(cr);
-#endif
+            gtk_widget_queue_draw(bd->drawing_area);
         }
     }
 
@@ -3047,8 +2987,7 @@ GrayScaleColC(unsigned char *pCols)
 extern void
 board_create_pixmaps(GtkWidget * UNUSED(board), BoardData * bd)
 {
-    unsigned char auch[20 * 20 * 3],
-        auchBoard[BOARD_WIDTH * 3 * BOARD_HEIGHT * 3 * 3], auchChequers[2][CHEQUER_WIDTH * 3 * CHEQUER_HEIGHT * 3 * 4];
+    unsigned char auchBoard[BOARD_WIDTH * 3 * BOARD_HEIGHT * 3 * 3], auchChequers[2][CHEQUER_WIDTH * 3 * CHEQUER_HEIGHT * 3 * 4];
     unsigned short asRefract[2][CHEQUER_WIDTH * 3 * CHEQUER_HEIGHT * 3];
     int i, nSizeReal;
     int fgrayBoard = FALSE;
@@ -3105,6 +3044,7 @@ board_create_pixmaps(GtkWidget * UNUSED(board), BoardData * bd)
 
     for (i = 0; i < 2; i++) {
         cairo_t *cr;
+        unsigned char auch[20 * 20 * 3];
 
         CopyArea(auch, 20 * 3, auchBoard + 3 * 3 * BOARD_WIDTH * 3 + 3 * 3 * 3, BOARD_WIDTH * 3 * 3, 10, 10);
         CopyArea(auch + 10 * 3, 20 * 3, auchBoard + 3 * 3 * BOARD_WIDTH * 3 + 3 * 3 * 3, BOARD_WIDTH * 3 * 3, 10, 10);
@@ -3120,7 +3060,27 @@ board_create_pixmaps(GtkWidget * UNUSED(board), BoardData * bd)
                      asRefract[i], CHEQUER_WIDTH * 3, CHEQUER_WIDTH * 3, CHEQUER_HEIGHT * 3);
 
         cr = gtk_locdef_cairo_create_from_surface(bd->appmKey[i]);
-        draw_rgb_image(cr, auch, 0, 0, 20, 20);
+
+	/* background */
+
+#if GTK_CHECK_VERSION(3,0,0)
+        GtkStyleContext *context = gtk_widget_get_style_context(bd->table);
+        GdkRGBA color;
+
+        gtk_style_context_lookup_color(context, "theme_bg_color", &color);
+        cairo_set_source_rgba(cr, color.red, color.green, color.blue, color.alpha);
+#else
+        GtkStyle *style = gtk_widget_get_style(bd->table);
+        GdkColor color = style->bg[GTK_STATE_NORMAL];
+
+        cairo_set_source_rgba(cr, (double)color.red/65536, (double)color.green/65536, (double)color.blue/65536, 1);
+#endif
+        cairo_paint(cr);
+
+        /* chequer */
+
+        draw_rgb_image_radial_clip(cr, auch, 0, 0, 20, 20, 10);
+
         cairo_destroy(cr);
     }
 #if defined(USE_BOARD3D)
@@ -3687,17 +3647,54 @@ chequer_key_new(int iPlayer, Board * board)
 }
 
 static void
-draw_game_info(Board *board, BoardData *bd)
+init_game_info(Board *board, BoardData *bd)
 {
     GtkWidget *pw;
     GtkWidget *pwFrame;
     GtkWidget *pwvbox;
-    
+
 #if GTK_CHECK_VERSION(3,0,0)
     bd->table = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 #else
     bd->table = gtk_hbox_new(FALSE, 0);
 #endif
+
+    /* Initialize board data */
+    bd->key0 = chequer_key_new(0, board);
+    bd->mname0 = gtk_multiview_new();
+    bd->name0 = gtk_entry_new();
+    bd->lname0 = gtk_label_new(NULL);
+    bd->mscore0 = gtk_multiview_new();
+    bd->ascore0 = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 32767, 1, 1, 0));
+    bd->score0 = gtk_spin_button_new(GTK_ADJUSTMENT(bd->ascore0), 1, 0);
+    bd->lscore0 = gtk_label_new(NULL);
+    bd->key1 = chequer_key_new(1, board);
+    bd->mname1 = gtk_multiview_new();
+    bd->name1 = gtk_entry_new();
+    bd->lname1 = gtk_label_new(NULL);
+    bd->mscore1 = gtk_multiview_new();
+    bd->ascore1 = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 32767, 1, 1, 0));
+    bd->score1 = gtk_spin_button_new(GTK_ADJUSTMENT(bd->ascore1), 1, 0);
+    bd->lscore1 = gtk_label_new(NULL);
+    bd->pipcountlabel0 = gtk_label_new(NULL);
+    bd->pipcount0 = gtk_label_new(NULL);
+    bd->pipcountlabel1 = gtk_label_new(NULL);
+    bd->pipcount1 = gtk_label_new(NULL);
+    bd->amatch = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, MAXSCORE, 1, 1, 0));
+    bd->match = gtk_spin_button_new(GTK_ADJUSTMENT(bd->amatch), 1, 0);
+    bd->wmove = gtk_label_new(NULL);
+    bd->mmatch = gtk_multiview_new();
+    bd->lmatch = gtk_label_new(NULL);
+    bd->crawford = gtk_check_button_new_with_label(_("Crawford game"));
+    bd->jacoby = gtk_check_button_new_with_label(_("Jacoby"));
+    bd->pwvboxcnt = gtk_event_box_new();
+
+    /* Skip rendering when necessary */
+    if (inPreviewWindow)
+        return;
+
+    /* Render game info section */
+
     gtk_box_pack_end(GTK_BOX(board), bd->table, FALSE, TRUE, 0);
 
     /* 
@@ -3724,18 +3721,13 @@ draw_game_info(Board *board, BoardData *bd)
     gtk_box_pack_start(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
 
     /* picture of chequer */
-
-    bd->key0 = chequer_key_new(0, board);
     gtk_box_pack_start(GTK_BOX(pw), bd->key0, FALSE, FALSE, 4);
 
     /* name of player */
 
-    bd->mname0 = gtk_multiview_new();
     gtk_box_pack_start(GTK_BOX(pw), bd->mname0, FALSE, FALSE, 8);
-
-    bd->name0 = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(bd->name0), MAX_NAME_LEN);
-    bd->lname0 = gtk_label_new(NULL);
+
 #if GTK_CHECK_VERSION(3,0,0)
     gtk_widget_set_halign(bd->lname0, GTK_ALIGN_START);
     gtk_widget_set_valign(bd->lname0, GTK_ALIGN_CENTER);
@@ -3760,13 +3752,11 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* score */
 
-    bd->mscore0 = gtk_multiview_new();
+
     gtk_box_pack_start(GTK_BOX(pw), bd->mscore0, FALSE, FALSE, 8);
 
-    bd->ascore0 = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 32767, 1, 1, 0));
-    bd->score0 = gtk_spin_button_new(GTK_ADJUSTMENT(bd->ascore0), 1, 0);
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(bd->score0), TRUE);
-    bd->lscore0 = gtk_label_new(NULL);
+
     gtk_container_add(GTK_CONTAINER(bd->mscore0), bd->lscore0);
     gtk_container_add(GTK_CONTAINER(bd->mscore0), bd->score0);
 
@@ -3781,7 +3771,7 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* pip count label */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcountlabel0 = gtk_label_new(NULL), FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(pw), bd->pipcountlabel0, FALSE, FALSE, 4);
 
     /* pip count */
 
@@ -3789,7 +3779,7 @@ draw_game_info(Board *board, BoardData *bd)
               probably because it contains only labels while the other
               has a an adjustment.
     */
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcount0 = gtk_label_new(NULL), FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(pw), bd->pipcount0, FALSE, FALSE, 8);
     
 
     /* 
@@ -3817,17 +3807,14 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* picture of chequer */
 
-    bd->key1 = chequer_key_new(1, board);
     gtk_box_pack_start(GTK_BOX(pw), bd->key1, FALSE, FALSE, 4);
 
     /* name of player */
 
-    bd->mname1 = gtk_multiview_new();
     gtk_box_pack_start(GTK_BOX(pw), bd->mname1, FALSE, FALSE, 8);
 
-    bd->name1 = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(bd->name1), MAX_NAME_LEN);
-    bd->lname1 = gtk_label_new(NULL);
+
 #if GTK_CHECK_VERSION(3,0,0)
     gtk_widget_set_halign(bd->lname1, GTK_ALIGN_START);
     gtk_widget_set_valign(bd->lname1, GTK_ALIGN_CENTER);
@@ -3852,13 +3839,9 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* score */
 
-    bd->mscore1 = gtk_multiview_new();
     gtk_box_pack_start(GTK_BOX(pw), bd->mscore1, FALSE, FALSE, 8);
-
-    bd->ascore1 = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 32767, 1, 1, 0));
-    bd->score1 = gtk_spin_button_new(GTK_ADJUSTMENT(bd->ascore1), 1, 0);
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(bd->score1), TRUE);
-    bd->lscore1 = gtk_label_new(NULL);
+
     gtk_container_add(GTK_CONTAINER(bd->mscore1), bd->lscore1);
     gtk_container_add(GTK_CONTAINER(bd->mscore1), bd->score1);
 
@@ -3873,11 +3856,11 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* pip count label */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcountlabel1 = gtk_label_new(NULL), FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(pw), bd->pipcountlabel1, FALSE, FALSE, 4);
 
     /* pip count */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcount1 = gtk_label_new(NULL), FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(pw), bd->pipcount1, FALSE, FALSE, 8);
 
 
     /* 
@@ -3896,7 +3879,7 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* move string */
 
-    gtk_box_pack_start(GTK_BOX(pwvbox), bd->wmove = gtk_label_new(NULL), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pwvbox), bd->wmove, FALSE, FALSE, 0);
     gtk_widget_set_name(bd->wmove, "gnubg-move-current");
 
     /* match length */
@@ -3910,12 +3893,9 @@ draw_game_info(Board *board, BoardData *bd)
 
     gtk_box_pack_start(GTK_BOX(pw), gtk_label_new(_("Match:")), FALSE, FALSE, 4);
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->mmatch = gtk_multiview_new(), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pw), bd->mmatch, FALSE, FALSE, 0);
 
-    gtk_container_add(GTK_CONTAINER(bd->mmatch), bd->lmatch = gtk_label_new(NULL));
-
-    bd->amatch = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, MAXSCORE, 1, 1, 0));
-    bd->match = gtk_spin_button_new(GTK_ADJUSTMENT(bd->amatch), 1, 0);
+    gtk_container_add(GTK_CONTAINER(bd->mmatch), bd->lmatch);
 
     g_signal_connect(G_OBJECT(bd->match), "value-changed", G_CALLBACK(match_change_val), bd);
 
@@ -3923,14 +3903,12 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* crawford and jacoby flag */
 
-    bd->crawford = gtk_check_button_new_with_label(_("Crawford game"));
-    bd->jacoby = gtk_check_button_new_with_label(_("Jacoby"));
     /*    g_signal_connect( G_OBJECT( bd->crawford ), "toggled",
      * G_CALLBACK( board_set_crawford ), bd );
      * g_signal_connect( G_OBJECT( bd->jacoby ), "toggled",
      * G_CALLBACK( board_set_jacoby ), bd ); 
      */
-    bd->pwvboxcnt = gtk_event_box_new();
+
     if (ms.nMatchTo)
         gtk_container_add(GTK_CONTAINER(bd->pwvboxcnt), bd->crawford);
     else
@@ -3948,7 +3926,7 @@ draw_game_info(Board *board, BoardData *bd)
 static void
 board_init(Board * board)
 {
-    BoardData *bd = g_malloc(sizeof(*bd));
+    BoardData *bd = g_malloc0(sizeof(*bd));
     int signals;
 
 #if GTK_CHECK_VERSION(3,0,0)
@@ -4000,7 +3978,7 @@ board_init(Board * board)
 #endif
 
     /* various stuff below the board */
-    draw_game_info(board, bd);
+    init_game_info(board, bd);
 
     /* dice drawing area */
 

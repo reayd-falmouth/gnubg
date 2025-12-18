@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: sigmoid.h,v 1.7 2017/02/12 20:31:30 plm Exp $
  */
 
 #ifndef SIGMOID_H
@@ -128,11 +126,11 @@ static float e[101] = {
 /* Calculate an approximation to the sigmoid function 1 / ( 1 + e^x ).
  * This is executed very frequently during neural net evaluation, so
  * careful optimisation here pays off.
- * 
+ *
  * Statistics on sigmoid(x) calls:
  * * >99% of the time, x is positive.
  * *  82% of the time, 3 < abs(x) < 8.
- * 
+ *
  * 02/2017: The numbers above are 10+ years old
  * (old neural nets, possibly pruning nets not yet in use).
  * Current stats :
@@ -143,7 +141,7 @@ static float e[101] = {
 static inline float
 sigmoid(float const xin)
 {
-    if (likely(xin >= 0.0f)) { 
+    if (likely(xin >= 0.0f)) {
         /* xin is almost always positive; we place this branch of the `if'
          * first, in the hope that the compiler/processor will predict the
          * conditional branch will not be taken. */

@@ -58,10 +58,12 @@
 #include "eval.h"
 #include "external.h"
 #include "export.h"
+#include "set.h"
 
 #if defined(USE_GTK)
 #include "gtklocdefs.h"
 #include "gtkgame.h"
+#include "gtkoptions.h"
 #include "gtkprefs.h"
 #include "gtkchequer.h"
 #include "gtkwindows.h"
@@ -308,7 +310,7 @@ SetMoveFilter(char *sz, movefilter aamf[MAX_FILTER_PLIES][MAX_FILTER_PLIES])
     if (accept < 0) {
         pmfFilter->Accept = -1;
         pmfFilter->Extra = 0;
-        pmfFilter->Threshold = 0.0;
+        pmfFilter->Threshold = 0.0f;
         return;
     }
 
@@ -1660,15 +1662,15 @@ CommandSetKeyNames(char *sz)
     token = strtok(sz, "\t");
     /* walk through other tokens */
     while( token != NULL ) {
-        // g_message("token =  %s, length=%zu\n", token, strlen(token) );    
-        /* note: could also use AddKeyName() below if we are not 
+        // g_message("token =  %s, length=%zu\n", token, strlen(token) );
+        /* note: could also use AddKeyName() below if we are not
             guaranteed that they are unique*/
-        strcpy(keyNames[keyNamesFirstEmpty],token); 
+        strcpy(keyNames[keyNamesFirstEmpty],token);
         keyNamesFirstEmpty++;
-        //    DisplayKeyNames();  
+        //    DisplayKeyNames();
         token = strtok(NULL, "\t");
-    } 
-    // DisplayKeyNames();  
+    }
+    // DisplayKeyNames();
 }
 
 
@@ -2332,7 +2334,7 @@ CommandSetRolloutTruncationPlies(char *sz)
 
     outputf(ngettext
             ("Rollouts will be truncated after %d ply.\n", "Rollouts will be truncated after %d plies.\n", n), n);
-  
+
     if (prcSet->fDoTruncate == FALSE)
         outputl(_("But rollout truncation is not currently enabled " "(see `help set rollout truncation enable')."));
 
@@ -2608,8 +2610,9 @@ CommandSetScore(char *sz)
         }
     }
 
-    if (ms.gs < GAME_OVER && plGame && (pmr = (moverecord *) plGame->plNext->p) && (pmgi = &pmr->g)) {
+    if (ms.gs < GAME_OVER && plGame && (pmr = (moverecord *) plGame->plNext->p)) {
         g_assert(pmr->mt == MOVE_GAMEINFO);
+        pmgi = &pmr->g;
         pmgi->anScore[0] = ms.anScore[0];
         pmgi->anScore[1] = ms.anScore[1];
         pmgi->fCrawfordGame = ms.fCrawford;
@@ -2768,7 +2771,6 @@ CommandSetCrawford(char *sz)
     if (ms.nMatchTo > 0) {
         if ((ms.nMatchTo - ms.anScore[0] == 1) || (ms.nMatchTo - ms.anScore[1] == 1)) {
             moverecord *pmr;
-            xmovegameinfo *pmgi;
 
             if (SetToggle("crawford", &ms.fCrawford, sz,
                           _("This game is the Crawford game (no doubling allowed)."),
@@ -2781,8 +2783,11 @@ CommandSetCrawford(char *sz)
             if (ms.fCrawford)
                 CancelCubeAction();
 
-            if (plGame && (pmr = plGame->plNext->p) && (pmgi = &pmr->g)) {
+            if (plGame && (pmr = plGame->plNext->p)) {
+                xmovegameinfo *pmgi;
+
                 g_assert(pmr->mt == MOVE_GAMEINFO);
+                pmgi = &pmr->g;
                 pmgi->fCrawfordGame = ms.fCrawford;
             }
         } else {
@@ -2809,7 +2814,6 @@ CommandSetPostCrawford(char *sz)
     if (ms.nMatchTo > 0) {
         if ((ms.nMatchTo - ms.anScore[0] == 1) || (ms.nMatchTo - ms.anScore[1] == 1)) {
             moverecord *pmr;
-            xmovegameinfo *pmgi;
 
             SetToggle("postcrawford", &ms.fPostCrawford, sz,
                       _("This is post-Crawford play (doubling allowed)."), _("This is not post-Crawford play."));
@@ -2820,8 +2824,11 @@ CommandSetPostCrawford(char *sz)
             if (ms.fCrawford)
                 CancelCubeAction();
 
-            if (plGame && (pmr = plGame->plNext->p) && (pmgi = &pmr->g)) {
+            if (plGame && (pmr = plGame->plNext->p)) {
+                xmovegameinfo *pmgi;
+
                 g_assert(pmr->mt == MOVE_GAMEINFO);
+                pmgi = &pmr->g;
                 pmgi->fCrawfordGame = ms.fCrawford;
             }
         } else {
@@ -2954,7 +2961,7 @@ CommandSetScoreMapMatchLength(char* sz)
         if(MATCH_LENGTH_OPTIONS[i]==n) {
            scoreMapMatchLengthDefIdx = (scoreMapMatchLength) i;
             // g_print("\n within loop: n:%d, i:%d",n,i);
-           return; 
+           return;
         }
     }
     // g_print("\n again: n:%d, i:%d",n,scoreMapMatchLengthDefIdx);
@@ -2964,11 +2971,11 @@ CommandSetScoreMapMatchLength(char* sz)
 extern void
 CommandSetScoreMapLabel(char* sz)
 {
- 
+
     for (int i=0; i<NUM_LABEL; i++){
         if (strcmp(sz, aszScoreMapLabelCommands[i]) == 0) {
            scoreMapLabelDef = (scoreMapLabel) i;
-           return; 
+           return;
         }
     }
     outputl(_("Wrong option."));
@@ -2977,11 +2984,11 @@ CommandSetScoreMapLabel(char* sz)
 extern void
 CommandSetScoreMapJacoby(char* sz)
 {
- 
+
     for (int i=0; i<NUM_JACOBY; i++){
         if (strcmp(sz, aszScoreMapJacobyCommands[i]) == 0) {
            scoreMapJacobyDef = (scoreMapJacoby) i;
-           return; 
+           return;
         }
     }
     outputl(_("Wrong option."));
@@ -2990,11 +2997,11 @@ CommandSetScoreMapJacoby(char* sz)
 extern void
 CommandSetScoreMapCubeEquityDisplay(char* sz)
 {
- 
+
     for (int i=0; i<NUM_CUBEDISP; i++){
         if (strcmp(sz, aszScoreMapCubeEquityDisplayCommands[i]) == 0) {
            scoreMapCubeEquityDisplayDef = (scoreMapCubeEquityDisplay) i;
-           return; 
+           return;
         }
     }
     outputl(_("Wrong option."));
@@ -3003,11 +3010,11 @@ CommandSetScoreMapCubeEquityDisplay(char* sz)
 extern void
 CommandSetScoreMapMoveEquityDisplay(char* sz)
 {
- 
+
     for (int i=0; i<NUM_MOVEDISP; i++){
         if (strcmp(sz, aszScoreMapMoveEquityDisplayCommands[i]) == 0) {
            scoreMapMoveEquityDisplayDef = (scoreMapMoveEquityDisplay) i;
-           return; 
+           return;
         }
     }
     outputl(_("Wrong option."));
@@ -3016,11 +3023,11 @@ CommandSetScoreMapMoveEquityDisplay(char* sz)
 extern void
 CommandSetScoreMapColour(char* sz)
 {
- 
+
     for (int i=0; i<NUM_COLOUR; i++){
         if (strcmp(sz, aszScoreMapColourCommands[i]) == 0) {
            scoreMapColourDef = (scoreMapColour) i;
-           return; 
+           return;
         }
     }
     outputl(_("Wrong option."));
@@ -3029,11 +3036,11 @@ CommandSetScoreMapColour(char* sz)
 extern void
 CommandSetScoreMapLayout(char* sz)
 {
- 
+
     for (int i=0; i<NUM_LAYOUT; i++){
         if (strcmp(sz, aszScoreMapLayoutCommands[i]) == 0) {
            scoreMapLayoutDef = (scoreMapLayout) i;
-           return; 
+           return;
         }
     }
     outputl(_("Wrong option."));
@@ -3043,10 +3050,10 @@ CommandSetScoreMapLayout(char* sz)
 extern void
 CommandSetAnalysisFileSetting(char* sz)
 {
-  
+
     for (int i=0; i<NUM_AnalyzeFileSettings; i++){
         // g_print("\n test within loop: i: %d",i);
-  
+
         if (strcmp(sz, aszAnalyzeFileSettingCommands[i]) == 0) {
            AnalyzeFileSettingDef = (analyzeFileSetting) i;
            // g_message("\n selected option analyze file setting: i:%d->text=%s",i,aszAnalyzeFileSettingCommands[i]);
@@ -4074,17 +4081,26 @@ CommandSetSoundSoundTake(char *sz)
 
 }
 
-
 static void
 SetPriority(int n)
 {
 
 #if defined(HAVE_SETPRIORITY)
-    if (setpriority(PRIO_PROCESS, getpid(), n))
-        outputerr("setpriority");
-    else {
+
+    // int pri = getpriority(PRIO_PROCESS, getpid());
+    // g_message("The original priority of process is :%d", pri);
+
+    errno = 0;
+    if (setpriority(PRIO_PROCESS, getpid(), n)) {
+        if (errno == EACCES)
+            outputf(_("You are not allowed to raise the scheduling priority.\n"));
+        else
+            outputerr("setpriority");
+        // g_message ("part 1: nThreadPriority is at %d",nThreadPriority);
+    } else {
         outputf(_("Scheduling priority set to %d.\n"), n);
         nThreadPriority = n;
+        // g_message ("part 2: nThreadPriority set to %d",nThreadPriority);
     }
 #elif WIN32
     /* tp - thread priority, pp - process priority */
@@ -4094,20 +4110,24 @@ SetPriority(int n)
 
     if (n < -19) {
         tp = THREAD_PRIORITY_TIME_CRITICAL;
+        pp = REALTIME_PRIORITY_CLASS; // IK: in Windows, only set it to high, not realtime, not sure why
         pch = N_("time critical");
     } else if (n < -10) {
         tp = THREAD_PRIORITY_HIGHEST;
+        pp = HIGH_PRIORITY_CLASS;
         pch = N_("highest");
     } else if (n < 0) {
         tp = THREAD_PRIORITY_ABOVE_NORMAL;
+        pp = ABOVE_NORMAL_PRIORITY_CLASS;
         pch = N_("above normal");
     } else if (!n) {
         pch = N_("normal");
     } else if (n < 19) {
         tp = THREAD_PRIORITY_BELOW_NORMAL;
+        pp = BELOW_NORMAL_PRIORITY_CLASS;
         pch = N_("below normal");
     } else {
-        /* Lowest - set to idle prioirty but raise the thread priority
+        /* Lowest - set to idle priority but raise the thread priority
          * to make sure it runs instead of screen savers */
         tp = THREAD_PRIORITY_HIGHEST;
         pp = IDLE_PRIORITY_CLASS;
@@ -4117,6 +4137,7 @@ SetPriority(int n)
     if (SetThreadPriority(GetCurrentThread(), tp)
         && SetPriorityClass(GetCurrentProcess(), pp)) {
         outputf(_("Priority of program set to: %s\n"), pch);
+        // outputerrf(_("Priority of program set to: %s\n"), pch);
         nThreadPriority = n;
     } else
         outputerrf(_("Changing priority failed (trying to set priority " "%s)\n"), pch);
@@ -4124,6 +4145,9 @@ SetPriority(int n)
     (void) n;                   /* suppress unused parameter compiler warning */
     outputerrf(_("Priority changes are not supported on this platform.\n"));
 #endif                          /* HAVE_SETPRIORITY */
+    // g_message ("nThreadPriority set to %d",nThreadPriority);
+    // UserCommand2("save settings");
+
 }
 
 extern void
@@ -4154,15 +4178,32 @@ CommandSetPriorityIdle(char *UNUSED(sz))
     SetPriority(19);
 }
 
+priority DefaultPriority = BELOW_NORMAL;
+const char* aszPriority[NUM_PRIORITY] = { N_("Idle"), N_("Below normal"), N_("Normal"), N_("Above normal"), N_("High"), N_("Realtime")};
+const char* aszPriorityCommands[NUM_PRIORITY]  = { "19", "10", "0", "-10", "-19", "-20"};
+
 extern void
 CommandSetPriorityNice(char *sz)
 {
-
     int n;
 
     if ((n = ParseNumber(&sz)) < -20 || n > 20) {
         outputl(_("You must specify a priority between -20 and 20."));
         return;
+    }
+
+    if (n < -19) {
+        DefaultPriority = (priority) REALTIME;
+    } else if (n < -10) {
+        DefaultPriority = (priority) HIGH;
+    } else if (n < 0) {
+        DefaultPriority = (priority) ABOVE_NORMAL;
+    } else if (!n) {
+        DefaultPriority = (priority) NORMAL;
+    } else if (n < 19) {
+        DefaultPriority = (priority) BELOW_NORMAL;
+    } else {
+        DefaultPriority = (priority) IDLE;
     }
 
     SetPriority(n);
@@ -4587,7 +4628,7 @@ SetXGID(char *sz)
         c = strchr(c, '\n');
         if (c != NULL) {
             *c = '\0';
-	}
+        }
     }
 
     for (i = 0; i < 9 && (c = strrchr(s, ':')); i++) {
@@ -4741,7 +4782,7 @@ SetXGID(char *sz)
     g_free(posid);
 
     if ((anDice[0] == 0 && fSidesSwapped) || (anDice[0] && !fMove))
-	return 2;	/* position has player on roll appearing on top */
+        return 2;        /* position has player on roll appearing on top */
     return 0;
 }
 
@@ -4781,8 +4822,8 @@ CommandSetXGID(char *sz)
     if (rc == 1)
         outputerrf(_("Not a valid XGID '%s'"), sz);
     else {
-	if (rc == 2)
-	    if (GetInputYN (_
+        if (rc == 2)
+            if (GetInputYN (_
              ("This position has player on roll appearing on top. \nSwap players so the player on roll appears on the bottom? ")))
                 CommandSwapPlayers(NULL);
 
@@ -4800,7 +4841,7 @@ SetGNUbgID(char *sz)
     case 0:
         return 0;
     case 2:
-	return 2;
+        return 2;
     default:
         ; /* continue below */
     }
@@ -4849,8 +4890,8 @@ CommandSetGNUbgID(char *sz)
 
     if (rc == 2)
         if (GetInputYN (_
-	    ("This position has player on roll appearing on top. \nSwap players so the player on roll appears on the bottom? ")))
-	    CommandSwapPlayers(NULL);
+            ("This position has player on roll appearing on top. \nSwap players so the player on roll appears on the bottom? ")))
+            CommandSwapPlayers(NULL);
 }
 
 extern void

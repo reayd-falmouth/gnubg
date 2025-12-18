@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtkboard.h,v 1.110 2020/01/19 19:26:05 Superfly_Jon Exp $
  */
 
 #ifndef GTKBOARD_H
@@ -39,7 +37,11 @@
 #define BOARD_GET_CLASS(obj)  		(G_TYPE_INSTANCE_GET_CLASS((obj), TYPE_BOARD, BoardClass))
 
 typedef struct {
+#if GTK_CHECK_VERSION(3,0,0)
+    GtkBoxClass parent_class;
+#else
     GtkVBoxClass parent_class;
+#endif
 } BoardClass;
 
 typedef enum {
@@ -105,7 +107,12 @@ typedef struct {
 } BoardData;
 
 typedef struct {
-    GtkVBox vboxxx;
+#if GTK_CHECK_VERSION(3,0,0)
+    GtkBox parent_instance;
+#else
+    GtkVBox parent_instance;
+#endif
+
     /* private data */
     BoardData *board_data;
 } Board;
@@ -131,7 +138,7 @@ extern int fGUIGrayEdit;
 extern unsigned int nGUIAnimSpeed;
 
 extern GType board_get_type(void);
-extern GtkWidget *board_new(renderdata * prd, int inPreview);
+extern GtkWidget *board_new(renderdata * prd, gboolean inPreview);
 extern GtkWidget *board_cube_widget(Board * board);
 extern void DestroySetCube(GObject * po, GtkWidget * pw);
 extern void Copy3dDiceColour(renderdata * prd);

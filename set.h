@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2003 Joern Thyssen <jth@gnubg.org>
- * Copyright (C) 2003-2007 the AUTHORS
+ * Copyright (C) 2024 Isaac Keslassy <keslassy@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef GTKOPTIONS_H
-#define GTKOPTIONS_H
+#ifndef SET_H
+#define SET_H
 
-extern void GTKSetOptions(void);
-extern void GTKSound(void);
-extern void GTKCommandEditKeyNames(GtkWidget * UNUSED(pw), GtkWidget * pwParent);
+typedef enum {
+    IDLE, BELOW_NORMAL, NORMAL, ABOVE_NORMAL, HIGH, REALTIME, NUM_PRIORITY
+} priority;
 
-#endif                          /* GTKOPTIONS_H */
+extern priority DefaultPriority;
+extern const char* aszPriority[NUM_PRIORITY];
+extern const char* aszPriorityCommands[NUM_PRIORITY];
+
+#endif                          /* SET_H */

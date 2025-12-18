@@ -2985,7 +2985,7 @@ AddText(GtkWidget* pwBox, char* Text)
 }
 
 
-static void
+extern void
 BuildRadioButtons(GtkWidget* pwvbox, GtkWidget* apwScoreMapFrame[], const char* frameTitle, const char* frameToolTip, const char* labelStrings[],
     int labelStringsLen, int toggleDefault) { 
     /* Sub-function to build a new box with a new set of labels, with a whole bunch of needed parameters
@@ -4567,6 +4567,7 @@ CreateMainWindow(void)
 #endif
     gtk_box_pack_start(GTK_BOX(pwVbox), pwHandle, FALSE, TRUE, 0);
     gtk_container_add(GTK_CONTAINER(pwHandle), pwToolbar = ToolbarNew());
+    SetToolbarStyle(nToolbarStyle);
 
 #if GTK_CHECK_VERSION(3,0,0)
     pwGameBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);

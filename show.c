@@ -1800,7 +1800,7 @@ CommandShowMarketWindow(char *sz)
 
         /* money play: use Janowski's formulae */
 
-        /* 
+        /*
          * FIXME's: (1) make GTK version
          *          (2) make output for "current" value of X
          *          (3) improve layout?
@@ -2043,7 +2043,7 @@ CommandShowRolls(char *sz)
 #if defined(USE_GTK)
 
     if (fX) {
-        static evalcontext ec0ply = { TRUE, 0, FALSE, TRUE, 0.0 };
+        static evalcontext ec0ply = { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f };
         GTKShowRolls(nDepth, &ec0ply, &ms);
         return;
     }
@@ -2131,17 +2131,17 @@ CommandShowScoreMap(char *sz)
 #if defined(USE_GTK)
 
     if (fX) {
-        
+
 // TODO: don't show score map if not a double. Perhaps start with doShowScoreMap=ms.fDoubled
-        int doShowScoreMap=TRUE; 
-        if ( sz && *sz && (strncmp(sz, "=move", 5) ==0) ) { //strncmp: returns 0 if same content => we enter if NOT move
+        int doShowScoreMap = TRUE;
+        if ( sz && *sz && (strncmp(sz, "=move", 5) == 0) ) { //strncmp: returns 0 if same content => we enter if NOT move
             GTKShowScoreMap(&ms, 0);
-        } else { 
+        } else {
             cubeinfo ci;
             GetMatchStateCubeInfo(&ci, &ms);
             if (!GetDPEq(NULL, NULL, &ci)) {
 
-                /* cube is available 
+                /* cube is available
 
                 matchstate ams[1];
                 int i;

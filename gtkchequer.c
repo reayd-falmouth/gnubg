@@ -201,7 +201,7 @@ MoveListScoreMapClicked(GtkWidget * UNUSED(pw), hintdata * UNUSED(phd))
 
     char *sz = g_strdup("show scoremap =move"); //cf keyword -> gtkgame.c: CMD_SHOW_SCORE_MAP_MOVE
     UserCommand(sz);
-    g_free(sz);  
+    g_free(sz);
 
 }
 
@@ -310,11 +310,12 @@ static void
 MoveListEvalPly(GtkWidget * pw, hintdata * phd)
 {
     char *szPly = (char *) g_object_get_data(G_OBJECT(pw), "user_data");
-    evalcontext ec = { TRUE, 0, TRUE, TRUE, 0.0 };
+    evalcontext ec = { .fCubeful = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f };
     /* Reset interrupt flag */
     MT_SafeSet(&fInterrupt, FALSE);
 
     ec.nPlies = atoi(szPly);
+    ec.fUsePrune = (ec.nPlies > 0);
 
     EvalMoves(phd, &ec);
 }
@@ -468,7 +469,7 @@ CreateMoveListTools(hintdata * phd)
     GtkWidget *pwCopy = gtk_button_new_with_label(_("Copy"));
     GtkWidget *pwTempMap = gtk_button_new_with_label(_("TM"));
     GtkWidget *pwCmark = gtk_button_new_with_label(_("Cmark"));
-    GtkWidget *pwScoreMap = gtk_button_new_with_label(_("ScoreMap"));     
+    GtkWidget *pwScoreMap = gtk_button_new_with_label(_("ScoreMap"));
     int i;
 
     pwDetails = phd->fDetails ? NULL : gtk_toggle_button_new_with_label(_("Details"));
@@ -626,7 +627,7 @@ CreateMoveListTools(hintdata * phd)
                      (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
 
     gtk_table_attach(GTK_TABLE(pwTools), pwScoreMap, 6, 7, 1, 2,
-                     (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0); 
+                     (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
 #endif
 
             // g_message("GTK chequer: fAnalysisRunning=%d",fAnalysisRunning);
