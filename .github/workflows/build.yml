@@ -1,0 +1,138 @@
+name: Build GNUBG
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      # -------------------------
+      # Linux dependencies
+      # -------------------------
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            autoconf automake libtool \
+            make gcc g++ \
+            bison flex \
+            pkg-config \
+            libglib2.0-dev \
+            libreadline-dev \
+            python3 python3-dev
+
+      # -------------------------
+      # macOS dependencies
+      # -------------------------
+      - name: Install macOS dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install \
+            autoconf automake libtool \
+            bison flex \
+            pkg-config \
+            glib \
+            readline \
+            python
+          
+          echo "$(brew --prefix bison)/bin" >> $GITHUB_PATH
+          echo "$(brew --prefix flex)/bin" >> $GITHUB_PATH
+
+      # -------------------------
+      # Windows (MSYS2)
+      # -------------------------
+      - name: Setup MSYS2
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >
+            base-devel
+            autoconf
+            automake
+            libtool
+            make
+            gcc
+            bison
+            flex
+            pkg-config
+            mingw-w64-x86_64-glib2
+            mingw-w64-x86_64-readline
+            mingw-w64-x86_64-python
+
+      # -------------------------
+      # Autogen (if needed)
+      # -------------------------
+      - name: Run autogen.sh
+        shell: bash
+        run: |
+          if [ -f ./autogen.sh ]; then
+            ./autogen.sh
+          fi
+
+      # -------------------------
+      # Configure
+      # -------------------------
+      - name: Configure GNUBG
+        shell: bash
+        run: |
+          ./configure \
+            --disable-gtk \
+            --disable-board3d \
+            --enable-threads \
+            --enable-simd=no \
+            --with-python=python3
+
+      # -------------------------
+      # Build
+      # -------------------------
+      - name: Build
+        shell: bash
+        run: |
+          make -j$(nproc || sysctl -n hw.ncpu)
+
+      # -------------------------
+      # Install to staging dir
+      # -------------------------
+      - name: Install to staging
+        shell: bash
+        run: |
+          mkdir -p dist
+          make install DESTDIR="$(pwd)/dist"
+
+      # -------------------------
+      # Collect artefacts
+      # -------------------------
+      - name: Collect binaries
+        shell: bash
+        run: |
+          mkdir -p artifact/bin
+          
+          find dist -type f -name "gnubg*" -exec cp {} artifact/bin/ \;
+          find . -type f -name "libgnubg.py" -exec cp {} artifact/bin/ \; || true
+          
+          ls -lah artifact/bin
+
+      # -------------------------
+      # Upload artefact
+      # -------------------------
+      - name: Upload artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gnubg-${{ runner.os }}
+          path: artifact/bin
