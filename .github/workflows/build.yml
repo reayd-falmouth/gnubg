@@ -157,7 +157,7 @@ jobs:
           fi
 
           echo "Running artifact smoke test: $GNUBG_BIN -t -q -h"
-          "$GNUBG_BIN" -t -q -h > /dev/null
+          "$GNUBG_BIN" -t -q -h
 
           echo "Packaged gnubg artifact smoke test passed"
 
