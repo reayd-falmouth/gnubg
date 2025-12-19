@@ -182,29 +182,6 @@ jobs:
           # Copy executable
           find dist -type f -iname "gnubg*.exe" -exec cp {} artifact/bin/ \;
 
-          # Copy share/gnubg data
-          if [ -d dist/usr/local/share/gnubg ]; then
-            cp -r dist/usr/local/share/gnubg artifact/share/
-          else
-            echo "ERROR: share/gnubg not found in install tree"
-            exit 1
-          fi
-
-          echo "Collected artefact layout:"
-          find artifact -maxdepth 3 -type f
-
-      - name: Collect Windows artefact (binary + data)
-        if: runner.os == 'Windows'
-        shell: msys2 {0}
-        run: |
-          set -e
-
-          mkdir -p artifact/bin
-          mkdir -p artifact/share
-
-          # Copy executable
-          find dist -type f -iname "gnubg*.exe" -exec cp {} artifact/bin/ \;
-
           # MSYS2 MinGW installs to /mingw64
           if [ -d dist/mingw64/share/gnubg ]; then
             cp -r dist/mingw64/share/gnubg artifact/share/
