@@ -120,7 +120,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          ./configure      
+          ./configure --prefix=/
 
       # -------------------------
       # Build
