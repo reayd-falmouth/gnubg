@@ -146,7 +146,7 @@ jobs:
         run: |
           mkdir -p dist
           make install DESTDIR="$(pwd)/dist"
-          ls -lah "$(pwd)/dist/**"
+          ls -lah "$(pwd)/dist/*"
 
       - name: Install to staging (Windows)
         if: runner.os == 'Windows'
@@ -154,7 +154,7 @@ jobs:
         run: |
           mkdir -p dist
           make install DESTDIR="$(pwd)/dist"
-          ls -lah "$(pwd)/dist/**"
+          ls -lah "$(pwd)/dist/*"
 
       # -------------------------
       # Collect artefacts
