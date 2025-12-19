@@ -176,6 +176,32 @@ jobs:
           find dist -type f -iname "gnubg*.exe" -exec cp {} artifact/bin/ \;
           ls -lah artifact/bin
 
+      - name: Bundle Windows runtime DLLs
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -e
+
+          EXE="$(find artifact/bin -iname 'gnubg*.exe' | head -n 1)"
+
+          if [ -z "$EXE" ]; then
+            echo "gnubg.exe not found"
+            exit 1
+          fi
+
+          echo "Bundling DLLs for $EXE"
+
+          ldd "$EXE" \
+            | grep mingw \
+            | awk '{print $3}' \
+            | while read -r dll; do
+                if [ -f "$dll" ]; then
+                  cp -u "$dll" artifact/bin/
+                fi
+              done
+
+          ls -lah artifact/bin
+
       # -------------------------
       # Test packaged artefact
       # -------------------------
