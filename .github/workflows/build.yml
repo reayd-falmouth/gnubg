@@ -146,7 +146,7 @@ jobs:
         run: |
           mkdir -p dist
           make install DESTDIR="$(pwd)/dist"
-          ls -lah "$(pwd)/dist/*"
+          ls -lah "$(pwd)/dist"
 
       - name: Install to staging (Windows)
         if: runner.os == 'Windows'
@@ -154,21 +154,20 @@ jobs:
         run: |
           mkdir -p dist
           make install DESTDIR="$(pwd)/dist"
-          ls -lah "$(pwd)/dist/*"
+          ls -lah "$(pwd)/dist"
 
       # -------------------------
       # Collect artefacts
       # -------------------------
-      - name: Collect binaries
-        if: runner.os != 'Windows'
+      - name: Prepare Linux artefact
+        if: runner.os == 'Linux'
         shell: bash
         run: |
-          mkdir -p artifact/bin
-          
-          find dist -type f -name "gnubg*" -exec cp {} artifact/bin/ \;
-          find . -type f -name "libgnubg.py" -exec cp {} artifact/bin/ \; || true
-          
-          ls -lah artifact/bin
+          set -e
+          mkdir -p artifact
+          cp -a dist/usr/local/* artifact/
+          echo "Linux artefact layout:"
+          find artifact -type d
 
       - name: Collect Windows artefact (classic GNUBG layout)
         if: runner.os == 'Windows'
