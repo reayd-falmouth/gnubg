@@ -170,31 +170,63 @@ jobs:
           
           ls -lah artifact/bin
 
-      - name: Collect Windows artefact (binary + data)
+      - name: Collect Windows artefact (classic GNUBG layout)
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
           set -e
 
-          mkdir -p artifact/bin
-          mkdir -p artifact/share
+          mkdir -p artifact/windows
 
-          # Copy executable
-          find dist -type f -iname "gnubg*.exe" -exec cp {} artifact/bin/ \;
+          # 1. Copy executables
+          find dist -type f -iname "*.exe" -exec cp {} artifact/windows/ \;
 
-          # MSYS2 MinGW installs to /mingw64
+          # 2. Copy DLLs already bundled earlier (if not already there)
+          find artifact/bin -maxdepth 1 -iname "*.dll" -exec cp {} artifact/windows/ \; || true
+
+          # 3. Explode share/gnubg into root
           if [ -d dist/mingw64/share/gnubg ]; then
-            cp -r dist/mingw64/share/gnubg artifact/share/
+            cp -r dist/mingw64/share/gnubg/* artifact/windows/
           else
             echo "ERROR: dist/mingw64/share/gnubg not found"
-            echo "Installed tree:"
             find dist -maxdepth 3 -type d
             exit 1
           fi
 
-          echo "Collected artefact layout:"
-          find artifact -maxdepth 4 -type f
-      
+          # 4. Provide gnubg-cli.exe (Windows convention)
+          if [ -f artifact/windows/gnubg.exe ]; then
+            cp artifact/windows/gnubg.exe artifact/windows/gnubg-cli.exe
+          fi
+
+          echo "Final Windows layout:"
+          ls -lah artifact/windows      
+
+      - name: Bundle Windows DLL dependencies
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -e
+
+          EXE="artifact/windows/gnubg.exe"
+
+          if [ ! -f "$EXE" ]; then
+            echo "ERROR: gnubg.exe not found in artifact/windows"
+            exit 1
+          fi
+
+          echo "Resolving DLL dependencies for gnubg.exe"
+
+          ldd "$EXE" \
+            | grep mingw64 \
+            | awk '{print $3}' \
+            | while read -r dll; do
+                if [ -f "$dll" ]; then
+                  cp -u "$dll" artifact/windows/
+                fi
+              done
+
+          echo "Bundled DLLs:"
+          ls -lah artifact/windows/*.dll
 
       # -------------------------
       # Test packaged artefact
@@ -230,15 +262,13 @@ jobs:
         run: |
           set -e
 
-          GNUBG_BIN="$(find artifact/bin -iname 'gnubg*.exe' | head -n 1)"
-
-          if [ -z "$GNUBG_BIN" ]; then
+          if [ ! -f artifact/windows/gnubg.exe ]; then
             echo "ERROR: gnubg.exe not found"
             exit 1
           fi
 
           echo "Running Windows smoke test"
-          "$GNUBG_BIN" -t -q -h > /dev/null
+          artifact/windows/gnubg.exe -t -q -h > /dev/null
 
           echo "Windows gnubg smoke test passed"
 
