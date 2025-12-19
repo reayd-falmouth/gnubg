@@ -249,4 +249,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gnubg-${{ runner.os }}
-          path: artifact/bin
+          path: artifact
