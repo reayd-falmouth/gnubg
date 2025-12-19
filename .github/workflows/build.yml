@@ -192,33 +192,32 @@ jobs:
 
           echo "Collected artefact layout:"
           find artifact -maxdepth 3 -type f
-      
 
-      - name: Bundle Windows runtime DLLs
+      - name: Collect Windows artefact (binary + data)
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
           set -e
 
-          EXE="$(find artifact/bin -iname 'gnubg*.exe' | head -n 1)"
+          mkdir -p artifact/bin
+          mkdir -p artifact/share
 
-          if [ -z "$EXE" ]; then
-            echo "gnubg.exe not found"
+          # Copy executable
+          find dist -type f -iname "gnubg*.exe" -exec cp {} artifact/bin/ \;
+
+          # MSYS2 MinGW installs to /mingw64
+          if [ -d dist/mingw64/share/gnubg ]; then
+            cp -r dist/mingw64/share/gnubg artifact/share/
+          else
+            echo "ERROR: dist/mingw64/share/gnubg not found"
+            echo "Installed tree:"
+            find dist -maxdepth 3 -type d
             exit 1
           fi
 
-          echo "Bundling DLLs for $EXE"
-
-          ldd "$EXE" \
-            | grep mingw \
-            | awk '{print $3}' \
-            | while read -r dll; do
-                if [ -f "$dll" ]; then
-                  cp -u "$dll" artifact/bin/
-                fi
-              done
-
-          ls -lah artifact/bin
+          echo "Collected artefact layout:"
+          find artifact -maxdepth 4 -type f
+      
 
       # -------------------------
       # Test packaged artefact
