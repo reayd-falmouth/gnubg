@@ -59,6 +59,8 @@ libtool
 ltmain.sh
 makebearoff
 Makefile
+!.github/winmakeconfig/lib/Makefile
+!.github/winmakeconfig/board3d/Makefile
 Makefile.in
 makehyper
 makeweights
