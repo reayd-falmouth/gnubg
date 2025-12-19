@@ -61,43 +61,6 @@ jobs:
           # Force GNU readline headers & libs for *configure*
           echo "CPPFLAGS=-I$(brew --prefix readline)/include" >> $GITHUB_ENV
           echo "LDFLAGS=-L$(brew --prefix readline)/lib" >> $GITHUB_ENV
-            
-
-      #      # -------------------------
-      # Windows (MSYS2)
-      # -------------------------
-      # -------------------------
-      # Windows (MSYS2 / MinGW)
-      # -------------------------
-      - name: Setup MSYS2
-        if: runner.os == 'Windows'
-        uses: msys2/setup-msys2@v2
-        with:
-          update: true
-          msystem: MINGW64
-          install: >
-            base-devel
-            mingw-w64-x86_64-toolchain
-            mingw-w64-x86_64-glib2
-            mingw-w64-x86_64-readline
-            mingw-w64-x86_64-gettext
-            mingw-w64-x86_64-python
-            mingw-w64-x86_64-pkg-config
-            autoconf
-            automake
-            libtool
-            bison
-            flex
-            gawk
-
-      # -------------------------
-      # Autogen (if needed)
-      # -------------------------
-      - name: Run autogen.sh (Windows)
-        if: runner.os == 'Windows'
-        shell: msys2 {0}
-        run: |
-          ./autogen.sh
 
       - name: Run autogen.sh
         if: runner.os != 'Windows'
@@ -116,12 +79,6 @@ jobs:
         run: |
           ./configure
 
-      - name: Configure GNUBG (Windows)
-        if: runner.os == 'Windows'
-        shell: msys2 {0}
-        run: |
-          ./configure --prefix=/
-
       # -------------------------
       # Build
       # -------------------------
@@ -131,26 +88,12 @@ jobs:
         run: |
           make
 
-      - name: Build (Windows)
-        if: runner.os == 'Windows'
-        shell: msys2 {0}
-        run: |
-          make
-
       # -------------------------
       # Install to staging dir
       # -------------------------
       - name: Install to staging
         if: runner.os != 'Windows'
         shell: bash
-        run: |
-          mkdir -p dist
-          make install DESTDIR="$(pwd)/dist"
-          ls -lah "$(pwd)/dist"
-
-      - name: Install to staging (Windows)
-        if: runner.os == 'Windows'
-        shell: msys2 {0}
         run: |
           mkdir -p dist
           make install DESTDIR="$(pwd)/dist"
@@ -168,59 +111,6 @@ jobs:
           cp -a dist/usr/local/* artifact/
           echo "Linux artefact layout:"
           find artifact -type d
-
-      - name: Collect Windows artefact (classic GNUBG layout)
-        if: runner.os == 'Windows'
-        shell: msys2 {0}
-        run: |
-          set -e
-
-          mkdir -p artifact/windows
-
-          # Copy executables
-          find dist -type f -iname "*.exe" -exec cp {} artifact/windows/ \;
-
-          # Find share/gnubg regardless of prefix
-          GNUBG_SHARE="$(find dist -type d -path '*/share/gnubg' | head -n 1)"
-
-          if [ -z "$GNUBG_SHARE" ]; then
-            echo "ERROR: share/gnubg not found in dist"
-            find dist -maxdepth 4 -type d
-            exit 1
-          fi
-
-          echo "Using GNUBG share dir: $GNUBG_SHARE"
-          cp -r "$GNUBG_SHARE"/* artifact/windows/
-
-          # Provide gnubg-cli.exe
-          if [ -f artifact/windows/gnubg.exe ]; then
-            cp artifact/windows/gnubg.exe artifact/windows/gnubg-cli.exe
-          fi
-
-          echo "Final Windows layout:"
-          ls -lah artifact/windows
-
-      - name: Bundle Windows DLL dependencies
-        if: runner.os == 'Windows'
-        shell: msys2 {0}
-        run: |
-          set -e
-
-          EXE="artifact/windows/gnubg.exe"
-
-          if [ ! -f "$EXE" ]; then
-            echo "ERROR: gnubg.exe not found"
-            exit 1
-          fi
-
-          ldd "$EXE" \
-            | grep -E 'mingw|msys' \
-            | awk '{print $3}' \
-            | while read -r dll; do
-                [ -f "$dll" ] && cp -u "$dll" artifact/windows/
-              done
-
-          ls -lah artifact/windows/*.dll
 
       # -------------------------
       # Test packaged artefact
@@ -250,21 +140,104 @@ jobs:
 
           echo "Packaged gnubg artifact smoke test passed"
 
-      - name: Test Windows packaged artefact
+      # -------------------------
+      # Windows (Legacy MinGW build)
+      # -------------------------
+      - name: Setup MSYS2 MinGW
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          msystem: MINGW64
+          install: >
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-glib2
+            mingw-w64-x86_64-libxml2
+            mingw-w64-x86_64-libpng
+            mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-gettext
+            mingw-w64-x86_64-readline
+            make
+
+      # -------------------------
+      # Prepare legacy Windows Makefiles
+      # -------------------------
+      - name: Install legacy Windows build files
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
           set -e
+          
+          echo "Installing legacy Windows build files"
+          
+          cp .github/winmakeconfig/Makefile3D .
+          cp .github/winmakeconfig/MakefileOld .
+          cp .github/winmakeconfig/config.gui3D .
+          cp .github/winmakeconfig/config.guiOld .
+          cp .github/winmakeconfig/gnubg3D.bat .
+          cp .github/winmakeconfig/gnubgOld.bat .
+          
+          mkdir -p lib board3d
+          cp .github/winmakeconfig/lib/Makefile lib/Makefile
+          cp .github/winmakeconfig/board3d/Makefile board3d/Makefile
+          
+          ls -lah Makefile3D config.gui3D gnubg3D.bat
 
-          if [ ! -f artifact/windows/gnubg.exe ]; then
-            echo "ERROR: gnubg.exe not found"
-            exit 1
+      # -------------------------
+      # Build GNUBG (Windows)
+      # -------------------------
+      - name: Build GNUBG (Windows legacy)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -e
+          
+          export PATH="/mingw64/bin:$PATH"
+          
+          echo "Building GNUBG using legacy Makefile3D"
+          mingw32-make -f Makefile3D
+          
+          test -f gnubg.exe
+          ls -lah gnubg.exe
+
+      # -------------------------
+      # Collect Windows artefact
+      # -------------------------
+      - name: Package Windows artefact
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -e
+          
+          mkdir -p artifact/windows
+          cp gnubg.exe artifact/windows/
+          
+          # Copy runtime data if present
+          if [ -d share/gnubg ]; then
+            cp -r share/gnubg artifact/windows/
           fi
+          
+          # Bundle MinGW DLLs
+          ldd artifact/windows/gnubg.exe \
+            | awk '{print $3}' \
+            | grep -E '/mingw64/' \
+            | while read -r dll; do
+                cp -u "$dll" artifact/windows/
+              done
+          
+          ls -lah artifact/windows
 
-          echo "Running Windows smoke test"
+      # -------------------------
+      # Smoke test (Windows)
+      # -------------------------
+      - name: Test Windows gnubg binary
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -e
           artifact/windows/gnubg.exe -t -q -h > /dev/null
-
-          echo "Windows gnubg smoke test passed"
+          echo "Windows GNUBG smoke test passed"
 
       # -------------------------
       # Upload artefact

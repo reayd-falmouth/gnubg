@@ -1,0 +1,73 @@
+# BASEDIR= (set by gnubg3D.bat)
+# GNUDIR= (set by gnubg3D.bat)
+CC      = gcc
+OPT     = -O
+# to debug: OPT     = -g -O
+# normal  : OPT     = -O3
+#OPT     = -O3 -march=pentium -mcpu=pentium -msse -mfpmath=sse -ffast-math
+#OPT     = -O3 -march=athlon -mcpu=athlon -msse -mfpmath=sse -mno-ieee-fp -ffast-math
+CFLAGS  = -mms-bitfields -Wall $(OPT) $(DEFS) $(INCLUDE)
+DEFS    = -DHAVE_CONFIG_H -DLOCALEDIR=\"locale\"
+INCLUDE = \
+	-I$(GNUDIR) \
+	-I$(GNUDIR)/lib \
+	-I$(BASEDIR)/lib/gtk+/include \
+	-I$(BASEDIR)/lib/glib-2.0/include \
+	-I$(BASEDIR)/include/libxml2 \
+	-I$(BASEDIR)/include/glib-2.0 \
+	-I$(BASEDIR)/include/gtk \
+	-I$(BASEDIR)/include/freetype2 \
+	-I$(BASEDIR)/include/FTGL \
+	-I$(BASEDIR)/include/gtkgl
+
+CONFIG  = config.h
+CP      = copy
+ISCC    = ISCC
+STRIP   = strip
+
+LIBPATH = -L./lib -L./board3d
+
+# -mwindows : NOT for makebearoff / makebearoff1
+# to debug: LDFLAGS = -g
+# normal  : LDFLAGS = -mwindows
+LDFLAGS = -mwindows
+LDFL_MB =
+LDFL_MW = #-mwindows
+
+LIBS     = -levent -lboard -lgtkgl -lftgl -lopengl32 -lglu32 -lgdi32 \
+	     -lxml2 -lintl.dll -lglib-2.0.dll -lgdk.dll -lgtk.dll -liconv  \
+	     -lart_lgpl -lpng -lfreetype -lwinmm -lwsock32 -lm -lstdc++
+
+LIBSGNU  = $(LDFLAGS) $(LIBPATH) $(LIBS)
+TARGET = gnubg
+
+SOURCE = analysis bearoff bearoffgammon boardpos copying credits database \
+         dice drawboard erf eval export external format formatgs getopt \
+         getopt1 gnubg gtk-multiview gtkbearoff gtkboard \
+	 gtkchequer gtkcolour gtkcube gtkexport gtkgame gtkmet gtkmovefilter \
+	 gtkoptions gtkpath gtkprefs gtkrace gtksplash gtktempmap \
+	 gtktheory gtktoolbar guile html htmlimages i18n import \
+	 kleinman latex luxi matchequity matchid onechequer openurl osr \
+	 path play positionid postscript progress pub_eval record render \
+	 renderprefs rollout set sgf sgfl sgfp show simplelibgen sound \
+	 speed strdup text timer timecontrol 
+
+OBJECTS=$(patsubst %,%.o,$(SOURCE)) 
+
+LIBEVENT = lib/libevent.a
+LIBBOARD = board3d/libboard.a
+
+$(TARGET):	$(LIBEVENT) $(LIBBOARD) $(OBJECTS)
+	$(CC) -o $(TARGET) $(OBJECTS) $(LIBSGNU)
+
+sgf.c: $(SRC)
+	true
+
+$(LIBEVENT):	$(CONFIG)
+	$(MAKE) -C lib
+
+$(LIBBOARD):	$(CONFIG)
+	$(MAKE) -C board3d
+
+$(CONFIG):
+	$(CP) config.gui3D $(CONFIG)
