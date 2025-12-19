@@ -159,8 +159,8 @@ jobs:
       # -------------------------
       # Collect artefacts
       # -------------------------
-      - name: Prepare Linux artefact
-        if: runner.os == 'Linux'
+      - name: Prepare Unix artefact
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           set -e
