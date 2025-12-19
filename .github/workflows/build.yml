@@ -170,13 +170,29 @@ jobs:
           
           ls -lah artifact/bin
 
-      - name: Collect Windows binaries
+      - name: Collect Windows artefact (binary + data)
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
+          set -e
+
           mkdir -p artifact/bin
+          mkdir -p artifact/share
+
+          # Copy executable
           find dist -type f -iname "gnubg*.exe" -exec cp {} artifact/bin/ \;
-          ls -lah artifact/bin
+
+          # Copy share/gnubg data
+          if [ -d dist/usr/local/share/gnubg ]; then
+            cp -r dist/usr/local/share/gnubg artifact/share/
+          else
+            echo "ERROR: share/gnubg not found in install tree"
+            exit 1
+          fi
+
+          echo "Collected artefact layout:"
+          find artifact -maxdepth 3 -type f
+      
 
       - name: Bundle Windows runtime DLLs
         if: runner.os == 'Windows'
