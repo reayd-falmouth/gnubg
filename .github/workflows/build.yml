@@ -177,25 +177,28 @@ jobs:
 
           mkdir -p artifact/windows
 
-          # 1. Copy executables
+          # Copy executables
           find dist -type f -iname "*.exe" -exec cp {} artifact/windows/ \;
 
-          # 3. Explode share/gnubg into root
-          if [ -d dist/mingw64/share/gnubg ]; then
-            cp -r dist/mingw64/share/gnubg/* artifact/windows/
-          else
-            echo "ERROR: dist/mingw64/share/gnubg not found"
-            find dist -maxdepth 3 -type d
+          # Find share/gnubg regardless of prefix
+          GNUBG_SHARE="$(find dist -type d -path '*/share/gnubg' | head -n 1)"
+
+          if [ -z "$GNUBG_SHARE" ]; then
+            echo "ERROR: share/gnubg not found in dist"
+            find dist -maxdepth 4 -type d
             exit 1
           fi
 
-          # 4. Provide gnubg-cli.exe (Windows convention)
+          echo "Using GNUBG share dir: $GNUBG_SHARE"
+          cp -r "$GNUBG_SHARE"/* artifact/windows/
+
+          # Provide gnubg-cli.exe
           if [ -f artifact/windows/gnubg.exe ]; then
             cp artifact/windows/gnubg.exe artifact/windows/gnubg-cli.exe
           fi
 
           echo "Final Windows layout:"
-          ls -lah artifact/windows      
+          ls -lah artifact/windows
 
       - name: Bundle Windows DLL dependencies
         if: runner.os == 'Windows'
@@ -206,22 +209,17 @@ jobs:
           EXE="artifact/windows/gnubg.exe"
 
           if [ ! -f "$EXE" ]; then
-            echo "ERROR: gnubg.exe not found in artifact/windows"
+            echo "ERROR: gnubg.exe not found"
             exit 1
           fi
 
-          echo "Resolving DLL dependencies for gnubg.exe"
-
           ldd "$EXE" \
-            | grep mingw64 \
+            | grep -E 'mingw|msys' \
             | awk '{print $3}' \
             | while read -r dll; do
-                if [ -f "$dll" ]; then
-                  cp -u "$dll" artifact/windows/
-                fi
+                [ -f "$dll" ] && cp -u "$dll" artifact/windows/
               done
 
-          echo "Bundled DLLs:"
           ls -lah artifact/windows/*.dll
 
       # -------------------------
