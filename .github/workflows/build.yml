@@ -146,7 +146,7 @@ jobs:
         run: |
           mkdir -p dist
           make install DESTDIR="$(pwd)/dist"
-          ls -lah "$(pwd)/dist"
+          ls -lah "$(pwd)/dist/**"
 
       - name: Install to staging (Windows)
         if: runner.os == 'Windows'
@@ -154,7 +154,7 @@ jobs:
         run: |
           mkdir -p dist
           make install DESTDIR="$(pwd)/dist"
-          ls -lah "$(pwd)/dist"
+          ls -lah "$(pwd)/dist/**"
 
       # -------------------------
       # Collect artefacts
@@ -180,9 +180,6 @@ jobs:
 
           # 1. Copy executables
           find dist -type f -iname "*.exe" -exec cp {} artifact/windows/ \;
-
-          # 2. Copy DLLs already bundled earlier (if not already there)
-          find artifact/bin -maxdepth 1 -iname "*.dll" -exec cp {} artifact/windows/ \; || true
 
           # 3. Explode share/gnubg into root
           if [ -d dist/mingw64/share/gnubg ]; then
