@@ -53,7 +53,8 @@ SET BASEDIR=%MINGWDIR%
 :: GNUDIR is the directory with the Source files
 :: Adapt it if you installed the source files elsewhere
 ::  ============= to change if needed ===================
-SET GNUDIR=C:\GNUBG
+:: SET GNUDIR=C:\GNUBG
+SET GNUDIR=%CD%
 ::  ============= to change if needed ===================
 ::
 IF EXIST %GNUDIR%\GNUBG.C GOTO GNUDIROK
