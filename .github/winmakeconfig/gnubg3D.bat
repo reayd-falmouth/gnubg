@@ -42,8 +42,8 @@ SET MAKE=mingw32-make.exe
 :: Next line to prevent changes in config.gui3D are not copied to config.h
 DEL config.h
 :: Next lines to be sure you get a clean build
-DEL board3D\*.o
-DEL board3D\libboard.a
+DEL board3d\*.o
+DEL board3d\libboard.a
 DEL *.o
 ::
 :: Next line sets the BASEDIR variable for Makefile s
