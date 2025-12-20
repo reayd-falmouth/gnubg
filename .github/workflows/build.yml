@@ -171,18 +171,17 @@ jobs:
           
           echo "Installing legacy Windows build files"
           
-          cp .github/winmakeconfig/Makefile3D .
-          cp .github/winmakeconfig/MakefileOld .
-          cp .github/winmakeconfig/config.gui3D .
-          cp .github/winmakeconfig/config.guiOld .
-          cp .github/winmakeconfig/gnubg3D.bat .
           cp .github/winmakeconfig/gnubgOld.bat .
+          cp .github/winmakeconfig/config.guiOld .
+          cp .github/winmakeconfig/MakefileOld .
           
-          mkdir -p lib board3d
+          cp .github/winmakeconfig/Makefile3D .
+          cp .github/winmakeconfig/config.gui3D .
+          cp .github/winmakeconfig/gnubg3D.bat .
           cp .github/winmakeconfig/lib/Makefile lib/Makefile
           cp .github/winmakeconfig/board3d/Makefile board3d/Makefile
           
-          ls -lah Makefile3D config.gui3D gnubg3D.bat
+          ls -lah Makefile3D config.gui3D gnubg3D.bat lib/Makefile board3d/Makefile
 
       # -------------------------
       # Build GNUBG (Windows)
