@@ -58,7 +58,16 @@ install-sh
 libtool
 ltmain.sh
 makebearoff
-Makefile
+# Ignore all Makefiles
+**/Makefile
+
+# Re-allow parent directories
+!.github/
+!.github/winmakeconfig/
+!.github/winmakeconfig/lib/
+!.github/winmakeconfig/board3d/
+
+# Re-allow specific Makefiles
 !.github/winmakeconfig/lib/Makefile
 !.github/winmakeconfig/board3d/Makefile
 Makefile.in
