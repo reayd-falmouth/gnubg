@@ -165,7 +165,7 @@ jobs:
       # -------------------------
       - name: Install legacy Windows build files
         if: runner.os == 'Windows'
-        shell: msys2 {0}
+        shell: cmd
         run: |
           set -e
           
@@ -189,7 +189,7 @@ jobs:
       # -------------------------
       - name: Build GNUBG (Windows legacy)
         if: runner.os == 'Windows'
-        shell: msys2 {0}
+        shell: cmd
         run: |
           set -e
           
@@ -206,7 +206,7 @@ jobs:
       # -------------------------
       - name: Package Windows artefact
         if: runner.os == 'Windows'
-        shell: msys2 {0}
+        shell: cmd
         run: |
           set -e
           
@@ -233,7 +233,7 @@ jobs:
       # -------------------------
       - name: Test Windows gnubg binary
         if: runner.os == 'Windows'
-        shell: msys2 {0}
+        shell: cmd
         run: |
           set -e
           artifact/windows/gnubg.exe -t -q -h > /dev/null
