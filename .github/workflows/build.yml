@@ -183,6 +183,25 @@ jobs:
           
           ls -lah Makefile3D config.gui3D gnubg3D.bat lib/Makefile board3d/Makefile
 
+      - name: Diagnose MinGW make location
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          echo === PATH ===
+          echo %PATH%
+          echo.
+          
+          echo === where mingw32-make ===
+          where mingw32-make || echo NOT FOUND
+          echo.
+          
+          echo === where make ===
+          where make || echo NOT FOUND
+          echo.
+          
+          echo === dir C:\msys64\mingw64\bin ===
+          dir C:\msys64\mingw64\bin\*make*
+
       # -------------------------
       # Build GNUBG (Windows)
       # -------------------------
