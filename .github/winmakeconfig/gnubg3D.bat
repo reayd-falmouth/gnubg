@@ -9,7 +9,8 @@ if NOT "%MINGWDIR%"=="" goto IFEXIST
 ::
 :: Change MINGWDIR=C:\MinGW if you installed MinGW elsewhere
 ::  ============= to change if needed ===================
-SET MINGWDIR=C:\MinGW
+:: SET MINGWDIR=C:\MinGW
+SET MINGWDIR=C:\msys64\mingw64
 ::  ============= to change if needed ===================
 ::
 :: Path %PATH% is replaced to prevent interference
