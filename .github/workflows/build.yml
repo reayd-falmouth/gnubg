@@ -181,8 +181,7 @@ jobs:
 
           cp .github/winmakeconfig/board3d/Makefile board3d/Makefile
           
-          ls -lah Makefile3D config.gui3D gnubg3D.bat lib/Makefile board3d/Makefile
-
+#          ls -lah Makefile3D config.gui3D gnubg3D.bat board3d/Makefile
 #          cp .github/winmakeconfig/lib/Makefile lib/Makefile
 #      - name: Diagnose MinGW make location
 #        if: runner.os == 'Windows'
