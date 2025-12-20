@@ -190,7 +190,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: cmd
         run: |
-          mingw32-make -f Makefile3D
+          set "PATH=C:\msys64\mingw64\bin;%PATH%"
+          call gnubg3D.bat
           if not exist gnubg.exe exit /b 1
           dir gnubg.exe
 
