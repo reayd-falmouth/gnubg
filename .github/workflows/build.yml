@@ -191,15 +191,9 @@ jobs:
         if: runner.os == 'Windows'
         shell: cmd
         run: |
-          set -e
-          
-          export PATH="/mingw64/bin:$PATH"
-          
-          echo "Building GNUBG using legacy Makefile3D"
           mingw32-make -f Makefile3D
-          
-          test -f gnubg.exe
-          ls -lah gnubg.exe
+          if not exist gnubg.exe exit /b 1
+          dir gnubg.exe
 
       # -------------------------
       # Collect Windows artefact
@@ -208,25 +202,9 @@ jobs:
         if: runner.os == 'Windows'
         shell: cmd
         run: |
-          set -e
-          
-          mkdir -p artifact/windows
-          cp gnubg.exe artifact/windows/
-          
-          # Copy runtime data if present
-          if [ -d share/gnubg ]; then
-            cp -r share/gnubg artifact/windows/
-          fi
-          
-          # Bundle MinGW DLLs
-          ldd artifact/windows/gnubg.exe \
-            | awk '{print $3}' \
-            | grep -E '/mingw64/' \
-            | while read -r dll; do
-                cp -u "$dll" artifact/windows/
-              done
-          
-          ls -lah artifact/windows
+          mkdir artifact
+          mkdir artifact\windows
+          copy gnubg.exe artifact\windows\
 
       # -------------------------
       # Smoke test (Windows)
