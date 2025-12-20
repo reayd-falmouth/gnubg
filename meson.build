@@ -1,50 +1,48 @@
 project(
     'gnubg',
     'c',
-    version: '1.08.003',
-    default_options: [
-        'c_std=c11',
+    version : 'modern',
+    default_options : [
         'warning_level=2',
-        'buildtype=release'
+        'c_std=c99'
     ]
 )
 
 cc = meson.get_compiler('c')
 
-# -------------------------
-# Build options
-# -------------------------
-option_readline = get_option('readline')
-option_nls       = get_option('nls')
-
-# -------------------------
-# Dependencies
-# -------------------------
-glib = dependency('glib-2.0', version: '>=2.22')
-
-readline = dependency(
-    'readline',
-    required: option_readline
+inc = include_directories(
+    '.',
+    'lib',
 )
 
-# -------------------------
-# Configuration header
-# -------------------------
-conf = configuration_data()
-
-conf.set('HAVE_GLIB', 1)
-conf.set('HAVE_READLINE', readline.found())
-conf.set('ENABLE_NLS', option_nls)
-conf.set('PACKAGE', '"gnubg"')
-conf.set('VERSION', '"@0@"'.format(meson.project_version()))
-
-configure_file(
-    output: 'config.h',
-    configuration: conf
+sources = files(
+    'analysis.c',
+    'bearoff.c',
+    'bearoffgammon.c',
+    'boardpos.c',
+    'dice.c',
+    'eval.c',
+    'format.c',
+    'getopt.c',
+    'getopt1.c',
+    'gnubg.c',
+    'matchid.c',
+    'positionid.c',
+    'record.c',
+    'rollout.c',
+    'timer.c',
+    'lib/SFMT.c',
+    'lib/cache.c',
+    'lib/isaac.c',
+    'lib/list.c',
+    'lib/md5.c',
+    'lib/neuralnet.c',
+    'lib/neuralnetsse.c',
 )
 
-# -------------------------
-# Subdirectories
-# -------------------------
-subdir('lib')
-subdir('src')
+exe = executable(
+    'gnubg',
+    sources,
+    include_directories : inc,
+    install : true,
+)

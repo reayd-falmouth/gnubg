@@ -7,11 +7,38 @@ on:
   workflow_dispatch:
 
 jobs:
+  windows-modern:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Meson + Ninja
+        shell: cmd
+        run: |
+          pip install meson ninja
+
+      - name: Setup MinGW
+        shell: cmd
+        run: |
+          set "PATH=C:\mingw64\bin;%PATH%"
+          where gcc
+
+      - name: Configure
+        shell: cmd
+        run: |
+          meson setup build --backend=ninja --buildtype=release
+
+      - name: Build
+        shell: cmd
+        run: |
+          meson compile -C build
+
   build:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -163,23 +190,23 @@ jobs:
       # -------------------------
       # Prepare legacy Windows Makefiles
       # -------------------------
-      - name: Install legacy Windows build files
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          set -e
-          
-          echo "Installing legacy Windows build files"
-          
-          cp .github/winmakeconfig/gnubgOld.bat .
-          cp .github/winmakeconfig/config.guiOld .
-          cp .github/winmakeconfig/MakefileOld .
-          
-          cp .github/winmakeconfig/Makefile3D .
-          cp .github/winmakeconfig/config.gui3D .
-          cp .github/winmakeconfig/gnubg3D.bat .
-
-          cp .github/winmakeconfig/board3d/Makefile board3d/Makefile
+#      - name: Install legacy Windows build files
+#        if: runner.os == 'Windows'
+#        shell: cmd
+#        run: |
+#          set -e
+#
+#          echo "Installing legacy Windows build files"
+#
+#          cp .github/winmakeconfig/gnubgOld.bat .
+#          cp .github/winmakeconfig/config.guiOld .
+#          cp .github/winmakeconfig/MakefileOld .
+#
+#          cp .github/winmakeconfig/Makefile3D .
+#          cp .github/winmakeconfig/config.gui3D .
+#          cp .github/winmakeconfig/gnubg3D.bat .
+#
+#          cp .github/winmakeconfig/board3d/Makefile board3d/Makefile
           
 #          ls -lah Makefile3D config.gui3D gnubg3D.bat board3d/Makefile
 #          cp .github/winmakeconfig/lib/Makefile lib/Makefile
@@ -205,36 +232,36 @@ jobs:
       # -------------------------
       # Build GNUBG (Windows)
       # -------------------------
-      - name: Build GNUBG (Windows legacy)
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          set "PATH=C:\mingw64\bin;%PATH%"
-          call gnubg3D.bat
-          if not exist gnubg.exe exit /b 1
-          dir gnubg.exe
-
-      # -------------------------
-      # Collect Windows artefact
-      # -------------------------
-      - name: Package Windows artefact
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          mkdir artifact
-          mkdir artifact\windows
-          copy gnubg.exe artifact\windows\
-
-      # -------------------------
-      # Smoke test (Windows)
-      # -------------------------
-      - name: Test Windows gnubg binary
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          set -e
-          artifact/windows/gnubg.exe -t -q -h > /dev/null
-          echo "Windows GNUBG smoke test passed"
+#      - name: Build GNUBG (Windows legacy)
+#        if: runner.os == 'Windows'
+#        shell: cmd
+#        run: |
+#          set "PATH=C:\mingw64\bin;%PATH%"
+#          call gnubg3D.bat
+#          if not exist gnubg.exe exit /b 1
+#          dir gnubg.exe
+#
+#      # -------------------------
+#      # Collect Windows artefact
+#      # -------------------------
+#      - name: Package Windows artefact
+#        if: runner.os == 'Windows'
+#        shell: cmd
+#        run: |
+#          mkdir artifact
+#          mkdir artifact\windows
+#          copy gnubg.exe artifact\windows\
+#
+#      # -------------------------
+#      # Smoke test (Windows)
+#      # -------------------------
+#      - name: Test Windows gnubg binary
+#        if: runner.os == 'Windows'
+#        shell: cmd
+#        run: |
+#          set -e
+#          artifact/windows/gnubg.exe -t -q -h > /dev/null
+#          echo "Windows GNUBG smoke test passed"
 
       # -------------------------
       # Upload artefact
