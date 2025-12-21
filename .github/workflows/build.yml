@@ -18,6 +18,12 @@ jobs:
         run: |
           pip install meson ninja
 
+      - name: make credits.h
+        shell: cmd
+        run: |
+          chmod +x credits.sh
+          ./credits.sh
+
       - name: Setup MinGW
         shell: cmd
         run: |
