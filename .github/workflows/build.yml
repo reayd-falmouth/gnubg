@@ -165,6 +165,8 @@ jobs:
             libtool
             make
             pkg-config
+            flex
+            bison
 
       - name: Run autogen.sh (Windows)
         if: runner.os == 'Windows'
