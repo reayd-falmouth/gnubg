@@ -1,0 +1,236 @@
+name: Build GNUBG
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      # -------------------------
+      # Linux dependencies
+      # -------------------------
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+          autoconf automake libtool \
+          make gcc g++ \
+          bison flex \
+          gettext gawk \
+          pkg-config \
+          libglib2.0-dev \
+          libreadline-dev \
+          python3 python3-dev
+
+
+      # -------------------------
+      # macOS dependencies
+      # -------------------------
+      - name: Install macOS dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install \
+            autoconf automake libtool \
+            bison flex gettext gawk \
+            pkg-config \
+            glib \
+            readline \
+            python
+
+          # GNU tools first
+          echo "$(brew --prefix bison)/bin" >> $GITHUB_PATH
+          echo "$(brew --prefix flex)/bin" >> $GITHUB_PATH
+          echo "$(brew --prefix gettext)/bin" >> $GITHUB_PATH
+          echo "$(brew --prefix gawk)/bin" >> $GITHUB_PATH
+
+          # Force GNU readline headers & libs for *configure*
+          echo "CPPFLAGS=-I$(brew --prefix readline)/include" >> $GITHUB_ENV
+          echo "LDFLAGS=-L$(brew --prefix readline)/lib" >> $GITHUB_ENV
+
+      - name: Run autogen.sh
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          if [ -f ./autogen.sh ]; then
+            ./autogen.sh
+          fi
+
+      # -------------------------
+      # Configure
+      # -------------------------
+      - name: Configure GNUBG
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          ./configure
+
+      # -------------------------
+      # Build
+      # -------------------------
+      - name: Build
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          make
+
+      # -------------------------
+      # Install to staging dir
+      # -------------------------
+      - name: Install to staging
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          mkdir -p dist
+          make install DESTDIR="$(pwd)/dist"
+          ls -lah "$(pwd)/dist"
+
+      # -------------------------
+      # Collect artefacts
+      # -------------------------
+      - name: Prepare Unix artefact
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -e
+          mkdir -p artifact
+          cp -a dist/usr/local/* artifact/
+          echo "Linux artefact layout:"
+          find artifact -type d
+
+      # -------------------------
+      # Test packaged artefact
+      # -------------------------
+      - name: Test packaged gnubg binary
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -e
+
+          if [ ! -d artifact/bin ]; then
+            echo "ERROR: artifact/bin not found"
+            exit 1
+          fi
+
+          # Resolve gnubg binary inside artefact
+          GNUBG_BIN="$(find artifact/bin -type f -name 'gnubg*' -perm -111 | head -n 1)"
+
+          if [ -z "$GNUBG_BIN" ]; then
+            echo "ERROR: gnubg binary not found in artifact/bin"
+            ls -lah artifact/bin
+            exit 1
+          fi
+
+          echo "Running artifact smoke test: $GNUBG_BIN -t -q -h"
+          "$GNUBG_BIN" -t -q -h
+
+          echo "Packaged gnubg artifact smoke test passed"
+
+      # -------------------------
+      # Windows (Legacy MinGW build)
+      # -------------------------
+      # -------------------------
+      # Windows (MSYS2 MinGW build)
+      # -------------------------
+      - name: Setup MSYS2 MinGW
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          msystem: MINGW64
+          install: >
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-gtk3
+            mingw-w64-x86_64-glib2
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-libxml2
+            mingw-w64-x86_64-sqlite3
+            mingw-w64-x86_64-gettext
+            autoconf
+            automake
+            libtool
+            make
+            pkg-config
+            flex
+            bison
+
+      - name: Run autogen.sh (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          ./autogen.sh
+
+      - name: Configure GNUBG (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          CPPFLAGS='-DAC_DATADIR="\"../share\"" -DAC_PKGDATADIR="\"../share/gnubg\""' \
+          ./configure \
+            --prefix="$(pwd)/dist"
+
+      - name: Build GNUBG (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          make -j$(nproc)
+
+      - name: Install GNUBG to staging (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          make install
+
+      # -------------------------
+      # Bundle MinGW runtime DLLs
+      # -------------------------
+      - name: Bundle MinGW DLLs (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          cd dist/bin
+          ldd gnubg.exe | grep mingw64 | awk '{print $3}' | xargs -I{} cp {} .
+
+      # -------------------------
+      # Bundle Python runtime
+      # -------------------------
+      - name: Bundle Python runtime (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          mkdir -p dist/lib
+          cp -r /mingw64/lib/python3.12 dist/lib/
+
+      # -------------------------
+      # Prepare Windows artefact
+      # -------------------------
+      - name: Prepare Windows artefact
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          mkdir -p artifact
+          cp -a dist/* artifact/
+          echo "Windows artefact layout:"
+          find artifact -maxdepth 2 -type d
+
+      # -------------------------
+      # Upload artefact
+      # -------------------------
+      - name: Upload artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gnubg-${{ runner.os }}
+          path: artifact
