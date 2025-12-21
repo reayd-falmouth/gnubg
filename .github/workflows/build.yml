@@ -168,13 +168,13 @@ jobs:
 
       - name: Run autogen.sh (Windows)
         if: runner.os == 'Windows'
-        shell: msys2
+        shell: msys2 {0}
         run: |
           ./autogen.sh
 
       - name: Configure GNUBG (Windows)
         if: runner.os == 'Windows'
-        shell: msys2
+        shell: msys2 {0}
         run: |
           ./configure \
             --host=x86_64-w64-mingw32 \
@@ -184,13 +184,13 @@ jobs:
 
       - name: Build GNUBG (Windows)
         if: runner.os == 'Windows'
-        shell: msys2
+        shell: msys2 {0}
         run: |
           make -j$(nproc)
 
       - name: Install GNUBG to staging (Windows)
         if: runner.os == 'Windows'
-        shell: msys2
+        shell: msys2 {0}
         run: |
           make install
 
@@ -199,7 +199,7 @@ jobs:
       # -------------------------
       - name: Bundle MinGW DLLs (Windows)
         if: runner.os == 'Windows'
-        shell: msys2
+        shell: msys2 {0}
         run: |
           cd dist/bin
           ldd gnubg.exe | grep mingw64 | awk '{print $3}' | xargs -I{} cp {} .
@@ -209,7 +209,7 @@ jobs:
       # -------------------------
       - name: Bundle Python runtime (Windows)
         if: runner.os == 'Windows'
-        shell: msys2
+        shell: msys2 {0}
         run: |
           mkdir -p dist/lib
           cp -r /mingw64/lib/python3.12 dist/lib/
@@ -220,7 +220,7 @@ jobs:
       # -------------------------
       - name: Prepare Windows artefact
         if: runner.os == 'Windows'
-        shell: msys2
+        shell: msys2 {0}
         run: |
           mkdir -p artifact
           cp -a dist/* artifact/
