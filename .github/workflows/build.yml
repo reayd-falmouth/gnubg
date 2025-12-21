@@ -215,7 +215,6 @@ jobs:
         run: |
           mkdir -p dist/lib
           cp -r /mingw64/lib/python3.12 dist/lib/
-          cp /mingw64/lib/python312.zip dist/lib/
 
       # -------------------------
       # Prepare Windows artefact
