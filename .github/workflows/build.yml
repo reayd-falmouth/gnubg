@@ -178,15 +178,9 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
+          CPPFLAGS='-DAC_DATADIR="\"../share\"" -DAC_PKGDATADIR="\"../share/gnubg\""' \
           ./configure \
-            --host=x86_64-w64-mingw32 \
-            --enable-gtk \
-            --disable-nls \
             --prefix="$(pwd)/dist"
-          
-          # Force “relocatable” runtime lookup like legacy config.gui*
-          sed -i 's@^#define _DATADIR .*@#define _DATADIR "./"@' config.h || true
-          sed -i 's@^#define PKGDATADIR .*@#define PKGDATADIR ""@' config.h || true
 
       - name: Build GNUBG (Windows)
         if: runner.os == 'Windows'
