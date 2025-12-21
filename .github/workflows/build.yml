@@ -234,3 +234,38 @@ jobs:
         with:
           name: gnubg-${{ runner.os }}
           path: artifact
+
+  publish_release:
+    name: Publish GitHub Release
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Inspect artifacts
+        run: |
+          set -e
+          echo "Artifacts:"
+          find artifacts -maxdepth 2 -type d
+          find artifacts -maxdepth 2 -type f | head -n 20
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: GNUBG Latest
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            artifacts/gnubg-Linux/**
+            artifacts/gnubg-macOS/**
+            artifacts/gnubg-Windows/**
