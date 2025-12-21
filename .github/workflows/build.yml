@@ -7,39 +7,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  windows-modern:
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Meson + Ninja
-        shell: cmd
-        run: |
-          pip install meson ninja
-
-      - name: make credits.h
-        shell: cmd
-        run: |
-          chmod +x credits.sh
-          ./credits.sh
-
-      - name: Setup MinGW
-        shell: cmd
-        run: |
-          set "PATH=C:\mingw64\bin;%PATH%"
-          where gcc
-
-      - name: Configure
-        shell: cmd
-        run: |
-          meson setup build --backend=ninja --buildtype=release
-
-      - name: Build
-        shell: cmd
-        run: |
-          meson compile -C build
-
   build:
     strategy:
       fail-fast: false
@@ -176,6 +143,9 @@ jobs:
       # -------------------------
       # Windows (Legacy MinGW build)
       # -------------------------
+      # -------------------------
+      # Windows (MSYS2 MinGW build)
+      # -------------------------
       - name: Setup MSYS2 MinGW
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
@@ -184,90 +154,78 @@ jobs:
           msystem: MINGW64
           install: >
             mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-gtk3
             mingw-w64-x86_64-glib2
+            mingw-w64-x86_64-python
             mingw-w64-x86_64-libxml2
-            mingw-w64-x86_64-libpng
-            mingw-w64-x86_64-zlib
-            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-sqlite3
             mingw-w64-x86_64-gettext
-            mingw-w64-x86_64-readline
+            autoconf
+            automake
+            libtool
             make
+            pkg-config
+
+      - name: Run autogen.sh (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2
+        run: |
+          ./autogen.sh
+
+      - name: Configure GNUBG (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2
+        run: |
+          ./configure \
+            --host=x86_64-w64-mingw32 \
+            --enable-gtk \
+            --disable-nls \
+            --prefix="$(pwd)/dist"
+
+      - name: Build GNUBG (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2
+        run: |
+          make -j$(nproc)
+
+      - name: Install GNUBG to staging (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2
+        run: |
+          make install
 
       # -------------------------
-      # Prepare legacy Windows Makefiles
+      # Bundle MinGW runtime DLLs
       # -------------------------
-#      - name: Install legacy Windows build files
-#        if: runner.os == 'Windows'
-#        shell: cmd
-#        run: |
-#          set -e
-#
-#          echo "Installing legacy Windows build files"
-#
-#          cp .github/winmakeconfig/gnubgOld.bat .
-#          cp .github/winmakeconfig/config.guiOld .
-#          cp .github/winmakeconfig/MakefileOld .
-#
-#          cp .github/winmakeconfig/Makefile3D .
-#          cp .github/winmakeconfig/config.gui3D .
-#          cp .github/winmakeconfig/gnubg3D.bat .
-#
-#          cp .github/winmakeconfig/board3d/Makefile board3d/Makefile
-          
-#          ls -lah Makefile3D config.gui3D gnubg3D.bat board3d/Makefile
-#          cp .github/winmakeconfig/lib/Makefile lib/Makefile
-#      - name: Diagnose MinGW make location
-#        if: runner.os == 'Windows'
-#        shell: cmd
-#        run: |
-#          echo === PATH ===
-#          echo %PATH%
-#          echo.
-#
-#          echo === where mingw32-make ===
-#          where mingw32-make || echo NOT FOUND
-#          echo.
-#
-#          echo === where make ===
-#          where make || echo NOT FOUND
-#          echo.
-#
-#          echo === dir C:\msys64\mingw64\bin ===
-#          dir C:\msys64\mingw64\bin\*make*
+      - name: Bundle MinGW DLLs (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2
+        run: |
+          cd dist/bin
+          ldd gnubg.exe | grep mingw64 | awk '{print $3}' | xargs -I{} cp {} .
 
       # -------------------------
-      # Build GNUBG (Windows)
+      # Bundle Python runtime
       # -------------------------
-#      - name: Build GNUBG (Windows legacy)
-#        if: runner.os == 'Windows'
-#        shell: cmd
-#        run: |
-#          set "PATH=C:\mingw64\bin;%PATH%"
-#          call gnubg3D.bat
-#          if not exist gnubg.exe exit /b 1
-#          dir gnubg.exe
-#
-#      # -------------------------
-#      # Collect Windows artefact
-#      # -------------------------
-#      - name: Package Windows artefact
-#        if: runner.os == 'Windows'
-#        shell: cmd
-#        run: |
-#          mkdir artifact
-#          mkdir artifact\windows
-#          copy gnubg.exe artifact\windows\
-#
-#      # -------------------------
-#      # Smoke test (Windows)
-#      # -------------------------
-#      - name: Test Windows gnubg binary
-#        if: runner.os == 'Windows'
-#        shell: cmd
-#        run: |
-#          set -e
-#          artifact/windows/gnubg.exe -t -q -h > /dev/null
-#          echo "Windows GNUBG smoke test passed"
+      - name: Bundle Python runtime (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2
+        run: |
+          mkdir -p dist/lib
+          cp -r /mingw64/lib/python3.12 dist/lib/
+          cp /mingw64/lib/python312.zip dist/lib/
+
+      # -------------------------
+      # Prepare Windows artefact
+      # -------------------------
+      - name: Prepare Windows artefact
+        if: runner.os == 'Windows'
+        shell: msys2
+        run: |
+          mkdir -p artifact
+          cp -a dist/* artifact/
+          echo "Windows artefact layout:"
+          find artifact -maxdepth 2 -type d
 
       # -------------------------
       # Upload artefact
