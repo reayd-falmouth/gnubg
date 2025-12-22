@@ -273,5 +273,4 @@ jobs:
               gnubg-macOS.zip \
               gnubg-Windows.zip \
               --title "GNUBG Latest executable" \
-              --notes "Automated build from main" \
-              --clobber
+              --notes "Automated build from main" 
