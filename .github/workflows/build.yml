@@ -243,24 +243,23 @@ jobs:
 
     permissions:
       contents: write
+
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           path: artifacts
 
-      - name: Inspect artifacts
+      - name: Archive artifacts
         run: |
           set -e
-          echo "Artifacts:"
-          find artifacts -maxdepth 2 -type d
-          find artifacts -maxdepth 2 -type f | head -n 20
+          (cd artifacts && zip -r ../gnubg-Linux.zip   gnubg-Linux)
+          (cd artifacts && zip -r ../gnubg-macOS.zip   gnubg-macOS)
+          (cd artifacts && zip -r ../gnubg-Windows.zip gnubg-Windows)
 
       - name: Publish GitHub Release (with retry)
         uses: nick-invision/retry@v3
@@ -270,10 +269,9 @@ jobs:
           retry_on: error
           command: |
             gh release create latest \
-              artifacts/gnubg-Linux/** \
-              artifacts/gnubg-macOS/** \
-              artifacts/gnubg-Windows/** \
-              --title "GNUBG Latest" \
-              --notes "Automated build from main"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              gnubg-Linux.zip \
+              gnubg-macOS.zip \
+              gnubg-Windows.zip \
+              --title "GNUBG Latest executable" \
+              --notes "Automated build from main" \
+              --clobber
