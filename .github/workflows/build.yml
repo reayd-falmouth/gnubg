@@ -258,7 +258,7 @@ jobs:
           find artifacts -maxdepth 2 -type f | head -n 20
 
       - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.5.0
         with:
           tag_name: latest
           name: GNUBG Latest
