@@ -257,15 +257,18 @@ jobs:
           find artifacts -maxdepth 2 -type d
           find artifacts -maxdepth 2 -type f | head -n 20
 
-      - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2.5.0
+      - name: Publish GitHub Release (with retry)
+        uses: nick-invision/retry@v3
         with:
-          tag_name: latest
-          name: GNUBG Latest
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-          files: |
-            artifacts/gnubg-Linux/**
-            artifacts/gnubg-macOS/**
-            artifacts/gnubg-Windows/**
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_on: error
+          command: |
+            gh release create latest \
+              artifacts/gnubg-Linux/** \
+              artifacts/gnubg-macOS/** \
+              artifacts/gnubg-Windows/** \
+              --title "GNUBG Latest" \
+              --notes "Automated build from main"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
