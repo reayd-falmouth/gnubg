@@ -207,12 +207,26 @@ jobs:
       # -------------------------
       # Bundle Python runtime
       # -------------------------
-      - name: Bundle Python runtime (Windows)
+      - name: Bundle minimal Python runtime (Windows)
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          mkdir -p dist/lib
-          cp -r /mingw64/lib/python3.12 dist/lib/
+          mkdir -p dist/lib/python3.12
+
+          # Copy core stdlib, excluding tests and caches
+          rsync -a \
+            --exclude='test/' \
+            --exclude='tests/' \
+            --exclude='__pycache__/' \
+            --exclude='*.pyc' \
+            --exclude='idlelib/' \
+            --exclude='tkinter/' \
+            --exclude='ensurepip/' \
+            /mingw64/lib/python3.12/ \
+            dist/lib/python3.12/
+
+          echo "Python runtime after pruning:"
+          find dist/lib/python3.12 -maxdepth 2 -type d
 
       # -------------------------
       # Prepare Windows artefact
