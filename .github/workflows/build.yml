@@ -210,21 +210,22 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          mkdir -p dist/lib/python3.12
+          mkdir -p dist/lib
 
-          # Copy core stdlib, excluding tests and caches
-          rsync -a \
-            --exclude='test/' \
-            --exclude='tests/' \
-            --exclude='__pycache__/' \
-            --exclude='*.pyc' \
-            --exclude='idlelib/' \
-            --exclude='tkinter/' \
-            --exclude='ensurepip/' \
-            /mingw64/lib/python3.12/ \
-            dist/lib/python3.12/
+          # Copy python stdlib while excluding tests, caches, and pyc files
+          tar -C /mingw64/lib \
+              --exclude='python3.12/test' \
+              --exclude='python3.12/tests' \
+              --exclude='python3.12/__pycache__' \
+              --exclude='python3.12/**/__pycache__' \
+              --exclude='*.pyc' \
+              --exclude='idlelib' \
+              --exclude='tkinter' \
+              --exclude='ensurepip' \
+              -cf - python3.12 \
+            | tar -C dist/lib -xf -
 
-          echo "Python runtime after pruning:"
+          echo "Pruned Python runtime:"
           find dist/lib/python3.12 -maxdepth 2 -type d
 
       # -------------------------
