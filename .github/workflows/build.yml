@@ -125,22 +125,22 @@ jobs:
       - name: Bundle macOS Libraries
         if: runner.os == 'macOS'
         run: |
-          # Create a directory for the libraries
-          mkdir -p bin/libs
+          # Create the libs directory inside the artifact folder
+          mkdir -p artifact/bin/libs
           
-          # Run dylibbundler on your main binaries
-          # -od: overwrite directory
+          # Run dylibbundler on the binaries inside the artifact folder
+          # -of: overwrite files
           # -b: bundle dependencies
           # -x: executable to fix
           # -d: destination for the .dylib files
-          # -p: new path inside the binary (relative to executable)
-          dylibbundler -od -b \
-            -x ./bin/gnubg \
-            -x ./bin/makebearoff \
-            -x ./bin/makehyper \
-            -x ./bin/bearoffdump \
-            -x ./bin/makeweights \
-            -d ./bin/libs/ \
+          # -p: new path inside binary (points to the libs folder next to the exe)
+          dylibbundler -of -b \
+            -x ./artifact/bin/gnubg \
+            -x ./artifact/bin/makebearoff \
+            -x ./artifact/bin/makehyper \
+            -x ./artifact/bin/bearoffdump \
+            -x ./artifact/bin/makeweights \
+            -d ./artifact/bin/libs/ \
             -p @executable_path/libs/
 
       # -------------------------
