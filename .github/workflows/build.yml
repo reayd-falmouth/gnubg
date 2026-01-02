@@ -256,27 +256,39 @@ jobs:
       # -------------------------
       # Bundle Python runtime
       # -------------------------
-      - name: Bundle minimal Python runtime (Windows)
-        if: runner.os == 'Windows'
-        shell: msys2 {0}
+      - name: Bundle macOS Libraries and Python
+        if: runner.os == 'macOS'
         run: |
-          mkdir -p dist/lib
-
-          # Copy python stdlib while excluding tests, caches, and pyc files
-          tar -C /mingw64/lib \
-              --exclude='python3.12/test' \
-              --exclude='python3.12/tests' \
-              --exclude='python3.12/__pycache__' \
-              --exclude='python3.12/**/__pycache__' \
-              --exclude='*.pyc' \
-              --exclude='idlelib' \
-              --exclude='tkinter' \
-              --exclude='ensurepip' \
-              -cf - python3.12 \
-            | tar -C dist/lib -xf -
-
-          echo "Pruned Python runtime:"
-          find dist/lib/python3.12 -maxdepth 2 -type d
+          # 1. Prepare directories
+          mkdir -p artifact/bin/libs
+          mkdir -p artifact/lib
+          
+          # 2. Bundle binary dependencies (No symlinks)
+          # We add -s flags to point to where the real libraries live on the runner
+          dylibbundler -of -b \
+            -x ./artifact/bin/gnubg \
+            -x ./artifact/bin/makebearoff \
+            -x ./artifact/bin/makehyper \
+            -x ./artifact/bin/bearoffdump \
+            -x ./artifact/bin/makeweights \
+            -d ./artifact/bin/libs/ \
+            -p @executable_path/libs/ \
+            -s /Library/Frameworks/Python.framework/Versions/3.14/lib \
+            -s /opt/homebrew/lib \
+            -s /usr/local/lib
+          
+          # 3. Bundle Python Standard Library (Real files, not links)
+          PYTHON_STD_LIB=$(python3 -c "import os; print(os.path.dirname(os.__file__))")
+          PYTHON_VER=$(python3 -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')")
+          
+          mkdir -p "artifact/lib/$PYTHON_VER"
+          
+          # Using rsync with -L ensures symlinks are followed and copied as real files
+          rsync -avL "$PYTHON_STD_LIB/" "artifact/lib/$PYTHON_VER/" \
+            --exclude "__pycache__" \
+            --exclude "test" \
+            --exclude "tests" \
+            --exclude "*.pyc"
 
       # -------------------------
       # Prepare Windows artefact
