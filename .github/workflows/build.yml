@@ -45,7 +45,6 @@ jobs:
           libreadline-dev \
           python3 python3-dev
 
-
       # -------------------------
       # macOS dependencies
       # -------------------------
@@ -60,6 +59,7 @@ jobs:
             glib \
             readline \
             python \
+            ncurses \
             dylibbundler
 
           # GNU tools first
@@ -122,18 +122,17 @@ jobs:
           echo "Linux artefact layout:"
           find artifact -type d
 
-      - name: Bundle macOS Libraries
+      - name: Bundle macOS Libraries and Python
         if: runner.os == 'macOS'
         run: |
-          # Create the libs directory inside the artifact folder
+          # 1. Prepare directories
           mkdir -p artifact/bin/libs
+          mkdir -p artifact/lib
           
-          # Run dylibbundler on the binaries inside the artifact folder
-          # -of: overwrite files
-          # -b: bundle dependencies
-          # -x: executable to fix
-          # -d: destination for the .dylib files
-          # -p: new path inside binary (points to the libs folder next to the exe)
+          # 2. Bundle binary dependencies (including libpython)
+          # We find the Python lib directory to help dylibbundler find libpython
+          PYTHON_LIB_DIR=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+          
           dylibbundler -of -b \
             -x ./artifact/bin/gnubg \
             -x ./artifact/bin/makebearoff \
@@ -141,7 +140,26 @@ jobs:
             -x ./artifact/bin/bearoffdump \
             -x ./artifact/bin/makeweights \
             -d ./artifact/bin/libs/ \
-            -p @executable_path/libs/
+            -p @executable_path/libs/ \
+            -s "$PYTHON_LIB_DIR" \
+            -s /usr/local/lib \
+            -s /opt/homebrew/lib
+          
+          # 3. Bundle Python Standard Library (equivalent to your Windows tar step)
+          # Find the path to the standard library
+          PYTHON_STD_LIB=$(python3 -c "import os; print(os.path.dirname(os.__file__))")
+          PYTHON_VER=$(python3 -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')")
+          
+          mkdir -p "artifact/lib/$PYTHON_VER"
+          
+          # Copy stdlib while excluding unnecessary bloat
+          rsync -av --progress "$PYTHON_STD_LIB/" "artifact/lib/$PYTHON_VER/" \
+            --exclude "__pycache__" \
+            --exclude "test" \
+            --exclude "tests" \
+            --exclude "idlelib" \
+            --exclude "tkinter" \
+            --exclude "*.pyc"
 
       # -------------------------
       # Test packaged artefact
