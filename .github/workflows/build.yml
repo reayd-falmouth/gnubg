@@ -263,8 +263,8 @@ jobs:
           mkdir -p artifact/bin/libs
           mkdir -p artifact/lib
           
-          # 2. Bundle binary dependencies (No symlinks)
-          # We add -s flags to point to where the real libraries live on the runner
+          # 2. Bundle binary dependencies (including ncurses and python dylibs)
+          # We add the -s flag to point dylibbundler to the Python framework's lib folder
           dylibbundler -of -b \
             -x ./artifact/bin/gnubg \
             -x ./artifact/bin/makebearoff \
@@ -277,13 +277,13 @@ jobs:
             -s /opt/homebrew/lib \
             -s /usr/local/lib
           
-          # 3. Bundle Python Standard Library (Real files, not links)
+          # 3. Bundle Python Standard Library (equivalent to your Windows logic)
           PYTHON_STD_LIB=$(python3 -c "import os; print(os.path.dirname(os.__file__))")
           PYTHON_VER=$(python3 -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')")
           
           mkdir -p "artifact/lib/$PYTHON_VER"
           
-          # Using rsync with -L ensures symlinks are followed and copied as real files
+          # Use rsync -L to follow symlinks and copy actual files for portability
           rsync -avL "$PYTHON_STD_LIB/" "artifact/lib/$PYTHON_VER/" \
             --exclude "__pycache__" \
             --exclude "test" \
