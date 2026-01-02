@@ -10,15 +10,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # We split macOS into two distinct runners to cover both architectures
         include:
           - os: ubuntu-latest
             artifact_name: Linux
           - os: windows-latest
             artifact_name: Windows
-          - os: macos-13
+          # Updated Intel label to avoid deprecation
+          - os: macos-15-intel
             artifact_name: macOS-Intel
-          - os: macos-14
+          # Standard Apple Silicon runner
+          - os: macos-latest
             artifact_name: macOS-ARM64
 
     runs-on: ${{ matrix.os }}
