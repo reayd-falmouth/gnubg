@@ -306,5 +306,4 @@ jobs:
             gh release create latest \
               *.zip \
               --title "GNUBG Latest Executables" \
-              --notes "Automated builds for Linux, Windows, and macOS (Intel & ARM64)" \
-              --clobber
+              --notes "Automated builds for Linux, Windows, and macOS (Intel & ARM64)" 
