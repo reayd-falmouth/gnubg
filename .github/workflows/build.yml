@@ -10,7 +10,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        # We split macOS into two distinct runners to cover both architectures
+        include:
+          - os: ubuntu-latest
+            artifact_name: Linux
+          - os: windows-latest
+            artifact_name: Windows
+          - os: macos-13
+            artifact_name: macOS-Intel
+          - os: macos-14
+            artifact_name: macOS-ARM64
 
     runs-on: ${{ matrix.os }}
 
@@ -246,13 +255,14 @@ jobs:
       - name: Upload artefact
         uses: actions/upload-artifact@v4
         with:
-          name: gnubg-${{ runner.os }}
+          name: gnubg-${{ matrix.artifact_name }}
           path: artifact
 
   publish_release:
     name: Publish GitHub Release
     needs: build
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    # Ensure this matches your default branch (master or main)
+    if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     permissions:
@@ -262,18 +272,27 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout source
+        uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v4
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
 
-      - name: Archive artifacts
+      - name: Archive and Package Artifacts
         run: |
           set -e
-          (cd artifacts && zip -r ../gnubg-Linux.zip   gnubg-Linux)
-          (cd artifacts && zip -r ../gnubg-macOS.zip   gnubg-macOS)
-          (cd artifacts && zip -r ../gnubg-Windows.zip gnubg-Windows)
+          # Move into the artifacts directory where each matrix job created a folder
+          cd artifacts
+          
+          # Loop through every directory (Linux, Windows, macOS-Intel, macOS-ARM64)
+          for dir in */; do
+            # Remove trailing slash for the zip name
+            dir=${dir%/}
+            echo "Archiving $dir..."
+            zip -r "../$dir.zip" "$dir"
+          done
 
       - name: Publish GitHub Release (with retry)
         uses: nick-invision/retry@v3
@@ -282,9 +301,9 @@ jobs:
           max_attempts: 3
           retry_on: error
           command: |
+            # Use a wildcard to upload all .zip files created in the previous step
             gh release create latest \
-              gnubg-Linux.zip \
-              gnubg-macOS.zip \
-              gnubg-Windows.zip \
-              --title "GNUBG Latest executable" \
-              --notes "Automated build from main" 
+              *.zip \
+              --title "GNUBG Latest Executables" \
+              --notes "Automated builds for Linux, Windows, and macOS (Intel & ARM64)" \
+              --clobber
