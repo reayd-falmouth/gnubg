@@ -59,7 +59,8 @@ jobs:
             pkg-config \
             glib \
             readline \
-            python
+            python \
+            dylibbundler
 
           # GNU tools first
           echo "$(brew --prefix bison)/bin" >> $GITHUB_PATH
@@ -120,6 +121,27 @@ jobs:
           cp -a dist/usr/local/* artifact/
           echo "Linux artefact layout:"
           find artifact -type d
+
+      - name: Bundle macOS Libraries
+        if: runner.os == 'macOS'
+        run: |
+          # Create a directory for the libraries
+          mkdir -p bin/libs
+          
+          # Run dylibbundler on your main binaries
+          # -od: overwrite directory
+          # -b: bundle dependencies
+          # -x: executable to fix
+          # -d: destination for the .dylib files
+          # -p: new path inside the binary (relative to executable)
+          dylibbundler -od -b \
+            -x ./bin/gnubg \
+            -x ./bin/makebearoff \
+            -x ./bin/makehyper \
+            -x ./bin/bearoffdump \
+            -x ./bin/makeweights \
+            -d ./bin/libs/ \
+            -p @executable_path/libs/
 
       # -------------------------
       # Test packaged artefact
