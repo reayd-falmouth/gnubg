@@ -263,8 +263,13 @@ jobs:
           mkdir -p artifact/bin/libs
           mkdir -p artifact/lib
           
-          # 2. Bundle binary dependencies (including ncurses and python dylibs)
-          # We add the -s flag to point dylibbundler to the Python framework's lib folder
+          # 2. Dynamically find the Python library folder on the GitHub runner
+          # This ensures we find libpython and libncurses wherever they are installed
+          PYTHON_LIB_DIR=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+          echo "Found Python libraries at: $PYTHON_LIB_DIR"
+          
+          # 3. Bundle binary dependencies
+          # We add -s "$PYTHON_LIB_DIR" so dylibbundler can find the missing ncurses/python dylibs
           dylibbundler -of -b \
             -x ./artifact/bin/gnubg \
             -x ./artifact/bin/makebearoff \
@@ -273,21 +278,20 @@ jobs:
             -x ./artifact/bin/makeweights \
             -d ./artifact/bin/libs/ \
             -p @executable_path/libs/ \
-            -s /Library/Frameworks/Python.framework/Versions/3.14/lib \
-            -s /opt/homebrew/lib \
-            -s /usr/local/lib
+            -s "$PYTHON_LIB_DIR" \
+            -s /usr/local/lib \
+            -s /opt/homebrew/lib
           
-          # 3. Bundle Python Standard Library (equivalent to your Windows logic)
+          # 4. Bundle Python Standard Library (equivalent to your Windows logic)
           PYTHON_STD_LIB=$(python3 -c "import os; print(os.path.dirname(os.__file__))")
           PYTHON_VER=$(python3 -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')")
           
           mkdir -p "artifact/lib/$PYTHON_VER"
           
-          # Use rsync -L to follow symlinks and copy actual files for portability
+          # Use rsync -avL to follow symlinks and copy actual files for portability
           rsync -avL "$PYTHON_STD_LIB/" "artifact/lib/$PYTHON_VER/" \
             --exclude "__pycache__" \
             --exclude "test" \
-            --exclude "tests" \
             --exclude "*.pyc"
 
       # -------------------------
