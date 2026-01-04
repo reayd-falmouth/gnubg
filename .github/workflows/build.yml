@@ -71,6 +71,23 @@ jobs:
           # Force GNU readline headers & libs for *configure*
           echo "CPPFLAGS=-I$(brew --prefix readline)/include" >> $GITHUB_ENV
           echo "LDFLAGS=-L$(brew --prefix readline)/lib" >> $GITHUB_ENV
+          
+          # Download Standalone Relocatable Python (Adjust version/arch as needed)
+          # For ARM64: apple-darwin-aarch64 | For Intel: apple-darwin-x86_64
+          
+          if [[ "${{ matrix.os }}" == *"intel"* ]]; then
+            PYTHON_ARCH="x86_64-apple-darwin"
+          else
+            PYTHON_ARCH="aarch64-apple-darwin"
+          fi
+          
+          curl -L -o python.tar.gz "https://github.com/indygreg/python-build-standalone/releases/download/20240107/cpython-3.10.13+20240107-$PYTHON_ARCH-install_only.tar.gz"
+          mkdir -p python-portable
+          tar -xzf python.tar.gz -C python-portable --strip-components=1
+
+          # Add GNU tools and our portable python to PATH
+          echo "$(brew --prefix bison)/bin" >> $GITHUB_PATH
+          echo "$(pwd)/python-portable/bin" >> $GITHUB_PATH
 
       - name: Run autogen.sh
         if: runner.os != 'Windows'
@@ -90,11 +107,20 @@ jobs:
           ./configure \
             CPPFLAGS='-DAC_DATADIR="\"../share\"" -DAC_PKGDATADIR="\"../share/gnubg\""'
 
+      # -------------------------
+      # Configure (macOS)
+      # -------------------------
       - name: Configure GNUBG (macOS Portable)
         if: runner.os == 'macOS'
         run: |
-          ./configure 
-          CPPFLAGS='-DAC_DATADIR="\"../share\"" -DAC_PKGDATADIR="\"../share/gnubg\""'
+          # Point to our portable python directory
+          export PYTHON_PATH="$(pwd)/python-portable"
+          
+          ./configure \
+            --with-python="$PYTHON_PATH/bin/python3" \
+            CPPFLAGS="-I$PYTHON_PATH/include -DAC_DATADIR='\"../share\"' -DAC_PKGDATADIR='\"../share/gnubg\"'" \
+            LDFLAGS="-L$PYTHON_PATH/lib" \
+            PKG_CONFIG_PATH="$(brew --prefix glib)/lib/pkgconfig"
 
       # -------------------------
       # Build
@@ -135,11 +161,7 @@ jobs:
           # 1. Prepare directories
           mkdir -p artifact/bin/libs
           mkdir -p artifact/lib
-          
-          # 2. Bundle binary dependencies (including libpython)
-          # We find the Python lib directory to help dylibbundler find libpython
-          PYTHON_LIB_DIR=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
-          
+                    
           dylibbundler -of -b \
             -x ./artifact/bin/gnubg \
             -x ./artifact/bin/makebearoff \
@@ -147,26 +169,18 @@ jobs:
             -x ./artifact/bin/bearoffdump \
             -x ./artifact/bin/makeweights \
             -d ./artifact/bin/libs/ \
-            -p @executable_path/libs/ \
             -s "$PYTHON_LIB_DIR" \
             -s /usr/local/lib \
             -s /opt/homebrew/lib
           
-          # 3. Bundle Python Standard Library (equivalent to your Windows tar step)
-          # Find the path to the standard library
-          PYTHON_STD_LIB=$(python3 -c "import os; print(os.path.dirname(os.__file__))")
-          PYTHON_VER=$(python3 -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')")
-          
-          mkdir -p "artifact/lib/$PYTHON_VER"
-          
-          # Copy stdlib while excluding unnecessary bloat
-          rsync -av --progress "$PYTHON_STD_LIB/" "artifact/lib/$PYTHON_VER/" \
-            --exclude "__pycache__" \
-            --exclude "test" \
-            --exclude "tests" \
-            --exclude "idlelib" \
-            --exclude "tkinter" \
-            --exclude "*.pyc"
+          # 2. Copy the portable Python 'lib' and 'share' into the artifact
+          mkdir -p artifact/python
+          cp -R python-portable/lib artifact/python/
+          cp -R python-portable/bin artifact/python/
+
+          # 3. Manually fix the link to libpython/ncurses if dylibbundler missed it
+          # This forces gnubg to look inside our artifact for the python libs
+          install_name_tool -change "/Library/Frameworks/Python.framework/Versions/3.14/lib/libncurses.6.dylib" "@executable_path/libs/libncurses.6.dylib" ./artifact/bin/gnubg || true
 
       # -------------------------
       # Test packaged artefact
@@ -259,47 +273,6 @@ jobs:
         run: |
           cd dist/bin
           ldd gnubg.exe | grep mingw64 | awk '{print $3}' | xargs -I{} cp {} .
-
-      # -------------------------
-      # Bundle Python runtime
-      # -------------------------
-      - name: Bundle macOS Libraries and Python
-        if: runner.os == 'macOS'
-        run: |
-          # 1. Prepare directories
-          mkdir -p artifact/bin/libs
-          mkdir -p artifact/lib
-          
-          # 2. Dynamically find the Python library folder on the GitHub runner
-          # This ensures we find libpython and libncurses wherever they are installed
-          PYTHON_LIB_DIR=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
-          echo "Found Python libraries at: $PYTHON_LIB_DIR"
-          
-          # 3. Bundle binary dependencies
-          # We add -s "$PYTHON_LIB_DIR" so dylibbundler can find the missing ncurses/python dylibs
-          dylibbundler -of -b \
-            -x ./artifact/bin/gnubg \
-            -x ./artifact/bin/makebearoff \
-            -x ./artifact/bin/makehyper \
-            -x ./artifact/bin/bearoffdump \
-            -x ./artifact/bin/makeweights \
-            -d ./artifact/bin/libs/ \
-            -p @executable_path/libs/ \
-            -s "$PYTHON_LIB_DIR" \
-            -s /usr/local/lib \
-            -s /opt/homebrew/lib
-          
-          # 4. Bundle Python Standard Library (equivalent to your Windows logic)
-          PYTHON_STD_LIB=$(python3 -c "import os; print(os.path.dirname(os.__file__))")
-          PYTHON_VER=$(python3 -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')")
-          
-          mkdir -p "artifact/lib/$PYTHON_VER"
-          
-          # Use rsync -avL to follow symlinks and copy actual files for portability
-          rsync -avL "$PYTHON_STD_LIB/" "artifact/lib/$PYTHON_VER/" \
-            --exclude "__pycache__" \
-            --exclude "test" \
-            --exclude "*.pyc"
 
       # -------------------------
       # Prepare Windows artefact
