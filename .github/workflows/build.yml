@@ -87,10 +87,12 @@ jobs:
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          # Use relative paths for assets so it works outside of /usr/local
-          CPPFLAGS='-DAC_DATADIR="\"../share\"" -DAC_PKGDATADIR="\"../share/gnubg\""' \
           ./configure \
-            --prefix="$(pwd)/dist"
+            --disable-doc \
+            --without-gtk \
+            --without-board3d \
+            --with-python=yes \
+            CPPFLAGS='-DAC_DATADIR="\"../share\"" -DAC_PKGDATADIR="\"../share/gnubg\""'
 
       # -------------------------
       # Build
