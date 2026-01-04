@@ -109,15 +109,15 @@ jobs:
       - name: Configure GNUBG (macOS Portable)
         if: runner.os == 'macOS'
         run: |
-          # Capture Homebrew paths
+          # Capture Homebrew and Portable Python paths
           PORTABLE_PYTHON="$(pwd)/python-portable/bin/python3"
           READLINE_PATH=$(brew --prefix readline)
           GLIB_PATH=$(brew --prefix glib)
-          
+
           ./configure \
             --with-python="$PORTABLE_PYTHON" \
-            CPPFLAGS="-I$READLINE_PATH/include -DAC_DATADIR='\"../share\"' -DAC_PKGDATADIR='\"../share/gnubg\"'" \
-            LDFLAGS="-L$READLINE_PATH/lib" \
+            CPPFLAGS="-I$READLINE_PATH/include -I$(pwd)/python-portable/include -DAC_DATADIR='\"../share\"' -DAC_PKGDATADIR='\"../share/gnubg\"'" \
+            LDFLAGS="-L$READLINE_PATH/lib -L$(pwd)/python-portable/lib" \
             PKG_CONFIG_PATH="$GLIB_PATH/lib/pkgconfig"
 
       # -------------------------
