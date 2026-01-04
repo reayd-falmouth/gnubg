@@ -21,13 +21,10 @@ jobs:
           # Standard Apple Silicon runner
           - os: macos-latest
             artifact_name: macOS-ARM64
-
     runs-on: ${{ matrix.os }}
-
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
-
       # -------------------------
       # Linux dependencies
       # -------------------------
@@ -67,10 +64,6 @@ jobs:
           echo "$(brew --prefix flex)/bin" >> $GITHUB_PATH
           echo "$(brew --prefix gettext)/bin" >> $GITHUB_PATH
           echo "$(brew --prefix gawk)/bin" >> $GITHUB_PATH
-
-          # Force GNU readline headers & libs for *configure*
-          echo "CPPFLAGS=-I$(brew --prefix readline)/include" >> $GITHUB_ENV
-          echo "LDFLAGS=-L$(brew --prefix readline)/lib" >> $GITHUB_ENV
           
           # Download Standalone Relocatable Python (Adjust version/arch as needed)
           # For ARM64: apple-darwin-aarch64 | For Intel: apple-darwin-x86_64
@@ -88,6 +81,9 @@ jobs:
           # Add GNU tools and our portable python to PATH
           echo "$(brew --prefix bison)/bin" >> $GITHUB_PATH
           echo "$(pwd)/python-portable/bin" >> $GITHUB_PATH
+          echo "CPPFLAGS=-I$(brew --prefix readline)/include" >> $GITHUB_ENV
+          echo "LDFLAGS=-L$(brew --prefix readline)/lib" >> $GITHUB_ENV
+          echo "PKG_CONFIG_PATH=$(brew --prefix glib)/lib/pkgconfig" >> $GITHUB_ENV
 
       - name: Run autogen.sh
         if: runner.os != 'Windows'
@@ -113,14 +109,15 @@ jobs:
       - name: Configure GNUBG (macOS Portable)
         if: runner.os == 'macOS'
         run: |
-          # Point to our portable python directory
-          export PYTHON_PATH="$(pwd)/python-portable"
+          # Capture Homebrew paths
+          READLINE_PATH=$(brew --prefix readline)
+          GLIB_PATH=$(brew --prefix glib)
           
           ./configure \
-            --with-python="$PYTHON_PATH/bin/python3" \
-            CPPFLAGS="-I$PYTHON_PATH/include -DAC_DATADIR='\"../share\"' -DAC_PKGDATADIR='\"../share/gnubg\"'" \
-            LDFLAGS="-L$PYTHON_PATH/lib" \
-            PKG_CONFIG_PATH="$(brew --prefix glib)/lib/pkgconfig"
+            --with-python='python3' \
+            CPPFLAGS="-I$READLINE_PATH/include -DAC_DATADIR='\"../share\"' -DAC_PKGDATADIR='\"../share/gnubg\"'" \
+            LDFLAGS="-L$READLINE_PATH/lib" \
+            PKG_CONFIG_PATH="$GLIB_PATH/lib/pkgconfig"
 
       # -------------------------
       # Build
