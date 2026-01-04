@@ -84,7 +84,7 @@ jobs:
       # Configure
       # -------------------------
       - name: Configure GNUBG
-        if: runner.os != 'Windows'
+        if: runner.os == 'Linux'
         shell: bash
         run: |
           ./configure \
@@ -94,6 +94,13 @@ jobs:
             --with-python=yes \
             CPPFLAGS='-DAC_DATADIR="\"../share\"" -DAC_PKGDATADIR="\"../share/gnubg\""'
 
+      - name: Configure GNUBG (macOS Portable)
+        if: runner.os == 'macOS'
+        run: |
+          ./configure --disable-doc --without-gtk --without-board3d \
+          CPPFLAGS='-DAC_DATADIR="\"../share\"" -DAC_PKGDATADIR="\"../share/gnubg\""' \
+          LDFLAGS="-L$(brew --prefix readline)/lib" \
+          PKG_CONFIG_PATH="$(brew --prefix readline)/lib/pkgconfig"
       # -------------------------
       # Build
       # -------------------------
