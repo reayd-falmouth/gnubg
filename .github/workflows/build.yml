@@ -97,7 +97,7 @@ jobs:
       - name: Configure GNUBG (macOS Portable)
         if: runner.os == 'macOS'
         run: |
-          ./configure --disable-doc --without-gtk --without-board3d \
+          ./configure --without-gtk --without-board3d \
           CPPFLAGS='-DAC_DATADIR="\"../share\"" -DAC_PKGDATADIR="\"../share/gnubg\""' \
           LDFLAGS="-L$(brew --prefix readline)/lib" \
           PKG_CONFIG_PATH="$(brew --prefix readline)/lib/pkgconfig"
