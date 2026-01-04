@@ -110,11 +110,12 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           # Capture Homebrew paths
+          PORTABLE_PYTHON="$(pwd)/python-portable/bin/python3"
           READLINE_PATH=$(brew --prefix readline)
           GLIB_PATH=$(brew --prefix glib)
           
           ./configure \
-            --with-python='python3' \
+            --with-python="$PORTABLE_PYTHON" \
             CPPFLAGS="-I$READLINE_PATH/include -DAC_DATADIR='\"../share\"' -DAC_PKGDATADIR='\"../share/gnubg\"'" \
             LDFLAGS="-L$READLINE_PATH/lib" \
             PKG_CONFIG_PATH="$GLIB_PATH/lib/pkgconfig"
@@ -177,7 +178,7 @@ jobs:
 
           # 3. Manually fix the link to libpython/ncurses if dylibbundler missed it
           # This forces gnubg to look inside our artifact for the python libs
-          install_name_tool -change "/Library/Frameworks/Python.framework/Versions/3.14/lib/libncurses.6.dylib" "@executable_path/libs/libncurses.6.dylib" ./artifact/bin/gnubg || true
+          install_name_tool -change "/Library/Frameworks/Python.framework/Versions/3.14/lib/libncurses.6.dylib" "@executable_path/lib/libncurses.6.dylib" ./artifact/bin/gnubg || true
 
       # -------------------------
       # Test packaged artefact
