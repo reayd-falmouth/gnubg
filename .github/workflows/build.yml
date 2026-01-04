@@ -156,7 +156,6 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           # 1. Prepare directories
-          mkdir -p artifact/bin/libs
           mkdir -p artifact/lib
                     
           dylibbundler -of -b \
@@ -165,8 +164,9 @@ jobs:
             -x ./artifact/bin/makehyper \
             -x ./artifact/bin/bearoffdump \
             -x ./artifact/bin/makeweights \
-            -d ./artifact/bin/libs/ \
-            -s "$PYTHON_LIB_DIR" \
+            -d ./artifact/libs/ \
+            -p @executable_path/../libs/ \
+            -s ./python-portable/lib \
             -s /usr/local/lib \
             -s /opt/homebrew/lib
           
@@ -207,9 +207,24 @@ jobs:
 
           echo "Packaged gnubg artifact smoke test passed"
 
-      # -------------------------
-      # Windows (Legacy MinGW build)
-      # -------------------------
+      - name: Test packaged gnubg binary
+        if: runner.os == 'macOS'
+        run: |
+          set -e
+          
+          # 1. Locate the binary
+          GNUBG_BIN="./artifact/bin/gnubg"
+          
+          # 2. Tell the binary to use the BUNDLED Python, not the system one
+          # This prevents the "Library not loaded" errors for Python-related libs
+          export PYTHONHOME="$(pwd)/artifact/python"
+          export PYTHONPATH="$(pwd)/artifact/python/lib/python3.10"
+          
+          echo "Running artifact smoke test: $GNUBG_BIN -t -q -h"
+          "$GNUBG_BIN" -t -q -h
+          
+          echo "Packaged gnubg artifact smoke test passed"
+
       # -------------------------
       # Windows (MSYS2 MinGW build)
       # -------------------------
