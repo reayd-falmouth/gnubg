@@ -158,7 +158,9 @@ jobs:
         run: |
           # 1. Prepare directories
           mkdir -p artifact/lib
-                    
+
+          install_name_tool -change "/install/lib/libpython3.10.dylib" "$(pwd)/python-portable/lib/libpython3.10.dylib" ./artifact/bin/gnubg || true
+          
           dylibbundler -of -b \
             -x ./artifact/bin/gnubg \
             -x ./artifact/bin/makebearoff \
@@ -176,9 +178,7 @@ jobs:
           cp -R python-portable/lib artifact/python/
           cp -R python-portable/bin artifact/python/
 
-          # 3. Manually fix the link to libpython/ncurses if dylibbundler missed it
-          # This forces gnubg to look inside our artifact for the python libs
-          install_name_tool -change "/Library/Frameworks/Python.framework/Versions/3.14/lib/libncurses.6.dylib" "@executable_path/lib/libncurses.6.dylib" ./artifact/bin/gnubg || true
+          install_name_tool -change "/Library/Frameworks/Python.framework/Versions/3.14/lib/libncurses.6.dylib" "@executable_path/../lib/libncurses.6.dylib" ./artifact/bin/gnubg || true
 
       # -------------------------
       # Test packaged artefact
