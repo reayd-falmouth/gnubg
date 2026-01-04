@@ -164,8 +164,8 @@ jobs:
             -x ./artifact/bin/makehyper \
             -x ./artifact/bin/bearoffdump \
             -x ./artifact/bin/makeweights \
-            -d ./artifact/libs/ \
-            -p @executable_path/../libs/ \
+            -d ./artifact/lib/ \
+            -p @executable_path/../lib/ \
             -s ./python-portable/lib \
             -s /usr/local/lib \
             -s /opt/homebrew/lib
