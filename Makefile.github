@@ -1,0 +1,115 @@
+export HOMEBREW_NO_INSTALL_FROM_API=1
+export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_SKIP_ORPHANING=1
+
+# --- OS Detection ---
+ifeq ($(OS),Windows_NT)
+    PLATFORM := Windows
+    SHELL := msys2 {0}
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        PLATFORM := Linux
+    endif
+    ifeq ($(UNAME_S),Darwin)
+        PLATFORM := macOS
+    endif
+endif
+
+# --- Configuration & Paths ---
+DIST_DIR := $(shell pwd)/dist
+ARTIFACT_DIR := $(shell pwd)/artifact
+PREFIX := /usr/local
+
+# macOS specific brew paths
+ifeq ($(PLATFORM),macOS)
+    BISON_PATH := $(shell brew --prefix bison)/bin
+    FLEX_PATH := $(shell brew --prefix flex)/bin
+    READLINE_INC := $(shell brew --prefix readline)/include
+    READLINE_LIB := $(shell brew --prefix readline)/lib
+    # Update PATH for the current shell session
+    export PATH := $(BISON_PATH):$(FLEX_PATH):$(PATH)
+    export CPPFLAGS := -I$(READLINE_INC)
+    export LDFLAGS := -L$(READLINE_LIB)
+endif
+
+.PHONY: all setup autogen configure build install bundle test clean
+
+all: setup autogen configure build install bundle test
+
+# 1. Install Dependencies
+setup:
+ifeq ($(PLATFORM),Linux)
+	sudo apt-get update && sudo apt-get install -y \
+		autoconf automake libtool make gcc g++ bison flex \
+		gettext gawk pkg-config libglib2.0-dev libreadline-dev python3 python3-dev
+else ifeq ($(PLATFORM),macOS)
+	brew update && brew install autoconf automake libtool bison flex \
+		gettext gawk pkg-config glib readline python ncurses dylibbundler
+else ifeq ($(PLATFORM),Windows)
+	# Assumes running inside MSYS2 environment
+	pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain mingw-w64-x86_64-gtk3 \
+		mingw-w64-x86_64-glib2 mingw-w64-x86_64-python mingw-w64-x86_64-libxml2 \
+		mingw-w64-x86_64-sqlite3 mingw-w64-x86_64-gettext autoconf automake libtool \
+		make pkg-config flex bison
+endif
+
+# 2. Autogen
+autogen:
+	@if [ -f ./autogen.sh ]; then ./autogen.sh; fi
+
+# 3. Configure
+configure:
+	CPPFLAGS='-DAC_DATADIR="\"../share\"" -DAC_PKGDATADIR="\"../share/gnubg\""' \
+	./configure --prefix="$(DIST_DIR)"
+
+# 4. Build
+build:
+	make -j$(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 1)
+
+# 5. Install to Staging
+install:
+	mkdir -p $(DIST_DIR)
+ifeq ($(PLATFORM),Windows)
+	make install
+else
+	make install DESTDIR="$(DIST_DIR)"
+endif
+
+# 6. Bundle & Prepare Artifact
+bundle:
+	mkdir -p $(ARTIFACT_DIR)
+ifeq ($(PLATFORM),Windows)
+	cp -a $(DIST_DIR)/* $(ARTIFACT_DIR)/
+	cd $(ARTIFACT_DIR)/bin && ldd gnubg.exe | grep mingw64 | awk '{print $$3}' | xargs -I{} cp {} .
+else ifeq ($(PLATFORM),macOS)
+	mkdir -p $(ARTIFACT_DIR)/bin/libs $(ARTIFACT_DIR)/lib
+	cp -a $(DIST_DIR)$(PREFIX)/* $(ARTIFACT_DIR)/
+
+	# Bundle dylibs
+	PYTHON_LIB_DIR=$$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))") ; \
+	dylibbundler -of -b \
+		-x $(ARTIFACT_DIR)/bin/gnubg \
+		-d $(ARTIFACT_DIR)/bin/libs/ \
+		-p @executable_path/libs/ \
+		-s "$$PYTHON_LIB_DIR" -s /usr/local/lib -s /opt/homebrew/lib
+
+	# Bundle Python StdLib
+	PYTHON_STD_LIB=$$(python3 -c "import os; print(os.path.dirname(os.__file__))") ; \
+	PYTHON_VER=$$(python3 -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')") ; \
+	mkdir -p "$(ARTIFACT_DIR)/lib/$$PYTHON_VER" ; \
+	rsync -avL "$$PYTHON_STD_LIB/" "$(ARTIFACT_DIR)/lib/$$PYTHON_VER/" --exclude "__pycache__" --exclude "*.pyc"
+else
+	cp -a $(DIST_DIR)$(PREFIX)/* $(ARTIFACT_DIR)/
+endif
+
+# 7. Smoke Test
+test:
+	@echo "Running smoke test..."
+	@GNUBG_BIN=$$(find $(ARTIFACT_DIR)/bin -type f -name 'gnubg*' -perm -111 | head -n 1) ; \
+	if [ -z "$$GNUBG_BIN" ]; then echo "Binary not found"; exit 1; fi ; \
+	"$$GNUBG_BIN" -t -q -h
+
+clean:
+	rm -rf dist artifact
+	make clean || true
