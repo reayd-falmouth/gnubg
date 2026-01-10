@@ -76,3 +76,6 @@ compile
 *.la
 .dirstamp
 typescript
+dist/
+artifact/
+.idea/
