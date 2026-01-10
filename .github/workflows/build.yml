@@ -254,6 +254,25 @@ jobs:
           ldd gnubg.exe | grep mingw64 | awk '{print $3}' | xargs -I{} cp {} .
 
       # -------------------------
+      # Bundle Python runtime (Windows)
+      # -------------------------
+      - name: Bundle Python runtime (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          # 1. Create the lib directory in your distribution
+          mkdir -p dist/lib/python3.12
+          
+          # 2. Copy the entire Python standard library from the MSYS2 environment
+          # Note: Adjust 'python3.12' if the version in MSYS2 changes
+          cp -r /mingw64/lib/python3.12/* dist/lib/python3.12/
+          
+          # 3. Clean up massive unnecessary folders to keep the zip small
+          rm -rf dist/lib/python3.12/test
+          rm -rf dist/lib/python3.12/config-3.12-x86_64-linux-gnu
+          find dist/lib/python3.12 -name "__pycache__" -type d -exec rm -rf {} +
+
+      # -------------------------
       # Bundle Python runtime
       # -------------------------
       - name: Bundle macOS Libraries and Python
