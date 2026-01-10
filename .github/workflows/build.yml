@@ -393,16 +393,20 @@ jobs:
       - name: Archive and Package Artifacts
         run: |
           set -e
-          # Move into the artifacts directory where each matrix job created a folder
           cd artifacts
           
-          # Loop through every directory (Linux, Windows, macOS-Intel, macOS-ARM64)
-          for dir in */; do
-            # Remove trailing slash for the zip name
-            dir=${dir%/}
-            echo "Archiving $dir..."
-            zip -r "../$dir.zip" "$dir"
-          done
+          # 1. Handle Windows and Linux as usual
+          zip -r "../gnubg-Windows.zip" "gnubg-Windows"
+          zip -r "../gnubg-Linux.zip" "gnubg-Linux"
+          
+          # 2. Create the combined macOS structure
+          mkdir -p gnubg-macOS
+          # Copy contents into architecture-specific subfolders
+          cp -R gnubg-macOS-Intel/* gnubg-macOS/macOS-Intel/
+          cp -R gnubg-macOS-ARM64/* gnubg-macOS/macOS-ARM64/
+          
+          # 3. Zip the combined folder
+          zip -r "../gnubg-macOS.zip" gnubg-macOS
 
       - name: Publish GitHub Release (with retry)
         uses: nick-invision/retry@v3
