@@ -398,18 +398,30 @@ jobs:
           set -e
           cd artifacts
           
-          # 1. Handle Windows and Linux as usual
-          zip -r "../gnubg-Windows.zip" "gnubg-Windows"
-          zip -r "../gnubg-Linux.zip" "gnubg-Linux"
+          # 1. Zip Windows and Linux (using -q for cleaner logs)
+          [ -d "gnubg-Windows" ] && zip -rq "../gnubg-Windows.zip" "gnubg-Windows"
+          [ -d "gnubg-Linux" ] && zip -rq "../gnubg-Linux.zip" "gnubg-Linux"
           
-          # 2. Create the combined macOS structure
-          mkdir -p gnubg-macOS
-          # Copy contents into architecture-specific subfolders
-          cp -R gnubg-macOS-Intel/* gnubg-macOS/macOS-Intel/
-          cp -R gnubg-macOS-ARM64/* gnubg-macOS/macOS-ARM64/
+          # 2. Create the destination folder and sub-folders
+          mkdir -p gnubg-macOS/macOS-Intel
+          mkdir -p gnubg-macOS/macOS-ARM64
           
-          # 3. Zip the combined folder
-          zip -r "../gnubg-macOS.zip" gnubg-macOS
+          # 3. Copy contents from the downloaded artifact folders
+          # The /. ensures we copy the content of the artifact, not the folder itself
+          if [ -d "gnubg-macOS-Intel" ]; then
+            cp -RP gnubg-macOS-Intel/. gnubg-macOS/macOS-Intel/
+          fi
+          
+          if [ -d "gnubg-macOS-ARM64" ]; then
+            cp -RP gnubg-macOS-ARM64/. gnubg-macOS/macOS-ARM64/
+          fi
+          
+          # 4. Verify the content exists before zipping
+          echo "Contents of gnubg-macOS:"
+          ls -R gnubg-macOS
+          
+          # 5. Zip the combined folder
+          zip -rq "../gnubg-macOS.zip" gnubg-macOS
 
       - name: Publish GitHub Release (with retry)
         uses: nick-invision/retry@v3
