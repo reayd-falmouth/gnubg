@@ -306,8 +306,8 @@ jobs:
           
           # 4. Clean up massive unnecessary folders to keep the zip small
           rm -rf "dist/lib/python$PY_VER/test"
-          # Use a wildcard for the config folder to match any architecture/version
-          rm -rf dist/lib/python$PY_VER/config-* find "dist/lib/python$PY_VER" -name "__pycache__" -type d -exec rm -rf {} +
+          # Added semicolon to separate rm and find commands
+          rm -rf "dist/lib/python$PY_VER/config-"* ; find "dist/lib/python$PY_VER" -name "__pycache__" -type d -exec rm -rf {} +
 
       # -------------------------
       # Bundle Python runtime
