@@ -294,17 +294,20 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          # 1. Create the lib directory in your distribution
-          mkdir -p dist/lib/python3.12
+          # 1. Get the version dynamically from the environment
+          PY_VER=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+          echo "Detected Python version: $PY_VER"
           
-          # 2. Copy the entire Python standard library from the MSYS2 environment
-          # Note: Adjust 'python3.12' if the version in MSYS2 changes
-          cp -r /mingw64/lib/python3.12/* dist/lib/python3.12/
+          # 2. Create the lib directory in your distribution
+          mkdir -p "dist/lib/python$PY_VER"
           
-          # 3. Clean up massive unnecessary folders to keep the zip small
-          rm -rf dist/lib/python3.12/test
-          rm -rf dist/lib/python3.12/config-3.12-x86_64-linux-gnu
-          find dist/lib/python3.12 -name "__pycache__" -type d -exec rm -rf {} +
+          # 3. Copy the entire Python standard library from the MSYS2 environment
+          cp -r /mingw64/lib/python$PY_VER/* "dist/lib/python$PY_VER/"
+          
+          # 4. Clean up massive unnecessary folders to keep the zip small
+          rm -rf "dist/lib/python$PY_VER/test"
+          # Use a wildcard for the config folder to match any architecture/version
+          rm -rf dist/lib/python$PY_VER/config-* find "dist/lib/python$PY_VER" -name "__pycache__" -type d -exec rm -rf {} +
 
       # -------------------------
       # Bundle Python runtime
