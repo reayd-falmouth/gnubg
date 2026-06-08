@@ -149,7 +149,7 @@ dnl
 dnl check for compiler support
 dnl
 
-glib2minrev=22.0
+glib2minrev=32.0
 
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.$glib2minrev], have_glib="yes", AC_MSG_ERROR([You need to have glib2 version 2.$glib2minrev or higher to compile GNU Backgammon]))
 

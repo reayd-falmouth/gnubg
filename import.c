@@ -36,20 +36,11 @@
 #include "positionid.h"
 #include "matchequity.h"
 
-#if !GLIB_CHECK_VERSION (2,26,0)
-#ifdef WIN32
-#define GStatBuf struct _g_stat_struct
-#else
-typedef struct stat GStatBuf;
-#endif
-#endif
-
 static int
 ParseSnowieTxt(char *sz,
                int *pnMatchTo, int *pfJacoby, int *p1, int *p2,
                int *pfTurn, char aszPlayer[2][MAX_NAME_LEN], int *pfCrawfordGame,
                int anScore[2], int *pnCube, int *pfCubeOwner, TanBoard anBoard, int anDice[2]);
-
 
 static int
 IsValidMove(const TanBoard anBoard, const int anMove[8])

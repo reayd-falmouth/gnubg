@@ -1455,11 +1455,7 @@ ApplyPanelWidth(gpointer UNUSED(data))
         gtk_paned_set_position(GTK_PANED(hpaned), allocation.width - size);
     }
 
-#if GLIB_CHECK_VERSION (2,32,0)
     return G_SOURCE_REMOVE;
-#else
-    return FALSE;
-#endif
 }
 
 static void

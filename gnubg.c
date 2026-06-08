@@ -38,7 +38,6 @@
 #include "config.h"
 
 #include "gnubgmodule.h"
-#include "glib-ext.h"
 
 #include <sys/types.h>
 #include <stdlib.h>
@@ -3924,7 +3923,6 @@ CommandSetOutputOutput(char *sz)
     return;
 }
 
-#if GLIB_CHECK_VERSION (2,28,0)
 static gint64 tvProgress;
 
 static int
@@ -3943,32 +3941,6 @@ ProgressThrottle(void)
     /* insufficient time elapsed */
     return -1;
 }
-#else
-static GTimeVal tvProgress;
-
-static int
-ProgressThrottle(void)
-{
-    GTimeVal tv, tvDiff;
-    g_get_current_time(&tv);
-
-    tvDiff.tv_sec = tv.tv_sec - tvProgress.tv_sec;
-    if ((tvDiff.tv_usec = tv.tv_usec + 1000000 - tvProgress.tv_usec) >= 1000000)
-        tvDiff.tv_usec -= 1000000;
-    else
-        tvDiff.tv_sec--;
-
-    if (tvDiff.tv_sec || tvDiff.tv_usec >= 100000) {
-        /* sufficient time elapsed; record current time */
-        tvProgress.tv_sec = tv.tv_sec;
-        tvProgress.tv_usec = tv.tv_usec;
-        return 0;
-    }
-
-    /* insufficient time elapsed */
-    return -1;
-}
-#endif
 
 extern void
 ProgressStart(const char *sz)
@@ -4722,7 +4694,6 @@ main(int argc, char *argv[])
     init_nets(fNoBearoff);
 
     PushSplash(pwSplash, _("Initialising"), _("initialising thread data"));
-    glib_ext_init();
     MT_InitThreads();
 
 #if defined(WIN32) && defined(HAVE_SOCKETS)

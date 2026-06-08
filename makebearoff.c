@@ -37,7 +37,6 @@
 #include "bearoff.h"
 #include "util.h"
 #include "backgammon.h"
-#include "glib-ext.h"
 #include "multithread.h"
 
 void
@@ -1314,7 +1313,6 @@ main(int argc, char **argv)
 
     /* i18n */
 
-    glib_ext_init();
     MT_InitThreads();
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGE, LOCALEDIR);

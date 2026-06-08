@@ -24,7 +24,7 @@ build GNUbg but not necessarily with the SIMD extensions.
 
 The only mandatory development library is
 
-GLib			version >= 2.22
+GLib			version >= 2.32
 
 but you probably want to make use of most of the following ones as well
 
