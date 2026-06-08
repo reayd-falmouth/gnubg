@@ -16,20 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 #include "config.h"
 #include "gtklocdefs.h"
 
 #if (USE_GTK)
 #include <gtk/gtk.h>
-
-#if ! GTK_CHECK_VERSION(2,22,0)
-gint
-gdk_visual_get_depth(GdkVisual * visual)
-{
-    return visual->depth;
-}
-#endif
 
 extern GtkWidget *
 get_statusbar_label(GtkStatusbar * statusbar)

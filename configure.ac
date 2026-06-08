@@ -185,7 +185,7 @@ if test "x$with_gtk" != "xno"; then
     elif test "x$with_gtk3" = "xyes"; then
         PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.22.0], have_gtk="yes", AC_MSG_WARN([no gtk3 support]))
     else
-        PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.20.0], have_gtk="yes", AC_MSG_WARN([no gtk2 support]))
+        PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.24.0], have_gtk="yes", AC_MSG_WARN([no gtk2 support]))
     fi
 
     if test "x$with_board3d" != "xno"; then

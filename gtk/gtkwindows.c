@@ -219,11 +219,7 @@ GTKCreateDialog(const char *szTitle, const dialogtype dt,
             GtkWidget *da = DialogArea(pwDialog, DA_OK);
 
             if (da != NULL)
-#if GTK_CHECK_VERSION(2,21,8)
                 gtk_widget_add_accelerator(da, "clicked", pag, GDK_KEY_Escape, (GdkModifierType)0, (GtkAccelFlags)0);
-#else
-                gtk_widget_add_accelerator(da, "clicked", pag, GDK_Escape, (GdkModifierType)0, (GtkAccelFlags)0);
-#endif
         }
     }
 

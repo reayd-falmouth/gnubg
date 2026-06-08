@@ -30,7 +30,7 @@ but you probably want to make use of most of the following ones as well
 
 png (graphics)
 freetype2 (graphics)
-GTK (GUI)		version >= 2.20
+GTK (GUI)		version >= 2.24
 cairo (graphics)
 canberra (sound)
 libepoxy, libcglm (3d boards)
