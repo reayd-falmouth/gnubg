@@ -332,7 +332,8 @@ add_mw_match_rows(theorywidget * ptw, const cubeinfo * pci, float aarRates[2][2]
 static void
 TheoryUpdated(GtkWidget * UNUSED(pw), theorywidget * ptw)
 {
-    cubeinfo ci;
+    /* Initialize ci for a money game, this will be corrected if necessary by TheoryGetValues() */
+    cubeinfo ci = { .nCube = 1, .fCrawford = FALSE, .fJacoby = TRUE, .fBeavers = TRUE, .bgv = VARIATION_STANDARD };
     float aarRates[2][2];
 
     int i, j;
