@@ -3196,12 +3196,12 @@ DrawDCNumbers(const BoardData* bd)
 
     g_assert(cubeIndex <= 12);
 
-        if (cubeIndex > 6)
+    if (cubeIndex > 6)
         nCube = 1;
     else
         nCube = 0;
 
-        cubeIndex = cubeIndex % 6;
+    cubeIndex = cubeIndex % 6;
 
     glRotatef((float)(rotDC[cubeIndex][2] + extraRot) * 90.0f, 0.f, 0.f, 1.f);
     glRotatef((float)rotDC[cubeIndex][0] * 90.0f, 1.f, 0.f, 0.f);
