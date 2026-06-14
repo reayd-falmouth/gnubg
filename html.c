@@ -3051,6 +3051,7 @@ CommandExportPositionHtml(char *sz)
 {
 
     FILE *pf;
+    int fClosepf = TRUE;
     int fHistory;
     moverecord *pmr;
     int iMove;
@@ -3070,9 +3071,10 @@ CommandExportPositionHtml(char *sz)
     if (!confirmOverwrite(sz, fConfirmSave))
         return;
 
-    if (!strcmp(sz, "-"))
+    if (!strcmp(sz, "-")) {
         pf = stdout;
-    else if (!(pf = g_fopen(sz, "w"))) {
+        fClosepf = FALSE;
+    } else if (!(pf = g_fopen(sz, "w"))) {
         outputerr(sz);
         return;
     }
@@ -3109,7 +3111,7 @@ CommandExportPositionHtml(char *sz)
 
     HTMLEpilogue(pf, &ms, NULL, exsExport.hecss);
 
-    if (pf != stdout)
+    if (fClosepf)
         fclose(pf);
 
     setDefaultFileName(sz);
