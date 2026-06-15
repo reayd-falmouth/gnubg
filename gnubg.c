@@ -3307,6 +3307,7 @@ CommandSaveSettings(char *szParam)
 {
     FILE *pf;
     char *szFile;
+    int fDontClose = FALSE;
 
     szParam = NextToken(&szParam);
 
@@ -3327,9 +3328,10 @@ CommandSaveSettings(char *szParam)
     } else
         szFile = g_strdup(szParam);
 
-    if (!strcmp(szFile, "-"))
+    if (!strcmp(szFile, "-")) {
         pf = stdout;
-    else
+        fDontClose = TRUE;
+    } else
         pf = g_fopen(szFile, "w");
 
     if (!pf) {
@@ -3384,7 +3386,7 @@ CommandSaveSettings(char *szParam)
 
     SaveMiscSettings(pf);
     SaveAutoSaveSettings(pf);
-    if (pf != stdout)
+    if (!fDontClose)
         if (fclose(pf) == 0)
             errno = 0;
 

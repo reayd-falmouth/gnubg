@@ -2959,6 +2959,7 @@ CommandExportMatchHtml(char *sz)
     int nGames;
     char *aszLinks[4], *filenames[4];
     int i, j;
+    int fDontClose = FALSE;
 
     sz = NextToken(&sz);
 
@@ -3009,9 +3010,10 @@ CommandExportMatchHtml(char *sz)
         }
 
 
-        if (!strcmp(szCurrent, "-"))
+        if (!strcmp(szCurrent, "-")) {
             pf = stdout;
-        else if (!(pf = g_fopen(szCurrent, "w"))) {
+            fDontClose = TRUE;
+	} else if (!(pf = g_fopen(szCurrent, "w"))) {
             outputerr(szCurrent);
             for (j = 0; j < 4; j++) {
                 g_free(aszLinks[j]);
@@ -3031,7 +3033,7 @@ CommandExportMatchHtml(char *sz)
         }
         g_free(szCurrent);
 
-        if (pf != stdout)
+        if (!fDontClose)
             fclose(pf);
 
     }
@@ -3051,7 +3053,7 @@ CommandExportPositionHtml(char *sz)
 {
 
     FILE *pf;
-    int fClosepf = TRUE;
+    int fDontClose = FALSE;
     int fHistory;
     moverecord *pmr;
     int iMove;
@@ -3073,7 +3075,7 @@ CommandExportPositionHtml(char *sz)
 
     if (!strcmp(sz, "-")) {
         pf = stdout;
-        fClosepf = FALSE;
+        fDontClose = TRUE;
     } else if (!(pf = g_fopen(sz, "w"))) {
         outputerr(sz);
         return;
@@ -3111,7 +3113,7 @@ CommandExportPositionHtml(char *sz)
 
     HTMLEpilogue(pf, &ms, NULL, exsExport.hecss);
 
-    if (fClosepf)
+    if (!fDontClose)
         fclose(pf);
 
     setDefaultFileName(sz);
