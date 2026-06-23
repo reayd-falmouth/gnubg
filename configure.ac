@@ -386,7 +386,7 @@ else
 fi
 
 if test "$with_board3d" = "yes" && test "$no_board3d" = "yes"; then
-	AC_MSG_ERROR([board3d requested but gtk or gtkglext not found])
+	AC_MSG_ERROR([board3d requested but gtk, libepoxy, libglu or gtkglext not found])
 fi
 
 if test "$with_board3d" != "no" && test "$have_cglm" = "no"; then
