@@ -61,7 +61,7 @@
 #include "set.h"
 
 #if defined(USE_GTK)
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 #include "gtk/gtkgame.h"
 #include "gtkoptions.h"
 #include "gtkprefs.h"

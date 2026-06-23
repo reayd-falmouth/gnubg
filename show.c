@@ -51,7 +51,7 @@
 #include "gtktheory.h"
 #include "gtkrace.h"
 #include "gtk/gtkexport.h"
-#include "gtkmet.h"
+#include "gtk/gtkmet.h"
 #include "gtkrolls.h"
 #include "gtktempmap.h"
 #include "gtkscoremap.h"

@@ -27,7 +27,7 @@
 #include "gtk/gtkgame.h"
 #include "util.h"
 #include <glib/gstdio.h>
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 #include "gtk/gtkboard.h"
 
 #define MAX_FRAMES 10

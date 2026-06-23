@@ -17,7 +17,7 @@
  */
 
 #include "config.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 
 #include <stdlib.h>
 

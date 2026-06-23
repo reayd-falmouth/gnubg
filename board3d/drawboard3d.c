@@ -20,7 +20,7 @@
 
 #include "fun3d.h"
 #include "boardpos.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 #include "BoardDimensions.h"
 #include "ShimOGL.h"
 #include "gtk/gtkboard.h"

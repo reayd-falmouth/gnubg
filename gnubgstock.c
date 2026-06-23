@@ -28,7 +28,7 @@
 #ifdef USE_GRESOURCE
 #include "gnubg-stock-resources.h"
 #else
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 #endif
 
 static GtkIconFactory *gnubg_stock_factory = NULL;

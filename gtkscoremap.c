@@ -115,7 +115,7 @@ and come back, it works again. It may be a movelist construction issue.
 */
 
 #include "config.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 
 #include <gtk/gtk.h>
 

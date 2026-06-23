@@ -22,7 +22,7 @@
 #include "legacyGLinc.h"
 #include "fun3d.h"
 #include "tr.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 #include "gtk/gtkboard.h"
 
 static void

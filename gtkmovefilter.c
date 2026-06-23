@@ -25,7 +25,7 @@
 #include "gtk/gtkgame.h"
 #include "gtkmovefilter.h"
 #include "gtk/gtkwindows.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 
 typedef struct {
 

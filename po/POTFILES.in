@@ -68,11 +68,11 @@ gtk/gtkfile.c
 gtk/gtkfile.h
 gtk/gtkgame.c
 gtk/gtkgame.h
-gtklocdefs.c
-gtklocdefs.h
-gtkgamelist.c
-gtkmet.c
-gtkmet.h
+gtk/gtklocdefs.c
+gtk/gtklocdefs.h
+gtk/gtkgamelist.c
+gtk/gtkmet.c
+gtk/gtkmet.h
 gtkmovefilter.c
 gtkmovefilter.h
 gtkmovelist.c

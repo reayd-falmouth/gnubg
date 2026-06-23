@@ -21,7 +21,7 @@
 #include "config.h"
 #include "legacyGLinc.h"
 #include "fun3d.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 
 #include <GL/glu.h>	/* Used for colour widget - todo: remove? */
 

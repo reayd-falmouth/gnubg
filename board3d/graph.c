@@ -20,7 +20,7 @@
 #include "legacyGLinc.h"
 #include "fun3d.h"
 #include "renderprefs.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 #include <glib/gi18n.h>
 #include "common.h"
 #include "analysis.h"

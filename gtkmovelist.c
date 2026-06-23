@@ -19,7 +19,7 @@
  */
 
 #include "config.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 #include "gtk/gtkgame.h"
 #include <string.h>
 

@@ -32,7 +32,7 @@
 #include "gtkrelational.h"
 #include "gtk/gtkgame.h"
 #include "gtk/gtkwindows.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 
 enum {
     COLUMN_NICK,
