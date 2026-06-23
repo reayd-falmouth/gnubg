@@ -56,7 +56,7 @@
 #include "gtktempmap.h"
 #include "gtkscoremap.h"
 #include "gtkoptions.h"
-#include "gtkcube.h"
+#include "gtk/gtkcube.h"
 #include "gtkrelational.h"
 #endif
 

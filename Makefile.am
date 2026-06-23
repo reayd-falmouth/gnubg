@@ -157,7 +157,7 @@ gnubg_SOURCES = \
 if USE_GTK
 gnubg_SOURCES += gtk/gtkboard.c gtk/gtkboard.h gtk/gtkgame.c gtk/gtkgame.h gtkfile.c gtkfile.h \
 		 gtkprefs.c gtkprefs.h gtk/gtk-multiview.c gtk/gtk-multiview.h gtktheory.c \
-		 gtktheory.h gtkexport.c gtkexport.h gtkcube.c gtkcube.h \
+		 gtktheory.h gtkexport.c gtkexport.h gtk/gtkcube.c gtk/gtkcube.h \
 		 gtk/gtkchequer.c gtk/gtkchequer.h gtkrace.c gtkrace.h gtkmovefilter.c \
 		 gtkmovefilter.h gtkmet.c gtkmet.h gtksplash.c \
 		 gtksplash.h gtkrolls.c gtkrolls.h gtktempmap.c gtktempmap.h \

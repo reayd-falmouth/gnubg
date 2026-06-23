@@ -60,8 +60,8 @@ gtk/gtkboard.c
 gtk/gtkboard.h
 gtk/gtkchequer.c
 gtk/gtkchequer.h
-gtkcube.c
-gtkcube.h
+gtk/gtkcube.c
+gtk/gtkcube.h
 gtkexport.c
 gtkexport.h
 gtkfile.c

@@ -40,7 +40,7 @@
 #include "renderprefs.h"
 #include "gtk/gtkboard.h"
 #include "gtk/gtkwindows.h"
-#include "gtkcube.h"
+#include "gtk/gtkcube.h"
 
 #define SIZE_QUADRANT 52
 
