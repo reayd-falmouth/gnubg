@@ -31,7 +31,7 @@
 #include "gtktoolbar.h"
 #include "gtk/gtkboard.h"
 #include "gtk/gtkgame.h"
-#include "gtkfile.h"
+#include "gtk/gtkfile.h"
 #include "drawboard.h"
 #include "renderprefs.h"
 #include "gnubgstock.h"

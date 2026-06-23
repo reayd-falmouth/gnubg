@@ -32,7 +32,7 @@
 #include "drawboard.h"
 #include "gtk/gtkboard.h"
 #include "gtk/gtkgame.h"
-#include "gtkfile.h"
+#include "gtk/gtkfile.h"
 #include "gtkprefs.h"
 #include "render.h"
 #include "renderprefs.h"

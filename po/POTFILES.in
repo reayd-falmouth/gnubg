@@ -62,10 +62,10 @@ gtk/gtkchequer.c
 gtk/gtkchequer.h
 gtk/gtkcube.c
 gtk/gtkcube.h
-gtkexport.c
-gtkexport.h
-gtkfile.c
-gtkfile.h
+gtk/gtkexport.c
+gtk/gtkexport.h
+gtk/gtkfile.c
+gtk/gtkfile.h
 gtk/gtkgame.c
 gtk/gtkgame.h
 gtklocdefs.c

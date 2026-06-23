@@ -30,7 +30,7 @@
 #include "eval.h"
 #include "dice.h"
 #include "gtk/gtkgame.h"
-#include "gtkfile.h"
+#include "gtk/gtkfile.h"
 #include "sound.h"
 #include "drawboard.h"
 #include "matchequity.h"
