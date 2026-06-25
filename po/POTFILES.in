@@ -73,9 +73,9 @@ gtk/gtklocdefs.h
 gtk/gtkgamelist.c
 gtk/gtkmet.c
 gtk/gtkmet.h
-gtkmovefilter.c
-gtkmovefilter.h
-gtkmovelist.c
+gtk/gtkmovefilter.c
+gtk/gtkmovefilter.h
+gtk/gtkmovelist.c
 gtkmovelistctrl.c
 gtkmovelistctrl.h
 gtk/gtk-multiview.c

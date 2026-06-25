@@ -158,11 +158,12 @@ if USE_GTK
 gnubg_SOURCES += gtk/gtkboard.c gtk/gtkboard.h gtk/gtkgame.c gtk/gtkgame.h gtk/gtkfile.c gtk/gtkfile.h \
 		 gtkprefs.c gtkprefs.h gtk/gtk-multiview.c gtk/gtk-multiview.h gtktheory.c \
 		 gtktheory.h gtk/gtkexport.c gtk/gtkexport.h gtk/gtkcube.c gtk/gtkcube.h \
-		 gtk/gtkchequer.c gtk/gtkchequer.h gtkrace.c gtkrace.h gtkmovefilter.c \
-		 gtkmovefilter.h gtk/gtkmet.c gtk/gtkmet.h gtksplash.c \
+		 gtk/gtkchequer.c gtk/gtkchequer.h gtkrace.c gtkrace.h \
+		 gtk/gtkmovefilter.c gtk/gtkmovefilter.h \
+		 gtk/gtkmet.c gtk/gtkmet.h gtksplash.c \
 		 gtksplash.h gtkrolls.c gtkrolls.h gtktempmap.c gtktempmap.h \
 		 gtkoptions.h gtkoptions.c gtktoolbar.h gtktoolbar.c \
-		 gtk/gtkgamelist.c gtk/gtkpanels.c gtk/gtkpanels.h gtkmovelist.c \
+		 gtk/gtkgamelist.c gtk/gtkpanels.c gtk/gtkpanels.h gtk/gtkmovelist.c \
 		 gtkmovelistctrl.c gtkmovelistctrl.h \
 		 gtk/gtkwindows.c gtk/gtkwindows.h gtkrelational.c gtkrelational.h gnubgstock.c gnubgstock.h \
 		 gtkuidefs.h gtk/gtklocdefs.c gtk/gtklocdefs.h \

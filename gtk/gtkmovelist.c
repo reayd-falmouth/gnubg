@@ -19,8 +19,8 @@
  */
 
 #include "config.h"
-#include "gtk/gtklocdefs.h"
-#include "gtk/gtkgame.h"
+#include "gtklocdefs.h"
+#include "gtkgame.h"
 #include <string.h>
 
 #include "format.h"
