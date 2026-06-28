@@ -19,7 +19,11 @@
 #include "config.h"
 #include "legacyGLinc.h"
 
+#if defined(USE_APPLE_OPENGL)
+#include <OpenGL/glu.h>
+#else
 #include <GL/glu.h>	/* Used for vertex tessellation */
+#endif
 
 #include "fun3d.h"
 #include "util.h"

@@ -31,7 +31,7 @@
 #endif
 
 #if defined(USE_APPLE_OPENGL)
-#include <gl.h>
+#include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
