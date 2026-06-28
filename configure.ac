@@ -58,9 +58,6 @@ case "$host" in
     ;;
   *-*-darwin*)
     darwin=yes
-    dnl Modern macOS (incl. Apple Silicon) ships OpenGL as a framework with no
-    dnl on-disk libGL.dylib, so the legacy -dylib_file hack no longer works.
-    dnl Link against the framework and silence the OpenGL deprecation warnings.
     LDFLAGS="$LDFLAGS -framework OpenGL"
     AC_DEFINE(USE_APPLE_OPENGL, 1, [Define if using Apple OpenGL])
     ;;
