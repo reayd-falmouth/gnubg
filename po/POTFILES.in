@@ -76,8 +76,8 @@ gtk/gtkmet.h
 gtk/gtkmovefilter.c
 gtk/gtkmovefilter.h
 gtk/gtkmovelist.c
-gtkmovelistctrl.c
-gtkmovelistctrl.h
+gtk/gtkmovelistctrl.c
+gtk/gtkmovelistctrl.h
 gtk/gtk-multiview.c
 gtk/gtk-multiview.h
 gtkoptions.c
