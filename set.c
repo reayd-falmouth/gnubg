@@ -67,7 +67,7 @@
 #include "gtkprefs.h"
 #include "gtk/gtkchequer.h"
 #include "gtk/gtkwindows.h"
-#include "gtkscoremap.h"
+#include "gtk/gtkscoremap.h"
 #endif                          /* USE_GTK */
 
 #include "matchequity.h"

@@ -54,10 +54,10 @@
 #include "gtk/gtkmet.h"
 #include "gtkrolls.h"
 #include "gtktempmap.h"
-#include "gtkscoremap.h"
+#include "gtk/gtkscoremap.h"
 #include "gtkoptions.h"
 #include "gtk/gtkcube.h"
-#include "gtkrelational.h"
+#include "gtk/gtkrelational.h"
 #endif
 
 #if defined(WIN32)

@@ -115,7 +115,7 @@ static char szCommandSeparators[] = " \t\n\r\v\f";
 #include "gtksplash.h"
 #include "gtk/gtkchequer.h"
 #include "gtk/gtkwindows.h"
-#include "gtkscoremap.h"
+#include "gtk/gtkscoremap.h"
 #endif
 
 #if defined(USE_BOARD3D)

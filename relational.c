@@ -19,7 +19,7 @@
 #include "config.h"
 
 #if USE_GTK
-#include "gtkrelational.h"
+#include "gtk/gtkrelational.h"
 #include "gtk/gtkgame.h"
 #include "gtk/gtkwindows.h"
 #endif

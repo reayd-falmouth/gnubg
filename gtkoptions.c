@@ -45,7 +45,7 @@
 #endif
 #include "multithread.h"
 #include "gtkoptions.h"
-#include "gtkrelational.h"
+#include "gtk/gtkrelational.h"
 
 typedef struct {
     GtkWidget *pwNoteBook;

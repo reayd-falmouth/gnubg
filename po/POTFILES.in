@@ -88,12 +88,12 @@ gtkprefs.c
 gtkprefs.h
 gtkrace.c
 gtkrace.h
-gtkrelational.c
-gtkrelational.h
+gtk/gtkrelational.c
+gtk/gtkrelational.h
 gtkrolls.c
 gtkrolls.h
-gtkscoremap.c
-gtkscoremap.h
+gtk/gtkscoremap.c
+gtk/gtkscoremap.h
 gtksplash.c
 gtksplash.h
 gtktempmap.c
