@@ -25,7 +25,7 @@
 
 #include <GL/glu.h>	/* Used for colour widget - todo: remove? */
 
-#include "gtkprefs.h"
+#include "gtk/gtkprefs.h"
 
 typedef struct UpdateDetails_T {
     Material mat;

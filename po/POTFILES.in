@@ -80,12 +80,12 @@ gtk/gtkmovelistctrl.c
 gtk/gtkmovelistctrl.h
 gtk/gtk-multiview.c
 gtk/gtk-multiview.h
-gtkoptions.c
-gtkoptions.h
+gtk/gtkoptions.c
+gtk/gtkoptions.h
 gtk/gtkpanels.c
 gtk/gtkpanels.h
-gtkprefs.c
-gtkprefs.h
+gtk/gtkprefs.c
+gtk/gtkprefs.h
 gtkrace.c
 gtkrace.h
 gtk/gtkrelational.c

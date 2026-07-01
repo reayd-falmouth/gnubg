@@ -156,13 +156,14 @@ gnubg_SOURCES = \
 
 if USE_GTK
 gnubg_SOURCES += gtk/gtkboard.c gtk/gtkboard.h gtk/gtkgame.c gtk/gtkgame.h gtk/gtkfile.c gtk/gtkfile.h \
-		 gtkprefs.c gtkprefs.h gtk/gtk-multiview.c gtk/gtk-multiview.h gtktheory.c \
-		 gtktheory.h gtk/gtkexport.c gtk/gtkexport.h gtk/gtkcube.c gtk/gtkcube.h \
+		 gtk/gtkprefs.c gtk/gtkprefs.h gtk/gtk-multiview.c gtk/gtk-multiview.h \
+		 gtktheory.c gtktheory.h \
+		 gtk/gtkexport.c gtk/gtkexport.h gtk/gtkcube.c gtk/gtkcube.h \
 		 gtk/gtkchequer.c gtk/gtkchequer.h gtkrace.c gtkrace.h \
 		 gtk/gtkmovefilter.c gtk/gtkmovefilter.h \
 		 gtk/gtkmet.c gtk/gtkmet.h gtksplash.c \
 		 gtksplash.h gtkrolls.c gtkrolls.h gtktempmap.c gtktempmap.h \
-		 gtkoptions.h gtkoptions.c gtktoolbar.h gtktoolbar.c \
+		 gtk/gtkoptions.h gtk/gtkoptions.c gtktoolbar.h gtktoolbar.c \
 		 gtk/gtkgamelist.c gtk/gtkpanels.c gtk/gtkpanels.h gtk/gtkmovelist.c \
 		 gtk/gtkmovelistctrl.c gtk/gtkmovelistctrl.h \
 		 gtk/gtkwindows.c gtk/gtkwindows.h gtk/gtkrelational.c gtk/gtkrelational.h \
