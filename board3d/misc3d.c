@@ -1292,7 +1292,7 @@ SetupSimpleMatAlpha(Material * pMat, float r, float g, float b, float a)
 void
 SetupSimpleMat(Material * pMat, float r, float g, float b)
 {
-    SetupMat(pMat, r, g, b, r, g, b, 0.f, 0.f, 0.f, 0, 0.f);
+    SetupMat(pMat, r, g, b, r, g, b, 0.f, 0.f, 0.f, 0, 1.f);
 }
 
 /* Not currently used
