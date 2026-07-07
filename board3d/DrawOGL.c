@@ -120,7 +120,6 @@ drawBoard(const BoardData* bd, const BoardData3d* bd3d, const renderdata* prd)
         glDisable(GL_BLEND);
 #endif
 
-#if !GTK_CHECK_VERSION(3,0,0)
     if (bd->DragTargetHelp) {   /* highlight target points */
         SetLineDrawingmode(GL_TRUE);
 
@@ -139,7 +138,6 @@ drawBoard(const BoardData* bd, const BoardData3d* bd3d, const renderdata* prd)
         }
         SetLineDrawingmode(GL_FALSE);
     }
-#endif
 
     if (DiceShowing(bd)) {
         const Material* diceMat = &prd->DiceMat[(bd->turn == 1)];
