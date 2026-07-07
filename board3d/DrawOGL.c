@@ -123,7 +123,7 @@ drawBoard(const BoardData* bd, const BoardData3d* bd3d, const renderdata* prd)
     if (bd->DragTargetHelp) {   /* highlight target points */
         SetLineDrawingmode(GL_TRUE);
 
-        SetColour3d(0.f, 1.f, 0.f, 0.f);        /* Nice bright green... */
+        SetColour3d(0.f, 1.f, 0.f, 0.5f);       /* Nice bright green... */
 
         for (int i = 0; i <= 3; i++) {
             int target = bd->iTargetHelpPoints[i];
