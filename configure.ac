@@ -225,7 +225,7 @@ if test "x$darwin" = "xyes"; then
 
 	if test "x$coreaudio" = "xyes"; then
 		AC_DEFINE(HAVE_APPLE_COREAUDIO,1, [Define if you have Apple CoreAudio])
-		LDFLAGS="$LDFLAGS -framework AudioUnit -framework CoreServices -framework AudioToolBox -framework CoreAudio"
+		LDFLAGS="$LDFLAGS -framework AudioUnit -framework CoreServices -framework AudioToolbox -framework CoreAudio"
 	fi
 fi
 
