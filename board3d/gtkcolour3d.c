@@ -23,7 +23,11 @@
 #include "fun3d.h"
 #include "gtk/gtklocdefs.h"
 
+#if defined(USE_APPLE_OPENGL)
+#include <OpenGL/glu.h>
+#else
 #include <GL/glu.h>	/* Used for colour widget - todo: remove? */
+#endif
 
 #include "gtk/gtkprefs.h"
 
