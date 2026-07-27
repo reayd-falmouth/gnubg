@@ -64,7 +64,7 @@ extern void GTKSetCurrentParent(GtkWidget * parent);
 extern GtkWidget *GTKGetCurrentParent(void);
 extern void GTKSetOutputParent(GtkWidget * parent);
 extern GtkWidget *GTKGetOutputParent(void);
-extern void GTKClearOutputParent();
+extern void GTKClearOutputParent(void);
 
 typedef enum {
     WARN_FULLSCREEN_EXIT = 0,
