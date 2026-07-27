@@ -1633,11 +1633,11 @@ HTMLEpilogueComment(FILE * pf)
     time(&t);
     strftime(tstr, 11, "%Y-%m-%d", localtime(&t));
 
-    fputs("\n<!-- Epilogue -->\n\n", pf);
+    fputs("<!-- Epilogue -->\n\n", pf);
 
     fprintf(pf, _("<!-- Output generated %s by %s (%s)"), tstr, VERSION_STRING, "https://www.gnu.org/software/gnubg/");
 
-    fputs(" -->", pf);
+    fputs(" -->\n", pf);
 }
 
 /*
@@ -3139,7 +3139,7 @@ ExportPositionGammOnLine(FILE * pf)
         return;
     }
 
-    fputs("\n<!-- Score -->\n\n", pf);
+    fputs("<!-- Score -->\n\n", pf);
 
     fputs("<strong>", pf);
 
@@ -3159,7 +3159,7 @@ ExportPositionGammOnLine(FILE * pf)
 
     fputs("</strong>\n", pf);
 
-    fputs("\n<!-- End Score -->\n\n", pf);
+    fputs("\n<!-- End Score -->\n", pf);
 
     printHTMLBoard(pf, &ms, ms.fTurn, "../Images/", "gif", HTML_EXPORT_TYPE_BBS, HTML_EXPORT_CSS_INLINE);
 
