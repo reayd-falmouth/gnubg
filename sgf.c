@@ -1591,9 +1591,15 @@ CommandLoadMatch(char *sz)
                 pmr = pl->p;
             }
             CommandPrevious(NULL);
-        } else if (fGotoFirstGame)
+#if defined (USE_GTK)
+            GTKSetGame(nGames);
+#endif
+        } else if (fGotoFirstGame) {
             CommandFirstGame(NULL);
-
+#if defined (USE_GTK)
+            GTKSetGame(0);
+#endif
+        }
     }
 }
 
