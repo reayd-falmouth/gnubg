@@ -9542,15 +9542,15 @@ msgstr "/_Yardım"
 msgid "GNU Backgammon - Annotation"
 msgstr "GNU Backgammon - Ek açıklamalar"
 
-#: gtkpanels.c:757
-#, fuzzy, c-format
-msgid "Game %d: %d, %d Crawford"
-msgstr "Oyun %d: %s %d, %s %d"
+#: gtkpanels.c:732
+#, c-format
+msgid "Game %d: %d - %d Crawford"
+msgstr "Oyun %d: %d - %d Crawford"
 
-#: gtkpanels.c:759
-#, fuzzy, c-format
-msgid "Game %d: %d, %d"
-msgstr "Oyun %d: %s %d, %s %d"
+#: gtkpanels.c:734
+#, c-format
+msgid "Game %d: %d - %d"
+msgstr "Oyun %d: %d - %d"
 
 #: gtkpanels.c:830
 msgid "GNU Backgammon - Game record"

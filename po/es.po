@@ -9632,15 +9632,15 @@ msgstr "Ayuda"
 msgid "GNU Backgammon - Annotation"
 msgstr "GNU Backgammon - Evaluación"
 
-#: gtkpanels.c:757
-#, fuzzy, c-format
-msgid "Game %d: %d, %d Crawford"
-msgstr "Juego %d: %d, %d"
-
-#: gtkpanels.c:759
+#: gtkpanels.c:732
 #, c-format
-msgid "Game %d: %d, %d"
-msgstr "Juego %d: %d, %d"
+msgid "Game %d: %d - %d Crawford"
+msgstr "Juego %d: %d - %d Crawford"
+
+#: gtkpanels.c:734
+#, c-format
+msgid "Game %d: %d - %d"
+msgstr "Juego %d: %d - %d"
 
 #: gtkpanels.c:830
 #, fuzzy

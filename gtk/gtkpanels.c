@@ -729,9 +729,9 @@ GTKAddGame(moverecord * pmr)
     gint last_game;
 
     if (pmr->g.fCrawford && pmr->g.fCrawfordGame)
-        sprintf(sz, _("Game %d: %d, %d Crawford"), pmr->g.i + 1, pmr->g.anScore[0], pmr->g.anScore[1]);
+        sprintf(sz, _("Game %d: %d - %d Crawford"), pmr->g.i + 1, pmr->g.anScore[0], pmr->g.anScore[1]);
     else
-        sprintf(sz, _("Game %d: %d, %d"), pmr->g.i + 1, pmr->g.anScore[0], pmr->g.anScore[1]);
+        sprintf(sz, _("Game %d: %d - %d"), pmr->g.i + 1, pmr->g.anScore[0], pmr->g.anScore[1]);
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(game_select_combo), sz);
     model = gtk_combo_box_get_model(GTK_COMBO_BOX(game_select_combo));
     last_game = gtk_tree_model_iter_n_children(model, NULL);

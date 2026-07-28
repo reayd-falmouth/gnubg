@@ -8191,12 +8191,12 @@ msgstr ""
 
 #: gtkpanels.c:732
 #, c-format
-msgid "Game %d: %d, %d Crawford"
+msgid "Game %d: %d - %d Crawford"
 msgstr ""
 
 #: gtkpanels.c:734
 #, c-format
-msgid "Game %d: %d, %d"
+msgid "Game %d: %d - %d"
 msgstr ""
 
 #: gtkpanels.c:805

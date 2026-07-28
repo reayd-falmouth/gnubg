@@ -8780,14 +8780,14 @@ msgstr ""
 msgid "GNU Backgammon - Annotation"
 msgstr ""
 
-#: gtkpanels.c:757
+#: gtkpanels.c:732
 #, c-format
-msgid "Game %d: %d, %d Crawford"
+msgid "Game %d: %d - %d Crawford"
 msgstr ""
 
-#: gtkpanels.c:759
+#: gtkpanels.c:734
 #, c-format
-msgid "Game %d: %d, %d"
+msgid "Game %d: %d - %d"
 msgstr ""
 
 #: gtkpanels.c:830

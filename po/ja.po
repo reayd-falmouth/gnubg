@@ -8721,15 +8721,15 @@ msgstr "ヘルプ"
 msgid "GNU Backgammon - Annotation"
 msgstr "GNU Backgammon - 注釈"
 
-#: gtkpanels.c:728
+#: gtkpanels.c:732
 #, c-format
-msgid "Game %d: %d, %d Crawford"
-msgstr "ゲーム %d: %d, %d クロフォード"
+msgid "Game %d: %d - %d Crawford"
+msgstr "ゲーム %d: %d - %d クロフォード"
 
-#: gtkpanels.c:730
+#: gtkpanels.c:734
 #, c-format
-msgid "Game %d: %d, %d"
-msgstr "ゲーム %d: %d, %d"
+msgid "Game %d: %d - %d"
+msgstr "ゲーム %d: %d - %d"
 
 #: gtkpanels.c:801
 msgid "GNU Backgammon - Game record"

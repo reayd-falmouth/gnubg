@@ -9458,15 +9458,15 @@ msgstr "Ajutor"
 msgid "GNU Backgammon - Annotation"
 msgstr "Table GNU - Evaluare"
 
-#: gtkpanels.c:757
-#, fuzzy, c-format
-msgid "Game %d: %d, %d Crawford"
-msgstr "Joc %d: %d, %d"
-
-#: gtkpanels.c:759
+#: gtkpanels.c:732
 #, c-format
-msgid "Game %d: %d, %d"
-msgstr "Joc %d: %d, %d"
+msgid "Game %d: %d - %d Crawford"
+msgstr "Joc %d: %d - %d Crawford"
+
+#: gtkpanels.c:734
+#, c-format
+msgid "Game %d: %d - %d"
+msgstr "Joc %d: %d - %d"
 
 #: gtkpanels.c:830
 #, fuzzy

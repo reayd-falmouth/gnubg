@@ -1,4 +1,4 @@
-# Icelandic translation of GNU Backgammon.
+# Icelandic translation of GNU Bacnels.c:7kgammon.
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # This file is distributed under the same license as the PACKAGE package.
 # Hlynur Sigurgislason <hsi@here.is>, 2003.
@@ -9510,15 +9510,15 @@ msgstr "/_Hjálp"
 msgid "GNU Backgammon - Annotation"
 msgstr "GNU Backgammon - Spurning"
 
-#: gtkpanels.c:757
-#, fuzzy, c-format
-msgid "Game %d: %d, %d Crawford"
-msgstr "Spil %d: %s %d, %s %d"
+#: gtkpanels.c:732
+#, c-format
+msgid "Game %d: %d - %d Crawford"
+msgstr "Spil %d: %d - %d Crawford"
 
-#: gtkpanels.c:759
-#, fuzzy, c-format
-msgid "Game %d: %d, %d"
-msgstr "Spil %d: %s %d, %s %d"
+#: gtkpanels.c:734
+#, c-format
+msgid "Game %d: %d - %d"
+msgstr "Spil %d: %d - %d"
 
 #: gtkpanels.c:830
 #, fuzzy
