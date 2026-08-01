@@ -1453,6 +1453,7 @@ RelationalOptions(void)
 #endif
 
     lbl = gtk_label_new(_("Username"));
+    gtk_widget_set_tooltip_text(lbl, _("The user needs create database privilege to have the default database automatically created or to use the 'Add database' button"));
 
 #if GTK_CHECK_VERSION(3,0,0)
     gtk_widget_set_halign(lbl, GTK_ALIGN_START);

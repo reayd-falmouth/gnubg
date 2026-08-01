@@ -90,7 +90,7 @@ def PyPostgreConnect(database, user, password, hostname):
     try:
         connection = psycopg.connect(
             host=postgres_host, port=postgres_port,
-            user=user, password=password, dbname=database)
+            user=user, password=password, dbname=database, autocommit=True)
         return 1
     except Exception:
         # See if postgres is there
@@ -117,7 +117,7 @@ def PyPostgreConnect(database, user, password, hostname):
             connection.close()
             connection = psycopg.connect(
                 host=postgres_host, dbname=database, user=user,
-                password=password)
+                password=password, autocommit=True)
             return 0
         except Exception:
             return -1  # failed
