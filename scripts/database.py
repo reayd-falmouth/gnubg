@@ -69,8 +69,16 @@ def PyMySQLConnect(database, user, password, hostname):
 
 def PyPostgreConnect(database, user, password, hostname):
     global connection
-    import psycopg
-    from psycopg import sql
+    global driver
+
+    # try psycopg, else pgdb
+    try:
+        import psycopg
+        from psycopg import sql
+        driver = "psycopg"
+    except Exception:
+        import pgdb
+        driver = "pgdb"
 
     hostport = hostname.strip().split(':')
     try:
@@ -87,40 +95,71 @@ def PyPostgreConnect(database, user, password, hostname):
     except IndexError:
         postgres_port = 5432
 
-    try:
-        connection = psycopg.connect(
-            host=postgres_host, port=postgres_port,
-            user=user, password=password, dbname=database, autocommit=True)
-        return 1
-    except Exception:
-        # See if postgres is there
+    if driver == "psycopg":
         try:
-            # See if database present
             connection = psycopg.connect(
-                host=postgres_host, user=user, password=password,
-                dbname='postgres', autocommit=True)
-
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    'SELECT datname FROM pg_database WHERE datname = %s',
-                    (database,),
-                )
-                if cursor.fetchone() is not None:
-                    return -2
-
-                cursor.execute(
-                    sql.SQL('CREATE DATABASE {}').format(
-                        sql.Identifier(database)
-                    )
-                )
-
-            connection.close()
-            connection = psycopg.connect(
-                host=postgres_host, dbname=database, user=user,
-                password=password, autocommit=True)
-            return 0
+                host=postgres_host, port=postgres_port,
+                user=user, password=password, dbname=database, autocommit=True)
+            return 1
         except Exception:
-            return -1  # failed
+            # See if postgres is there
+            try:
+                # See if database present
+                connection = psycopg.connect(
+                    host=postgres_host, user=user, password=password,
+                    dbname='postgres', autocommit=True)
+
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        'SELECT datname FROM pg_database WHERE datname = %s',
+                        (database,),
+                    )
+                    if cursor.fetchone() is not None:
+                        return -2
+
+                    cursor.execute(
+                        sql.SQL('CREATE DATABASE {}').format(
+                            sql.Identifier(database)
+                        )
+                    )
+
+                connection.close()
+                connection = psycopg.connect(
+                    host=postgres_host, dbname=database, user=user,
+                    password=password, autocommit=True)
+                return 0
+            except Exception:
+                return -1  # failed
+
+    elif driver == "pgdb":
+        try:
+            connection = pgdb.connect(
+                host=postgres_host, user=user, password=password, database=database)
+            return 1
+        except Exception:
+            # See if postgres is there
+            try:
+                # See if database present
+                connection = pgdb.connect(
+                    host=postgres_host, user=user, password=password, database='postgres')
+
+                cursor = connection.cursor()
+                cursor.execute(
+                   'select datname from pg_database where datname=\'' + database + '\'')
+                r = cursor.fetchone()
+                if (r is not None):
+                    return -2  # database found
+
+                cursor.execute('END')
+                cursor.execute('create database ' + database)
+                connection = pgdb.connect(
+                    host=postgres_host, database=database, user=user, password=password)
+                return 0
+            except Exception:
+                return -1  # failed
+
+    else:
+        return -1
 
     return connection
 
@@ -133,7 +172,6 @@ def PySQLiteConnect(dbfile):
 
 
 def PyDisconnect():
-    global connection
     try:
         connection.close()
     except Exception:
@@ -141,7 +179,6 @@ def PyDisconnect():
 
 
 def PySelect(str):
-    global connection
     cursor = connection.cursor()
     try:
         cursor.execute("SELECT " + str)
@@ -158,18 +195,15 @@ def PySelect(str):
 
 
 def PyUpdateCommand(stmt):
-    global connection
     cursor = connection.cursor()
     cursor.execute(stmt)
 
 
 def PyUpdateCommandReturn(stmt):
-    global connection
     cursor = connection.cursor()
     cursor.execute(stmt)
     return list(cursor.fetchall())
 
 
 def PyCommit():
-    global connection
     connection.commit()
