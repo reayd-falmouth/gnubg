@@ -1,4 +1,4 @@
-# Icelandic translation of GNU Bacnels.c:7kgammon.
+# Icelandic translation of GNU Backgammon.
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # This file is distributed under the same license as the PACKAGE package.
 # Hlynur Sigurgislason <hsi@here.is>, 2003.
