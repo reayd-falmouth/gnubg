@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU Backgammon 1.08\n"
 "Report-Msgid-Bugs-To: bug-gnubg@gnu.org\n"
-"POT-Creation-Date: 2026-03-26 22:26+0100\n"
-"PO-Revision-Date: 2026-03-18 21:00+0900\n"
+"POT-Creation-Date: 2026-05-18 00:09+0200\n"
+"PO-Revision-Date: 2026-08-04 22:30+0900\n"
 "Last-Translator: TAKAHASHI Kaoru <kaoru@kaisei.org>\n"
 "Language-Team: Japanese <gnubg-ja@kinchan.com>\n"
 "Language: ja\n"
@@ -705,6 +705,7 @@ msgstr "セッション全体の解析を消去"
 msgid "Clear analysis for this move"
 msgstr "このムーブの解析を消去"
 
+# 挙動としてはanalyzedでないcubeでもrolloutできる
 #: commands.inc:60
 msgid "Rollout an analysed cube"
 msgstr "解析されたキューブをロールアウト"
@@ -930,120 +931,138 @@ msgstr "キューブアクションを初期化してダイスを振る"
 
 #: commands.inc:198
 msgid "Save the current game in .gam format"
-msgstr "ゲームの棋譜を.gam形式で記録"
+msgstr "現在のゲームの棋譜を.gam形式で保存する"
 
 #: commands.inc:200
 msgid "Save the current game in Snowie .txt format"
-msgstr "ゲームの棋譜をSnowie .txt形式で記録"
+msgstr "現在のゲームの棋譜をSnowie .txt形式で保存する"
 
 #: commands.inc:202
 msgid "Save the current game in HTML format"
-msgstr "ゲームの棋譜をHTML形式で記録"
+msgstr "現在のゲームの棋譜をHTML形式で保存する"
 
 #: commands.inc:204
 msgid "Save the current game in LaTeX format"
-msgstr "ゲームの棋譜をLaTeX形式で記録"
+msgstr "現在のゲームの棋譜をLaTeX形式で保存する"
 
 #: commands.inc:206
 msgid "Save the current game in PDF format"
-msgstr "ゲームの棋譜をPDF形式で記録"
+msgstr "現在のゲームの棋譜をPDF形式で保存する"
 
 #: commands.inc:208
 msgid "Save the current game in PostScript format"
-msgstr "ゲームの棋譜をPostScript形式で記録"
+msgstr "現在のゲームの棋譜をPostScript形式で保存する"
 
 #: commands.inc:210
 msgid "Save the current game in text format"
-msgstr "ゲームの棋譜をテキスト形式でエクスポート"
+msgstr "現在のゲームの棋譜をテキスト形式で保存する"
 
 #: commands.inc:214
 msgid "Save the current match in .mat format"
-msgstr "マッチの棋譜を.mat形式で記録"
+msgstr "現在のマッチの棋譜を.mat形式で保存する"
 
 #: commands.inc:216
 msgid "Save the current match in Snowie .txt format"
-msgstr "マッチの棋譜をSnowie .txt形式で記録"
+msgstr "現在のマッチの棋譜をSnowie .txt形式で保存する"
 
 #: commands.inc:218
 msgid "Save the current match in HTML format"
-msgstr "マッチの棋譜をHTML形式で記録"
+msgstr "現在のマッチの棋譜をHTML形式で保存する"
 
 #: commands.inc:221
 msgid "Save the current match in LaTeX format"
-msgstr "マッチの棋譜をLaTeX形式で記録する"
+msgstr "現在のマッチの棋譜をLaTeX形式で保存する"
 
 #: commands.inc:224
 msgid "Save the current match in text format"
-msgstr "マッチの棋譜をテキスト形式で記録"
+msgstr "現在のマッチの棋譜をテキスト形式で保存する"
 
 #: commands.inc:226
 msgid "Save the current match in PDF format"
-msgstr "現在のポジションをPDF形式で保存"
+msgstr "現在のマッチの棋譜をPDF形式で書"
 
 #: commands.inc:228
 msgid "Save the current match in PostScript format"
-msgstr "現在のマッチをPostScript形式で保存"
+msgstr "現在のマッチの棋譜をPostScript形式で保存する"
 
 #: commands.inc:233
 msgid ""
 "Copy the current position in HTML format to clipboard (special for BGonline)"
-msgstr "現在のポジションをHTML形式でクリップボードにコピー(BGonline 向け)"
+msgstr "現在のポジションをHTML形式でクリップボードにコピーする(BGonline向け)"
 
 #: commands.inc:237
 msgid "Save the current position in HTML format (special for BGonline)"
-msgstr "現在のポジションをHTML形式で保存(BGonline 向け)"
+msgstr "現在のポジションをHTML形式で保存する(BGonline向け)"
 
 #: commands.inc:241
 msgid "Save the current position in PostScript format"
-msgstr "現在のポジションをPostScript形式で保存"
+msgstr "現在のポジションをPostScript形式で保存する"
 
 #: commands.inc:243
 msgid "Save the current position in PDF format"
-msgstr "現在のポジションをPDF形式で保存"
+msgstr "現在のポジションをPDF形式で保存する"
 
 #: commands.inc:245
 msgid "Save the current position in SVG format"
-msgstr "現在のポジションをSVG形式で保存"
+msgstr "現在のポジションをSVG形式で保存する"
 
 #: commands.inc:249
 msgid "Save the current position in HTML format"
-msgstr "現在のポジションをHTML形式で保存"
+msgstr "現在のポジションをHTML形式で保存する"
 
 #: commands.inc:252
 msgid "Save the current position in PNG format"
-msgstr "現在のポジションをPNG形式で保存"
+msgstr "現在のポジションをPNG形式で保存する"
 
 #: commands.inc:255
 msgid "Save the current position in .pos format"
-msgstr "現在のポジションを.pos形式で保存"
+msgstr "現在のポジションを.pos形式で保存する"
 
 #: commands.inc:258
 msgid "Save the current position in Snowie .txt format"
-msgstr "現在のポジションをSnowie .txt形式で保存"
+msgstr "現在のポジションをSnowie .txt形式で保存する"
 
+# ポジションは「書き出す」じゃなくても保存でわかるか
 #: commands.inc:261
 msgid "Save the current position in text format"
-msgstr "現在のポジションをテキスト形式で保存"
+msgstr "現在のポジションをテキスト形式で保存する"
+
+# セッションは「現在の」を付けなくてもわかる
+#: commands.inc:265
+msgid "Save the current session in .mat format"
+msgstr "セッションの棋譜を.mat形式で保存する"
+
+#: commands.inc:267
+msgid "Save the current session in Snowie .txt format"
+msgstr "セッションの棋譜をSnowie .txt形式で保存する"
 
 #: commands.inc:266
 msgid "Save the current session in HTML format"
-msgstr "セッションの棋譜をHTML形式で記録"
+msgstr "セッションの棋譜をHTML形式で保存する"
 
 #: commands.inc:268
 msgid "Save the current session in LaTeX format"
-msgstr "セッションの棋譜をLaTeX形式で記録"
+msgstr "セッションの棋譜をLaTeX形式で保存する"
 
 #: commands.inc:271
 msgid "Save the current session in text format"
-msgstr "セッションの棋譜をテキスト形式で記録"
+msgstr "セッションの棋譜をテキスト形式で保存する"
+
+#: commands.inc:276
+msgid "Save the current session in PDF format"
+msgstr "セッションの棋譜をPDF形式で保存する"
+
+#: commands.inc:278
+msgid "Save the current session in PostScript format"
+msgstr "セッションの棋譜をPostScript形式で保存する"
 
 #: commands.inc:275 commands.inc:384
 msgid "Save the current game to a file"
-msgstr "ここまでのゲームの棋譜をファイルに記録"
+msgstr "ここまでのゲームの棋譜をファイルに保存する"
 
 #: commands.inc:277
 msgid "Generate images to be used by the HTML export commands"
-msgstr "HTMLエクスポートコマンドで使用される画像を生成"
+msgstr "HTMLエクスポートコマンドで使用される画像を生成する"
 
 #: commands.inc:279 commands.inc:387
 msgid "Save the current match to a file"
@@ -1055,7 +1074,7 @@ msgstr "現在のポジションをファイルに書き込む"
 
 #: commands.inc:283
 msgid "Save the current session to a file"
-msgstr "ここまでのセッションの棋譜をファイルに記録"
+msgstr "ここまでのセッションの棋譜をファイルに保存する"
 
 #: commands.inc:288
 msgid "Goto first game of the match or session"
@@ -1063,7 +1082,7 @@ msgstr "マッチ・セッションの最初のゲームへ"
 
 #: commands.inc:290
 msgid "Goto first move of the current game"
-msgstr "現在のゲームの最初のムーブに移動"
+msgstr "現在のゲームの最初のムーブに移動する"
 
 #: commands.inc:293
 msgid "Import from any known format"
@@ -2855,7 +2874,7 @@ msgstr "ダブルを提案する"
 
 #: commands.inc:1498
 msgid "Decline an offered double"
-msgstr "提案されたダブルを拒否"
+msgstr "提案されたダブルを拒否する"
 
 #: commands.inc:1500
 msgid "Convert normalised money equity to match winning chance"
@@ -9922,6 +9941,19 @@ msgstr "データベース形式"
 #: gtkrelational.c:1425
 msgid "Username"
 msgstr "ユーザー名"
+
+# "Add Database" ボタンの翻訳と同期させること。
+# ここでのdefault databaseの翻訳に「既定」を使うべきかはあやしい。
+# CREATE DATABASEが大文字なのは
+#  <https://mickindex.sakura.ne.jp/database/db_manner.html#LocalLink-capital>
+# の流儀だし、gnubg.sql にもそう書いてある。
+#: gtk/gtkrelational.c:1456
+msgid ""
+"The user needs create database privilege to have the default database "
+"automatically created or to use the 'Add database' button"
+msgstr ""
+"デフォルトのデータベースを自動的に作成したり、「データベースに追加」ボタンを"
+"使ったりするには、ユーザーにCREATE DATABASE権限が必要です。"
 
 #: gtkrelational.c:1445
 msgid "Password"
