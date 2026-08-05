@@ -1423,7 +1423,7 @@ ImportOldmovesGame(FILE * pf, int iGame, int nLength, int n0, int n1)
 
     if (fgets(buf, sizeof(buf), pf) == NULL) {
         outputerr(_("Error reading oldmoves file"));
-        return 0;
+        return 1;
     }
     pch = strstr(buf, "is X");
     if (!pch)
