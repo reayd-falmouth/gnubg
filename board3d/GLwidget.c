@@ -416,14 +416,13 @@ unrealize_event(GtkWidget* self, gpointer UNUSED(user_data))
 {
     GLWidgetMakeCurrent(self);
 
-    if (glIsProgram(basicShader.shader)) {
-        glDeleteProgram(basicShader.shader);
-        basicShader.shader = 0;
-    }
-    if (glIsProgram(mainShader.shader)) {
-        glDeleteProgram(mainShader.shader);
-        mainShader.shader = 0;
-    }
+    /*
+     * Do not delete global shader programs here.
+     * Other GtkGLArea instances may still be using them.
+     *
+     * TODO: Make shader/render state per GL widget context,
+     * instead of global.
+     */
 
     currentShader = NULL;
     currentMat = NULL;
