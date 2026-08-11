@@ -301,19 +301,25 @@ init_shaders(const char* shader_name)
     guint vertex = CreateShader(GL_VERTEX_SHADER, shader_name);
     guint fragment = CreateShader(GL_FRAGMENT_SHADER, shader_name);
 
-    if (!vertex || !fragment)
+    if (!vertex || !fragment) {
+        if (vertex)
+            glDeleteShader(vertex);
+        if (fragment)
+            glDeleteShader(fragment);
         return 0;
+    }
 
     /* link the vertex and fragment shaders together */
     guint program = glCreateProgram();
+
     glAttachShader(program, vertex);
     glAttachShader(program, fragment);
     glLinkProgram(program);
 
     int status = 0;
     glGetProgramiv(program, GL_LINK_STATUS, &status);
-    if (status == GL_FALSE)
-    {
+
+    if (status == GL_FALSE) {
         int log_len = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_len);
 
@@ -323,8 +329,19 @@ init_shaders(const char* shader_name)
         printf(_("Linking failure in program: %s"), buffer);
 
         g_free(buffer);
+
+        glDetachShader(program, vertex);
+        glDetachShader(program, fragment);
+        glDeleteProgram(program);
+        glDeleteShader(vertex);
+        glDeleteShader(fragment);
         return FALSE;
     }
+
+    glDetachShader(program, vertex);
+    glDetachShader(program, fragment);
+    glDeleteShader(vertex);
+    glDeleteShader(fragment);
 
     return program;
 }
