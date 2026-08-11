@@ -434,12 +434,24 @@ UpdateColour3d(GtkButton * UNUSED(button), UpdateDetails * pDetails)
     col3d = pDetails->mat;
 
     if (pwColourDialog3d == NULL) {
+        GtkWidget *parent = gtk_widget_get_toplevel(pDetails->preview);
         pwColourDialog3d = GTKCreateDialog(_("3D colour selection"), DT_QUESTION,
-                                           pDetails->preview, DIALOG_FLAG_MODAL | DIALOG_FLAG_NORESPONSE, NULL, NULL);
+                                           parent, DIALOG_FLAG_MODAL | DIALOG_FLAG_NORESPONSE,
+                                           NULL, NULL);
+
+        /*
+         * If GTK destroys this widget, automatically set
+         * pwColourDialog3d to NULL.
+         */
+        g_object_add_weak_pointer(G_OBJECT(pwColourDialog3d),
+                                  (gpointer *)&pwColourDialog3d);
+
         AddWidgets(DialogArea(pwColourDialog3d, DA_MAIN));
-        g_signal_connect(pwColourDialog3d, "response", G_CALLBACK(DialogClose), NULL);
-    } else
+        g_signal_connect(pwColourDialog3d, "response",
+                         G_CALLBACK(DialogClose), NULL);
+    } else {
         gtk_widget_show(pwColourDialog3d);
+    }
 
     /* Avoid updating preview */
     bUpdate = FALSE;
