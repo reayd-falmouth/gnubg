@@ -1136,7 +1136,7 @@ ResetInterrupt(void)
 {
     if (MT_SafeGet(&fInterrupt)) {
         {
-            outputf("(%s)", _("Interrupted"));
+            outputf("(%s)\n", _("Interrupted"));
             outputx();
         }
 
