@@ -1906,7 +1906,7 @@ OptionsOK(GtkWidget * pw, optionswidget * pow)
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pow->apwDice[0]))) {     /* rng selected */
         char *selRNG = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(pow->pwRngComboBox));
         for (i = 0; i < NUM_RNGS - 3; i++) {
-            if (!strcmp(selRNG, aszRNG[i]))
+            if (!strcmp(selRNG, gettext(aszRNG[i])))
                 break;
         }
         g_free(selRNG);
