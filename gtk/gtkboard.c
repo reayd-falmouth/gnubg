@@ -803,9 +803,6 @@ update_move(BoardData * bd)
                 break;
             }
 
-        /* show number of return hits */
-        UpdateTheoryData(bd, TT_RETURNHITS, msBoard());
-
         if (bd->valid_move) {
             TanBoard anBoard;
             char *pch;
@@ -822,6 +819,9 @@ update_move(BoardData * bd)
         }
 
     }
+
+    /* show number of return hits */
+    UpdateTheoryData(bd, TT_RETURNHITS, (ConstTanBoard) points);
 
 #if GTK_CHECK_VERSION(3,0,0)
     gtk_widget_set_state_flags(bd->wmove, fIncomplete ? GTK_STATE_FLAG_ACTIVE : GTK_STATE_FLAG_NORMAL, TRUE);

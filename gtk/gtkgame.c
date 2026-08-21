@@ -1715,8 +1715,6 @@ GTKUndo(void)
     }
 
     ShowBoard();
-
-    UpdateTheoryData(bd, TT_RETURNHITS, msBoard());
 }
 
 #if defined(USE_BOARD3D)
