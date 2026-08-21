@@ -2239,7 +2239,8 @@ Noise(const evalcontext * pec, const TanBoard anBoard, int iOutput)
     float r;
 
     if (pec->fDeterministic) {
-        char auchBoard[50], auch[16];
+        char auchBoard[50];
+        unsigned char auch[16];
         int i;
 
         for (i = 0; i < 25; i++) {
