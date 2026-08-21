@@ -12711,7 +12711,7 @@ msgstr ""
 #: set.c:1919
 #, c-format
 msgid ""
-"Rollouts can stop when the estimated equities' STD are less than %5.4f)\n"
+"Rollouts can stop when the estimated equities' STD are less than %5.4f\n"
 msgstr ""
 
 #: set.c:1936

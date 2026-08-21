@@ -13631,8 +13631,8 @@ msgstr ""
 #: set.c:1919
 #, c-format
 msgid ""
-"Rollouts can stop when the estimated equities' STD are less than %5.4f)\n"
-msgstr "%5.4f 以下のエクイティ標準誤差になったらロールアウトを停止します)\n"
+"Rollouts can stop when the estimated equities' STD are less than %5.4f\n"
+msgstr "%5.4f 以下のエクイティ標準誤差になったらロールアウトを停止します\n"
 
 #: set.c:1936
 msgid "Stop rollout of choices based on JSDs"

@@ -1916,7 +1916,7 @@ CommandSetRolloutMaxError(char *sz)
 
     prcSet->rStdLimit = r;
 
-    outputf(_("Rollouts can stop when the estimated equities' STD are less than " "%5.4f)\n"), r);
+    outputf(_("Rollouts can stop when the estimated equities' STD are less than " "%5.4f\n"), r);
 }
 
 extern void

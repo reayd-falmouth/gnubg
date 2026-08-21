@@ -13807,10 +13807,10 @@ msgstr ""
 #: set.c:1908
 #, c-format
 msgid ""
-"Rollouts can stop when the estimated equities' STD are less than %5.4f)\n"
+"Rollouts can stop when the estimated equities' STD are less than %5.4f\n"
 msgstr ""
 "Rolloutti voi katketa, kun arvioitu voitto-odotteen vakiovirhe on alle "
-"%5.4f)\n"
+"%5.4f\n"
 
 #: set.c:1925
 msgid "Stop rollout of choices based on JSDs"
