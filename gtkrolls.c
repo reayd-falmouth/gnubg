@@ -101,7 +101,7 @@ add_level(GtkTreeStore * model, GtkTreeIter * iter,
             if (fInvert)
                 InvertEvaluationR(ar, &ci);
 
-            sprintf(szRoll, "%d%d", n0 + 1, n1 + 1);
+            sprintf(szRoll, "%c%c", '1' + n0, '1' + n1);
             FormatMove(szMove, anBoard, anMove);
 
             szEquity = OutputMWC(ar[OUTPUT_CUBEFUL_EQUITY], fInvert ? pci : &ci, TRUE);
