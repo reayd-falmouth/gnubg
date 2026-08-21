@@ -3158,7 +3158,9 @@ DisplayCorrectBoardType(BoardData * bd, BoardData3d * UNUSED(bd3d), renderdata *
         gtk_widget_show(GetDrawingArea3d(bd->bd3d));
         DrawScene3d(bd->bd3d);
         updateHingeOccPos(bd->bd3d, bd->rd->fHinges3d);
+#if GTK_CHECK_VERSION(3,16,0)
         gtk_gl_area_queue_render(GTK_GL_AREA(bd->bd3d->drawing_area3d));
+#endif
     } else {
         if (widget3dValid)
             gtk_widget_hide(GetDrawingArea3d(bd->bd3d));
