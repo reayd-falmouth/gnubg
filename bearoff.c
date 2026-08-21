@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: bearoff.c,v 1.109 2022/07/26 21:16:44 plm Exp $
  */
 
 #include "config.h"
@@ -261,14 +259,13 @@ ReadBearoffFile(const bearoffcontext * pbc, unsigned int offset, unsigned char *
 {
     MT_Exclusive();
 
-    if ((fseek(pbc->pf, (long) offset, SEEK_SET) < 0) || (fread(buf, 1, nBytes, pbc->pf) < nBytes)) {
+    if ((fseek(pbc->pf, (long) offset, SEEK_SET) != 0) || (fread(buf, 1, nBytes, pbc->pf) < nBytes)) {
         if (errno)
             perror(_("bearoff database"));
         else
             fprintf(stderr, _("Error reading bearoff database"));
 
         memset(buf, 0, nBytes);
-        return;
     }
 
     MT_Release();
@@ -754,7 +751,7 @@ ReadIntoMemory(bearoffcontext * pbc)
 }
 
 /*
- * Check whether this is a exact bearoff file 
+ * Check whether this is a exact bearoff file
  *
  * The first long must be 73457356
  * The second long must be 100
@@ -829,7 +826,7 @@ BearoffInit(const char *szFilename, const unsigned int bo, void (*p) (unsigned i
         InvalidDb(pbc);
         return NULL;
     }
-    /* 
+    /*
      * Read header bearoff file
      */
 
@@ -921,8 +918,8 @@ BearoffInit(const char *szFilename, const unsigned int bo, void (*p) (unsigned i
         break;
     }
 
-    /* 
-     * read database into memory if requested 
+    /*
+     * read database into memory if requested
      */
 
     if (bo & BO_IN_MEMORY) {
