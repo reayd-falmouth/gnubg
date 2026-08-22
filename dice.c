@@ -782,7 +782,7 @@ RollDice(unsigned int anDice[2], rng * prng, rngcontext * rngctx)
 
     case RNG_MD5:{
             union _hash {
-                char ach[16];
+                unsigned char auch[16];
                 md5_uint32 an[2];
             } h;
 
