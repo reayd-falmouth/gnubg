@@ -80,6 +80,10 @@ GameListSelectRow(GtkTreeView * tree_view, gpointer UNUSED(p))
     int *pPlayer;
     listOLD *pl;
 
+    /* GTK3 may emit cursor-changed while the gamelist is being rebuilt */
+    if (frozen)
+        return;
+
     gtk_tree_view_get_cursor(tree_view, &path, &column);
     if (!path)
         return;
