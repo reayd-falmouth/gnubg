@@ -187,7 +187,7 @@ InitRNGBBSFactors(char *sz0, char *sz1, rngcontext * rngctx)
         return -1;
     }
 
-    if (mpz_init_set_str(q, sz1, 10) || mpz_sgn(p) < 1) {
+    if (mpz_init_set_str(q, sz1, 10) || mpz_sgn(q) < 1) {
         mpz_clear(p);
         mpz_clear(q);
         return -1;
