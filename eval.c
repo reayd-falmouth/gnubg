@@ -5017,7 +5017,7 @@ getPercent(const cubedecision cd, const float arDouble[])
 extern void
 RefreshMoveList(movelist * pml, int *ai)
 {
-    movelist ml;
+    static movelist ml;
 
     if (!pml->cMoves)
         return;
