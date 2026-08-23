@@ -519,7 +519,7 @@ static char szDICE[] = N_("<die> <die>"),
 /* Command defines moved into separate file */
 #include "commands.inc"
 
-static int iProgressMax, iProgressValue, fInProgress;
+static int iProgressMax, iProgressValue;
 static char *pcProgress;
 static psighandler shInterruptOld;
 char *default_import_folder = NULL;
@@ -3950,8 +3950,6 @@ ProgressStart(const char *sz)
     if (!fShowProgress)
         return;
 
-    fInProgress = TRUE;
-
 #if defined(USE_GTK)
     if (fX) {
         GTKProgressStart(sz);
@@ -3976,8 +3974,6 @@ ProgressStartValue(char *sz, int iMax)
     iProgressMax = iMax;
     iProgressValue = 0;
     pcProgress = sz;
-
-    fInProgress = TRUE;
 
 #if defined(USE_GTK)
     if (fX) {
@@ -4026,12 +4022,12 @@ ProgressValueAdd(int iValue)
 
 }
 
-
+#if defined(USE_MULTITHREAD)
 static gboolean
 Progress(gpointer UNUSED(unused))
 {
     static int i = 0;
-    static char ach[5] = "/-\\|";
+    static const char ach[5] = "/-\\|";
 
     if (!fShowProgress)
         return FALSE;
@@ -4051,34 +4047,6 @@ Progress(gpointer UNUSED(unused))
     fflush(stdout);
     return TRUE;
 }
-
-#if !defined(USE_MULTITHREAD)
-extern void
-CallbackProgress(void)
-{
-#if defined(USE_GTK)
-    if (fX) {
-        GTKDisallowStdin();
-        if (fInProgress)
-            GTKSuspendInput();
-
-#if GTK_CHECK_VERSION(4,0,0)
-        while (g_main_context_pending(NULL))
-            g_main_context_iteration(NULL, FALSE);
-#else
-        while (gtk_events_pending())
-            gtk_main_iteration();
-#endif
-
-        if (fInProgress)
-            GTKResumeInput();
-        GTKAllowStdin();
-    }
-#endif
-
-    if (fInProgress && !iProgressMax)
-        Progress(NULL);
-}
 #endif
 
 extern void
@@ -4090,7 +4058,6 @@ ProgressEnd(void)
     if (!fShowProgress)
         return;
 
-    fInProgress = FALSE;
     iProgressMax = 0;
     iProgressValue = 0;
     pcProgress = NULL;
