@@ -505,6 +505,9 @@ ExpandMatMove(const TanBoard anBoard, int anMove[8], int *pc, const unsigned int
                 an[4] = -1;
                 an[5] = -1;
 
+                an[6] = -1;
+                an[7] = -1;
+
                 /* no hits on the first part of the move */
                 if (anBoard[0][23 - an[1]] != 0)
                     continue;
@@ -532,6 +535,9 @@ ExpandMatMove(const TanBoard anBoard, int anMove[8], int *pc, const unsigned int
 
                 an[4] = -1;
                 an[5] = -1;
+
+                an[6] = -1;
+                an[7] = -1;
 
                 /* no hits on the first part of the move */
                 if (anBoard[0][23 - an[1]] != 0)

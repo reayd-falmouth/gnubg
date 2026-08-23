@@ -85,7 +85,7 @@ XhashCreate(xhash * ph, const int nHashSize)
 
     int i;
 
-    ph->phe = (xhashent *) g_malloc(nHashSize * sizeof(xhashent));
+    ph->phe = (xhashent *) g_malloc0(nHashSize * sizeof(xhashent));
 
     ph->nQueries = 0;
     ph->nHits = 0;
