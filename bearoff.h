@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: bearoff.h,v 1.36 2019/12/02 12:46:26 plm Exp $
  */
 
 #ifndef BEAROFF_H
@@ -39,7 +37,7 @@ typedef struct {
     /* one sided dbs */
     int fCompressed;            /* is database compressed? */
     int fGammon;                /* gammon probs included */
-    int fND;                    /* normal distibution instead of exact dist? */
+    int fND;                    /* normal distribution instead of exact dist? */
     int fHeuristic;             /* heuristic database? */
     /* two sided dbs */
     int fCubeful;               /* cubeful equities included */
@@ -57,7 +55,7 @@ enum bearoffoptions {
     BO_HEURISTIC = 8
 };
 
-extern bearoffcontext *BearoffInit(const char *szFilename, const unsigned int bo, void (*p) (unsigned int));
+extern bearoffcontext *BearoffInit(const char *szFilename, unsigned int bo, void (*p) (unsigned int));
 
 extern int
  BearoffEval(const bearoffcontext * pbc, const TanBoard anBoard, float arOutput[]);
@@ -69,24 +67,21 @@ extern int
  BearoffDump(const bearoffcontext * pbc, const TanBoard anBoard, char *sz);
 
 extern int
-
-
-BearoffDist(const bearoffcontext * pbc, const unsigned int nPosID,
+ BearoffDist(const bearoffcontext * pbc, unsigned int nPosID,
             float arProb[32], float arGammonProb[32],
             float ar[4], unsigned short int ausProb[32], unsigned short int ausGammonProb[32]);
 
 extern int
- BearoffCubeful(const bearoffcontext * pbc, const unsigned int iPos, float ar[4], unsigned short int aus[4]);
+ BearoffCubeful(const bearoffcontext * pbc, unsigned int iPos, float ar[4], unsigned short int aus[4]);
 
 extern void BearoffClose(bearoffcontext * pbc);
 
 extern int
  isBearoff(const bearoffcontext * pbc, const TanBoard anBoard);
 
-extern float
- fnd(const float x, const float mu, const float sigma);
+extern float fnd(float x, float mu, float sigma);
 
 extern int
- BearoffHyper(const bearoffcontext * pbc, const unsigned int iPos, float arOutput[], float arEquity[]);
+ BearoffHyper(const bearoffcontext * pbc, unsigned int iPos, float arOutput[], float arEquity[]);
 
 #endif                          /* BEAROFF_H */

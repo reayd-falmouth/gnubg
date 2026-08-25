@@ -4,7 +4,7 @@ Installation
 Installing GNUbg is rather painless through the use of the GNU autoconf
 package.  Simply untar the GNUbg distribution, and run the ``configure''
 script. Then ``make´´ and then, as root, ``make install´´.  If you have
-obtained the distribution from the CVS repository, run ``./autogen.sh'' first.
+obtained the distribution from the git repository, run ``./autogen.sh'' first.
 
 You are likely to want or need the following tools
 
@@ -24,18 +24,18 @@ build GNUbg but not necessarily with the SIMD extensions.
 
 The only mandatory development library is
 
-GLib			version >= 2.22
+GLib			version >= 2.32
 
 but you probably want to make use of most of the following ones as well
 
 png (graphics)
 freetype2 (graphics)
-GTK (GUI)		version >= 2.18
+GTK (GUI)		version >= 2.24
 cairo (graphics)
 canberra (sound)
-gtkglext (3d boards)
+libepoxy, libcglm (3d boards)
 readline (command line editing)
-python (extension)	version >= 2.6
+python (extension)	version >= 3.6
 sqlite3 (database)
 gmp (additional random numbers generator)
 curl (Internet random numbers generator)

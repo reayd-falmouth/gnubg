@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2003 Joern Thyssen <joern@thyssen.nu>
- * Copyright (C) 2001-2021 the AUTHORS
+ * Copyright (C) 2001-2024 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: analysis.h,v 1.51 2019/11/05 20:49:22 plm Exp $
  */
 
 #ifndef ANALYSIS_H
@@ -63,7 +61,7 @@ typedef struct {
     int anCubeWrongTake[2];
     int anCubeWrongPass[2];
 
-    /* all accumulated errors have dimension 2x2 
+    /* all accumulated errors have dimension 2x2
      *  - first dimension is player
      *  - second dimension is error rate in:
      *  - EMG and MWC for match play
@@ -90,18 +88,17 @@ typedef struct {
 } statcontext;
 
 typedef enum {
-    RAT_AWFUL,
-    RAT_BEGINNER, RAT_CASUAL_PLAYER, RAT_INTERMEDIATE, RAT_ADVANCED,
-    RAT_EXPERT, RAT_WORLD_CLASS, RAT_SUPERNATURAL, RAT_UNDEFINED
+    RAT_BEGINNER, RAT_INTERMEDIATE, RAT_ADVANCED,
+    RAT_MASTER, RAT_GRANDMASTER, RAT_SUPERGRANDMASTER
 } ratingtype;
-#define N_RATINGS ((int)RAT_UNDEFINED + 1)
+#define N_RATINGS ((int)RAT_SUPERGRANDMASTER + 1)
 
 extern const char *aszRating[N_RATINGS];
 extern const char *aszLuckRating[N_LUCKS];
 
 extern int afAnalysePlayers[2];
 
-extern ratingtype GetRating(const float rError);
+extern ratingtype GetRating(float rError);
 extern void IniStatcontext(statcontext * psc);
 extern void AddStatcontext(const statcontext * pscA, statcontext * pscB);
 
@@ -117,11 +114,11 @@ extern lucktype getLuckRating(float rLuck);
 
 extern float relativeFibsRating(float r, int n);
 
-extern float absoluteFibsRating(const float rChequer, const float rCube, const int n, const float rOffset);
+extern float absoluteFibsRating(float rChequer, float rCube, int n, float rOffset);
 
-extern float absoluteFibsRatingChequer(const float rChequer, const int n);
+extern float absoluteFibsRatingChequer(float rChequer, int n);
 
-extern float absoluteFibsRatingCube(const float rCube, const int n);
+extern float absoluteFibsRatingCube(float rCube, int n);
 
 
 #define CHEQUERPLAY  0

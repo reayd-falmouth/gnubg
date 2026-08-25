@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: boardpos.h,v 1.10 2018/04/21 16:14:51 plm Exp $
  */
 
 #ifndef BOARDPOS_H
@@ -32,23 +30,18 @@
 extern int positions[2][30][3];
 
 extern void
- ChequerPosition(const int clockwise, const int point, const int chequer, int *px, int *py);
+ ChequerPosition(int clockwise, int point, int chequer, int *px, int *py);
 
 extern void
- PointArea(const int fClockwise, const int nSize, const int n, int *px, int *py, int *pcx, int *pcy);
-
-
-extern void
-
-
-CubePosition(const int crawford_game, const int cube_use,
-             const int doubled, const int cube_owner, int fClockwise, int *px, int *py, int *porient);
-
-extern void ArrowPosition(const int clockwise, int turn, const int nSize, int *px, int *py);
-
+ PointArea(int fClockwise, int nSize, int n, int *px, int *py, int *pcx, int *pcy);
 
 extern void
- ResignPosition(const int resigned, int *px, int *py, int *porient);
+CubePosition(int crawford_game, int cube_use,
+             int doubled, int cube_owner, int fClockwise, int *px, int *py, int *porient);
 
+extern void ArrowPosition(int clockwise, int turn, int nSize, int *px, int *py);
+
+extern void
+ ResignPosition(int resigned, int *px, int *py, int *porient);
 
 #endif

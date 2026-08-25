@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: format.h,v 1.18 2021/04/03 19:38:28 plm Exp $
  */
 
 #ifndef FORMAT_H
@@ -31,27 +29,27 @@ extern float rErrorRateFactor;
 
 /* misc. output routines used by text and HTML export */
 
-extern char *OutputPercents(const float ar[], const int f);
+extern char *OutputPercents(const float ar[], int f);
 
-extern char *OutputPercent(const float r);
+extern char *OutputPercent(float r);
 
-extern char *OutputMWC(const float r, const cubeinfo * pci, const int f);
+extern char *OutputMWC(float r, const cubeinfo * pci, int f);
 
-extern char *OutputEquity(const float r, const cubeinfo * pci, const int f);
+extern char *OutputEquity(float r, const cubeinfo * pci, int f);
 
 extern char *OutputRolloutContext(const char *szIndent, const rolloutcontext * prc);
 
-extern char *OutputEvalContext(const evalcontext * pec, const int fChequer);
+extern char *OutputEvalContext(const evalcontext * pec, int fChequer);
 
-extern char *OutputEquityDiff(const float r1, const float r2, const cubeinfo * pci);
+extern char *OutputEquityDiff(float r1, float r2, const cubeinfo * pci);
 
-extern char *OutputEquityScale(const float r, const cubeinfo * pci, const cubeinfo * pciBase, const int f);
+extern char *OutputEquityScale(float r, const cubeinfo * pci, const cubeinfo * pciBase, int f);
 
 extern char *OutputRolloutResult(const char *szIndent,
                                  char asz[][FORMATEDMOVESIZE],
                                  float aarOutput[][NUM_ROLLOUT_OUTPUTS],
                                  float aarStdDev[][NUM_ROLLOUT_OUTPUTS],
-                                 const cubeinfo aci[], const int alt, const int cci, const int fCubeful);
+                                 const cubeinfo aci[], int alt, int cci, int fCubeful);
 
 extern char *OutputCubeAnalysisFull(float aarOutput[2][NUM_ROLLOUT_OUTPUTS],
                                     float aarStdDev[2][NUM_ROLLOUT_OUTPUTS],
@@ -61,7 +59,7 @@ extern char *OutputCubeAnalysisFull(float aarOutput[2][NUM_ROLLOUT_OUTPUTS],
 extern char *OutputCubeAnalysis(float aarOutput[2][NUM_ROLLOUT_OUTPUTS],
                                 float aarStdDev[2][NUM_ROLLOUT_OUTPUTS], const evalsetup * pes, const cubeinfo * pci, int fTake);
 
-extern char *OutputMoneyEquity(const float ar[], const int f);
+extern char *OutputMoneyEquity(const float ar[], int f);
 
 extern char *FormatCubePosition(char *sz, cubeinfo * pci);
 extern void FormatCubePositions(const cubeinfo * pci, char asz[2][FORMATEDMOVESIZE]);

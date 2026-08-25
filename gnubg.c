@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1998-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 1999-2023 the AUTHORS
+ * Copyright (C) 1999-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,6 @@
 #include "config.h"
 
 #include "gnubgmodule.h"
-#include "glib-ext.h"
 
 #include <sys/types.h>
 #include <stdlib.h>
@@ -110,13 +109,13 @@ static char szCommandSeparators[] = " \t\n\r\v\f";
 
 #if defined(USE_GTK)
 #include <gtk/gtk.h>
-#include "gtkboard.h"
-#include "gtkgame.h"
-#include "gtkprefs.h"
+#include "gtk/gtkboard.h"
+#include "gtk/gtkgame.h"
+#include "gtk/gtkprefs.h"
 #include "gtksplash.h"
-#include "gtkchequer.h"
-#include "gtkwindows.h"
-#include "gtkscoremap.h"
+#include "gtk/gtkchequer.h"
+#include "gtk/gtkwindows.h"
+#include "gtk/gtkscoremap.h"
 #endif
 
 #if defined(USE_BOARD3D)
@@ -297,8 +296,8 @@ rolloutcontext rcRollout = {
     },
     {
      /* player 0/1 chequerplay */
-     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
-     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f },
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f }
     },
     {
      /* player 0/1 late cube decision */
@@ -307,8 +306,8 @@ rolloutcontext rcRollout = {
     },
     {
      /* player 0/1 late chequerplay */
-     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
-     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f },
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f }
     },
     /* truncation point cube and chequerplay */
     { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
@@ -343,9 +342,9 @@ rolloutcontext rcRollout = {
     0,                          /* nSkip */
 };
 
-/* parameters for `eval' and `hint' */
+/* parameters for 'eval', 'hint' and 'analysis' */
 
-#define EVALSETUP_WORLDCLASS  { \
+#define EVALSETUP_2PLY  { \
   /* evaltype */ \
   EVAL_EVAL, \
   /* evalcontext */ \
@@ -389,77 +388,22 @@ rolloutcontext rcRollout = {
   RNG_MERSENNE, /* RNG */ \
   0,  /* seed */ \
   324,    /* minimum games  */ \
-  0.01f,  /* stop when std's are lower than 0.01 */ \
+  0.01f,  /* stop when STDs are lower than 0.01 */ \
   324,    /* minimum games  */ \
   2.33f,  /* stop when best has j.s.d. for 99% confidence */ \
   0, \
-  0.0, \
+  0.0f, \
   0 \
   } \
 }
 
-/* parameters for analysis */
-
-#define EVALSETUP_SUPREMO  { \
-  /* evaltype */ \
-  EVAL_EVAL, \
-  /* evalcontext */ \
-  { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, \
-  /* rolloutcontext */ \
-  { \
-    { \
-      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* player 0 cube decision */ \
-      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* player 1 cube decision */ \
-    }, \
-    { \
-      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* player 0 chequerplay */ \
-      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* player 1 chequerplay */ \
-    }, \
-    { \
-      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* p 0 late cube decision */ \
-      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* p 1 late cube decision */ \
-    }, \
-    { \
-      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* p 0 late chequerplay */ \
-      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* p 1 late chequerplay */ \
-    }, \
-    { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* truncate cube decision */ \
-    { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* truncate chequerplay */ \
-    { MOVEFILTER_NORMAL, MOVEFILTER_NORMAL }, \
-    { MOVEFILTER_NORMAL, MOVEFILTER_NORMAL }, \
-  FALSE, /* cubeful */ \
-  TRUE, /* variance reduction */ \
-  FALSE, /* initial position */ \
-  TRUE, /* rotate */ \
-  TRUE, /* truncate at BEAROFF2 for cubeless rollouts */ \
-  TRUE, /* truncate at BEAROFF2_OS for cubeless rollouts */ \
-  FALSE, /* late evaluations */ \
-  TRUE,  /* Truncation enabled */ \
-  FALSE,  /* no stop on STD */ \
-  FALSE,  /* no stop on JSD */ \
-  FALSE,  /* no move stop on JSD */ \
-  10, /* truncation */ \
-  1296, /* number of trials */ \
-  5,  /* late evals start here */ \
-  RNG_MERSENNE, /* RNG */ \
-  0,  /* seed */ \
-  324,    /* minimum games  */ \
-  0.01f,  /* stop when std's are lower than 0.01 */ \
-  324,    /* minimum games  */ \
-  2.33f,  /* stop when best has j.s.d. for 99% confidence */ \
-  0, \
-  0.0, \
-  0 \
-  } \
-}
-
-evalsetup esEvalChequer = EVALSETUP_WORLDCLASS;
-evalsetup esEvalCube = EVALSETUP_WORLDCLASS;
-evalsetup esAnalysisChequer = EVALSETUP_SUPREMO;
-evalsetup esAnalysisCube = EVALSETUP_SUPREMO;
+evalsetup esEvalChequer = EVALSETUP_2PLY;
+evalsetup esEvalCube = EVALSETUP_2PLY;
+evalsetup esAnalysisChequer = EVALSETUP_2PLY;
+evalsetup esAnalysisCube = EVALSETUP_2PLY;
 
 movefilter aamfEval[MAX_FILTER_PLIES][MAX_FILTER_PLIES] = MOVEFILTER_NORMAL;
-movefilter aamfAnalysis[MAX_FILTER_PLIES][MAX_FILTER_PLIES] = MOVEFILTER_LARGE;
+movefilter aamfAnalysis[MAX_FILTER_PLIES][MAX_FILTER_PLIES] = MOVEFILTER_NORMAL;
 
 extern evalsetup *
 GetEvalChequer(void)
@@ -515,9 +459,9 @@ exportsetup exsExport = {
 
 
 player ap[2] = {
-    {"gnubg", PLAYER_GNU, EVALSETUP_WORLDCLASS, EVALSETUP_WORLDCLASS, MOVEFILTER_NORMAL, 0, NULL}
+    {"gnubg", PLAYER_GNU, EVALSETUP_2PLY, EVALSETUP_2PLY, MOVEFILTER_NORMAL, 0, NULL}
     ,
-    {"user", PLAYER_HUMAN, EVALSETUP_WORLDCLASS, EVALSETUP_WORLDCLASS, MOVEFILTER_NORMAL, 0, NULL}
+    {"user", PLAYER_HUMAN, EVALSETUP_2PLY, EVALSETUP_2PLY, MOVEFILTER_NORMAL, 0, NULL}
 };
 
 char default_names[2][MAX_NAME_LEN] = { "gnubg", "user" };
@@ -575,7 +519,7 @@ static char szDICE[] = N_("<die> <die>"),
 /* Command defines moved into separate file */
 #include "commands.inc"
 
-static int iProgressMax, iProgressValue, fInProgress;
+static int iProgressMax, iProgressValue;
 static char *pcProgress;
 static psighandler shInterruptOld;
 char *default_import_folder = NULL;
@@ -586,13 +530,7 @@ const char *szHomeDirectory;
 
 static char const *aszBuildInfo[] = {
 #if defined(USE_PYTHON)
-#if (PY_MAJOR_VERSION == 2)
-    N_("Python 2 supported."),
-#elif (PY_MAJOR_VERSION == 3)
     N_("Python 3 supported."),
-#else
-    #error "Unsupported python version"
-#endif
 #endif
 #if defined(USE_SQLITE)
     N_("SQLite database supported."),
@@ -617,8 +555,6 @@ static char const *aszBuildInfo[] = {
     N_("Windows sound system supported."),
 #elif defined(HAVE_APPLE_COREAUDIO)
     N_("Apple CoreAudio sound system supported."),
-#elif defined(HAVE_APPLE_QUICKTIME)
-    N_("Apple QuickTime sound system supported."),
 #elif defined(HAVE_CANBERRA)
     N_("libcanberra sound system supported."),
 #endif
@@ -1200,7 +1136,7 @@ ResetInterrupt(void)
 {
     if (MT_SafeGet(&fInterrupt)) {
         {
-            outputf("(%s)", _("Interrupted"));
+            outputf("(%s)\n", _("Interrupted"));
             outputx();
         }
 
@@ -1226,6 +1162,9 @@ HandleCommand(char *sz, command * ac)
     command *pc;
     char *pch;
     size_t cch;
+
+    if (sz == NULL)
+        return;
 
     if (ac == acTop) {
         outputnew();
@@ -2350,6 +2289,7 @@ hint_move(char *sz, gboolean show, procrecorddata * procdatarec)
         fd.pml = &ml;
         fd.pboard = msBoard();
         fd.keyMove = NULL;
+        fd.fAnalyse = TRUE;
         fd.rThr = arSkillLevel[SKILL_DOUBTFUL];
         fd.pci = &ci;
         fd.pec = &GetEvalChequer()->ec;
@@ -2381,6 +2321,7 @@ hint_move(char *sz, gboolean show, procrecorddata * procdatarec)
         fd.pml = &ml;
         fd.pboard = msBoard();
         fd.keyMove = &(pmr->ml.amMoves[pmr->n.iMove].key);
+        fd.fAnalyse = TRUE;
         fd.rThr = arSkillLevel[SKILL_DOUBTFUL];
         fd.pci = &ci;
         fd.pec = &GetEvalChequer()->ec;
@@ -2598,9 +2539,11 @@ PromptForExit(void)
 #endif                          /* HAVE_LIB_READLINE */
 
 #if defined(USE_GTK)
+#if !GTK_CHECK_VERSION(4,0,0)
     if (gtk_main_level() == 1)
         gtk_main_quit();
     else
+#endif
 #endif
     {
         Shutdown();
@@ -3364,6 +3307,7 @@ CommandSaveSettings(char *szParam)
 {
     FILE *pf;
     char *szFile;
+    int fDontClose = FALSE;
 
     szParam = NextToken(&szParam);
 
@@ -3384,9 +3328,10 @@ CommandSaveSettings(char *szParam)
     } else
         szFile = g_strdup(szParam);
 
-    if (!strcmp(szFile, "-"))
+    if (!strcmp(szFile, "-")) {
         pf = stdout;
-    else
+        fDontClose = TRUE;
+    } else
         pf = g_fopen(szFile, "w");
 
     if (!pf) {
@@ -3441,7 +3386,7 @@ CommandSaveSettings(char *szParam)
 
     SaveMiscSettings(pf);
     SaveAutoSaveSettings(pf);
-    if (pf != stdout)
+    if (!fDontClose)
         if (fclose(pf) == 0)
             errno = 0;
 
@@ -3742,7 +3687,7 @@ ProcessInput(char *sz)
 
         history_expand(sz, &pchExpanded);
 
-        if (*pchExpanded)
+        if (pchExpanded && *pchExpanded)
             add_history(pchExpanded);
 
         if (fX)
@@ -3980,7 +3925,6 @@ CommandSetOutputOutput(char *sz)
     return;
 }
 
-#if GLIB_CHECK_VERSION (2,28,0)
 static gint64 tvProgress;
 
 static int
@@ -3999,40 +3943,12 @@ ProgressThrottle(void)
     /* insufficient time elapsed */
     return -1;
 }
-#else
-static GTimeVal tvProgress;
-
-static int
-ProgressThrottle(void)
-{
-    GTimeVal tv, tvDiff;
-    g_get_current_time(&tv);
-
-    tvDiff.tv_sec = tv.tv_sec - tvProgress.tv_sec;
-    if ((tvDiff.tv_usec = tv.tv_usec + 1000000 - tvProgress.tv_usec) >= 1000000)
-        tvDiff.tv_usec -= 1000000;
-    else
-        tvDiff.tv_sec--;
-
-    if (tvDiff.tv_sec || tvDiff.tv_usec >= 100000) {
-        /* sufficient time elapsed; record current time */
-        tvProgress.tv_sec = tv.tv_sec;
-        tvProgress.tv_usec = tv.tv_usec;
-        return 0;
-    }
-
-    /* insufficient time elapsed */
-    return -1;
-}
-#endif
 
 extern void
 ProgressStart(const char *sz)
 {
     if (!fShowProgress)
         return;
-
-    fInProgress = TRUE;
 
 #if defined(USE_GTK)
     if (fX) {
@@ -4058,8 +3974,6 @@ ProgressStartValue(char *sz, int iMax)
     iProgressMax = iMax;
     iProgressValue = 0;
     pcProgress = sz;
-
-    fInProgress = TRUE;
 
 #if defined(USE_GTK)
     if (fX) {
@@ -4108,12 +4022,12 @@ ProgressValueAdd(int iValue)
 
 }
 
-
+#if defined(USE_MULTITHREAD)
 static gboolean
 Progress(gpointer UNUSED(unused))
 {
     static int i = 0;
-    static char ach[5] = "/-\\|";
+    static const char ach[5] = "/-\\|";
 
     if (!fShowProgress)
         return FALSE;
@@ -4133,29 +4047,6 @@ Progress(gpointer UNUSED(unused))
     fflush(stdout);
     return TRUE;
 }
-
-#if !defined(USE_MULTITHREAD)
-extern void
-CallbackProgress(void)
-{
-#if defined(USE_GTK)
-    if (fX) {
-        GTKDisallowStdin();
-        if (fInProgress)
-            GTKSuspendInput();
-
-        while (gtk_events_pending())
-            gtk_main_iteration();
-
-        if (fInProgress)
-            GTKResumeInput();
-        GTKAllowStdin();
-    }
-#endif
-
-    if (fInProgress && !iProgressMax)
-        Progress(NULL);
-}
 #endif
 
 extern void
@@ -4167,7 +4058,6 @@ ProgressEnd(void)
     if (!fShowProgress)
         return;
 
-    fInProgress = FALSE;
     iProgressMax = 0;
     iProgressValue = 0;
     pcProgress = NULL;
@@ -4290,7 +4180,7 @@ get_readline(void)
     MT_SafeSet(&fInterrupt, FALSE);
     history_expand(sz, &pchExpanded);
     g_free(sz);
-    if (*pchExpanded)
+    if (pchExpanded && *pchExpanded)
         add_history(pchExpanded);
     return pchExpanded;
 }
@@ -4408,10 +4298,16 @@ setup_readline(void)
     int i;
     gnubg_histfile = g_build_filename(szHomeDirectory, "history", NULL);
     rl_readline_name = "gnubg";
+#if defined(__APPLE__) && (RL_READLINE_VERSION == 0x0402)
+    /* readline from MacOSX SDK (wrapper around libedit) */
+    rl_basic_word_break_characters = szCommandSeparators;
+    rl_completion_entry_function = NULL;
+#else
+    /* standard GNU readline, possibly from homebrew or macports on MacOSX */
     rl_basic_word_break_characters = rl_filename_quote_characters = szCommandSeparators;
-    rl_completer_quote_characters = "\"";
-    /* assume readline 4.2 or later */
     rl_completion_entry_function = NullGenerator;
+#endif
+    rl_completer_quote_characters = "\"";
     rl_attempted_completion_function = CompleteKeyword;
     /* setup history */
     read_history(gnubg_histfile);
@@ -4686,7 +4582,9 @@ main(int argc, char *argv[])
     context = g_option_context_new("[file.sgf]");
     g_option_context_add_main_entries(context, ao, PACKAGE);
 #if defined(USE_GTK)
+#if !GTK_CHECK_VERSION(4,0,0)
     g_option_context_add_group(context, gtk_get_option_group(FALSE));
+#endif
 #endif
 
     g_option_context_parse(context, &argc, &argv, &error);
@@ -4765,7 +4663,6 @@ main(int argc, char *argv[])
     init_nets(fNoBearoff);
 
     PushSplash(pwSplash, _("Initialising"), _("initialising thread data"));
-    glib_ext_init();
     MT_InitThreads();
 
 #if defined(WIN32) && defined(HAVE_SOCKETS)
@@ -5500,7 +5397,7 @@ void
 asyncFindBestMoves(findData * pfd)
 {
     if (FindnSaveBestMoves(pfd->pml, pfd->anDice[0], pfd->anDice[1], pfd->pboard,
-                           pfd->keyMove, pfd->rThr, pfd->pci, pfd->pec, pfd->aamf) < 0)
+                           pfd->keyMove, pfd->fAnalyse, pfd->rThr, pfd->pci, pfd->pec, pfd->aamf) < 0)
         MT_SetResultFailed();
 
     RefreshMoveList(pfd->pml, NULL);
@@ -5510,7 +5407,7 @@ void
 asyncFindMove(findData * pfd)
 {
     if (FindnSaveBestMoves(pfd->pml, ms.anDice[0], ms.anDice[1], pfd->pboard,
-                           pfd->keyMove, pfd->rThr, pfd->pci, pfd->pec, pfd->aamf) < 0)
+                           pfd->keyMove, pfd->fAnalyse, pfd->rThr, pfd->pci, pfd->pec, pfd->aamf) < 0)
         MT_SetResultFailed();
 }
 
@@ -5604,8 +5501,13 @@ ProcessEvents(void)
 {
 #if defined(USE_GTK)
     if (fX) {
+#if GTK_CHECK_VERSION(4,0,0)
+        while (g_main_context_pending(NULL))
+            g_main_context_iteration(NULL, FALSE);
+#else
         while (gtk_events_pending())
             gtk_main_iteration();
+#endif
     } else
 #endif
     {

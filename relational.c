@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2004 Joern Thyssen <jth@gnubg.org>
- * Copyright (C) 2004-2023 the AUTHORS
+ * Copyright (C) 2004-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 #include "config.h"
 
 #if USE_GTK
-#include "gtkrelational.h"
-#include "gtkgame.h"
-#include "gtkwindows.h"
+#include "gtk/gtkrelational.h"
+#include "gtk/gtkgame.h"
+#include "gtk/gtkwindows.h"
 #endif
 #include <stdlib.h>
 #include <string.h>
@@ -30,7 +30,6 @@
 #include "relational.h"
 #include "backgammon.h"
 #include "positionid.h"
-#include "rollout.h"
 #include "analysis.h"
 #include "util.h"
 #include <glib/gstdio.h>
@@ -152,9 +151,9 @@ MatchResult(int nMatchTo)
 
 #define NS(x) (x == NULL) ? "NULL" : x
 #define APPENDF(x,y) {g_string_append_printf(column, "%s, ", x); \
-	g_string_append_printf(value, "'%s', ", g_ascii_dtostr(tmpf, G_ASCII_DTOSTR_BUF_SIZE, y));}
+        g_string_append_printf(value, "'%s', ", g_ascii_dtostr(tmpf, G_ASCII_DTOSTR_BUF_SIZE, y));}
 #define APPENDI(x,y) {g_string_append_printf(column, "%s, ", x); \
-	g_string_append_printf(value, "'%i', ", y);}
+        g_string_append_printf(value, "'%i', ", y);}
 #define APPENDU(x,y) {g_string_append_printf(column, "%s, ", x); \
         g_string_append_printf(value, "'%u', ", y);}
 
@@ -306,8 +305,7 @@ AddStats(DBProvider * pdb, int gm_id, int player_id, int player, const char *tab
 int
 CreateDatabase(DBProvider * pdb)
 {
-    char buffer[10240];
-    char *pBuf = buffer;
+    GString *buffer = g_string_new(NULL);
     char line[1024];
 
     gchar *szFile = BuildFilename("gnubg.sql");
@@ -315,53 +313,55 @@ CreateDatabase(DBProvider * pdb)
 
     if (!fp) {
         g_free(szFile);
+        g_string_free(buffer, TRUE);
         return FALSE;
     }
 
-    buffer[0] = '\0';
     while (fgets(line, sizeof(line), fp) != NULL) {
         char *pLine = line + strlen(line) - 1;
-        while (pLine >= line && isspace(*pLine)) {
+
+        while (pLine >= line && isspace((unsigned char)*pLine)) {
             *pLine = '\0';
             pLine--;
         }
 
         pLine = line;
-        while (isspace(*pLine))
+        while (isspace((unsigned char)*pLine))
             pLine++;
 
         if (pLine[0] != '-' || pLine[1] != '-') {
             size_t len = strlen(pLine);
             if (len > 0) {
-                strcat(buffer, pLine);
-                pBuf += len;
+                g_string_append(buffer, pLine);
+
                 if (pLine[len - 1] == ';') {
-                    if (!pdb->UpdateCommand(buffer)) {
+                    if (!pdb->UpdateCommand(buffer->str)) {
                         fclose(fp);
                         g_free(szFile);
+                        g_string_free(buffer, TRUE);
                         return FALSE;
                     }
-                    pBuf = buffer;
-                    buffer[0] = '\0';
+                    g_string_truncate(buffer, 0);
                 }
             }
         }
     }
     if (ferror(fp)) {
         outputerr(szFile);
-        g_free(szFile);
         fclose(fp);
+        g_free(szFile);
+        g_string_free(buffer, TRUE);
         return FALSE;
     }
-    g_free(szFile);
     fclose(fp);
+    g_free(szFile);
 
-    pBuf = g_strdup_printf("INSERT INTO control VALUES ('version', %d)", DB_VERSION);
-    pdb->UpdateCommand(pBuf);
-    g_free(pBuf);
+    gchar *cmd = g_strdup_printf("INSERT INTO control VALUES ('version', %d)", DB_VERSION);
+    pdb->UpdateCommand(cmd);
+    g_free(cmd);
 
     pdb->Commit();
-
+    g_string_free(buffer, TRUE);
     return TRUE;
 }
 

@@ -210,7 +210,7 @@ GetStyleGeneral(const int hecss, ...)
     int i = 0;
     int j;
 
-    va_start(val, (const int) hecss);
+    va_start(val, hecss);
 
     switch (hecss) {
     case HTML_EXPORT_CSS_INLINE:
@@ -521,7 +521,7 @@ printHTMLBoardBBS(FILE * pf, matchstate * pms, int fTurn,
     /* avoid page break when printing */
     fputs("<tr><td align=\"center\" colspan=\"2\">", pf);
 
-    /* 
+    /*
      * Top row
      */
 
@@ -1407,7 +1407,7 @@ printHTMLBoard(FILE * pf, matchstate * pms, int fTurn,
 
 
 /*
- * Print html header for board: move or cube decision 
+ * Print html header for board: move or cube decision
  *
  * Input:
  *   pf: output file
@@ -1599,8 +1599,7 @@ HTMLEpilogue(FILE * pf, const matchstate * UNUSED(pms), char *aszLinks[4], const
     fputs("<hr/>\n" "<address>", pf);
 
     fprintf(pf,
-            _("Output generated %s by "
-            "<a href=\"https://www.gnu.org/software/gnubg/\">%s</a>"), tstr, VERSION_STRING);
+            _("Output generated %s by <a href=\"%s\">%s</a>"), tstr, "https://www.gnu.org/software/gnubg/", VERSION_STRING);
 
     fprintf(pf,
             "</address>\n"
@@ -1634,11 +1633,11 @@ HTMLEpilogueComment(FILE * pf)
     time(&t);
     strftime(tstr, 11, "%Y-%m-%d", localtime(&t));
 
-    fputs("\n<!-- Epilogue -->\n\n", pf);
+    fputs("<!-- Epilogue -->\n\n", pf);
 
-    fprintf(pf, _("<!-- Output generated %s by %s " "(https://www.gnu.org/software/gnubg/) "), tstr, VERSION_STRING);
+    fprintf(pf, _("<!-- Output generated %s by %s (%s)"), tstr, VERSION_STRING, "https://www.gnu.org/software/gnubg/");
 
-    fputs(" -->", pf);
+    fputs(" -->\n", pf);
 }
 
 /*
@@ -1859,11 +1858,11 @@ HTMLPrintCubeAnalysisTable(FILE * pf,
                 OutputEquity(aarOutput[0][OUTPUT_EQUITY], pci, TRUE),
                 GetStyle(CLASS_CUBE_CUBELESS_TEXT, hecss),
                 _("Money"), GetStyle(CLASS_CUBE_EQUITY, hecss),
-		OutputMoneyEquity(aarOutput[0], TRUE));
+                OutputMoneyEquity(aarOutput[0], TRUE));
     else
         fprintf(pf, " %s</td><td>%s</td><td></td>\n",
-		_("cubeless equity"),
-		OutputMoneyEquity(aarOutput[0], TRUE));
+                _("cubeless equity"),
+                OutputMoneyEquity(aarOutput[0], TRUE));
 
     fprintf(pf, "</tr>\n");
 
@@ -2230,7 +2229,7 @@ HTMLPrintMoveAnalysis(FILE * pf, matchstate * pms, moverecord * pmr,
             fprintf(pf, "</tr>\n");
 
             /*
-             * print row with detailed probabilities 
+             * print row with detailed probabilities
              */
 
             if (exsExport.fMovesDetailProb) {
@@ -2274,7 +2273,7 @@ HTMLPrintMoveAnalysis(FILE * pf, matchstate * pms, moverecord * pmr,
             }
 
             /*
-             * Write row with move parameters 
+             * Write row with move parameters
              */
 
             if (exsExport.afMovesParameters[pmr->ml.amMoves[i].esMove.et - 1]) {
@@ -2846,7 +2845,7 @@ ExportGameHTML(FILE * pf, listOLD * plGame, const char *szImageDir,
 /*
  * Open file gnubg.css with same path as requested html file
  *
- * If the gnubg.css file already exists NULL is returned 
+ * If the gnubg.css file already exists NULL is returned
  * (and gnubg.css is NOT overwritten)
  *
  */
@@ -2960,6 +2959,7 @@ CommandExportMatchHtml(char *sz)
     int nGames;
     char *aszLinks[4], *filenames[4];
     int i, j;
+    int fDontClose = FALSE;
 
     sz = NextToken(&sz);
 
@@ -3010,9 +3010,10 @@ CommandExportMatchHtml(char *sz)
         }
 
 
-        if (!strcmp(szCurrent, "-"))
+        if (!strcmp(szCurrent, "-")) {
             pf = stdout;
-        else if (!(pf = g_fopen(szCurrent, "w"))) {
+            fDontClose = TRUE;
+	} else if (!(pf = g_fopen(szCurrent, "w"))) {
             outputerr(szCurrent);
             for (j = 0; j < 4; j++) {
                 g_free(aszLinks[j]);
@@ -3032,7 +3033,7 @@ CommandExportMatchHtml(char *sz)
         }
         g_free(szCurrent);
 
-        if (pf != stdout)
+        if (!fDontClose)
             fclose(pf);
 
     }
@@ -3052,6 +3053,7 @@ CommandExportPositionHtml(char *sz)
 {
 
     FILE *pf;
+    int fDontClose = FALSE;
     int fHistory;
     moverecord *pmr;
     int iMove;
@@ -3071,9 +3073,10 @@ CommandExportPositionHtml(char *sz)
     if (!confirmOverwrite(sz, fConfirmSave))
         return;
 
-    if (!strcmp(sz, "-"))
+    if (!strcmp(sz, "-")) {
         pf = stdout;
-    else if (!(pf = g_fopen(sz, "w"))) {
+        fDontClose = TRUE;
+    } else if (!(pf = g_fopen(sz, "w"))) {
         outputerr(sz);
         return;
     }
@@ -3110,7 +3113,7 @@ CommandExportPositionHtml(char *sz)
 
     HTMLEpilogue(pf, &ms, NULL, exsExport.hecss);
 
-    if (pf != stdout)
+    if (!fDontClose)
         fclose(pf);
 
     setDefaultFileName(sz);
@@ -3136,7 +3139,7 @@ ExportPositionGammOnLine(FILE * pf)
         return;
     }
 
-    fputs("\n<!-- Score -->\n\n", pf);
+    fputs("<!-- Score -->\n\n", pf);
 
     fputs("<strong>", pf);
 
@@ -3156,7 +3159,7 @@ ExportPositionGammOnLine(FILE * pf)
 
     fputs("</strong>\n", pf);
 
-    fputs("\n<!-- End Score -->\n\n", pf);
+    fputs("\n<!-- End Score -->\n", pf);
 
     printHTMLBoard(pf, &ms, ms.fTurn, "../Images/", "gif", HTML_EXPORT_TYPE_BBS, HTML_EXPORT_CSS_INLINE);
 

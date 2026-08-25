@@ -22,7 +22,7 @@
 #include "multithread.h"
 
 #if defined(USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #endif
 
 #ifndef WIN32

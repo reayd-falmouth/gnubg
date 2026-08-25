@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: export.h,v 1.44 2022/01/02 22:56:36 plm Exp $
  */
 
 #include <glib.h>
@@ -90,7 +88,7 @@ typedef struct {
 
 extern exportsetup exsExport;
 
-extern char *filename_from_iGame(const char *szBase, const int iGame);
+extern char *filename_from_iGame(const char *szBase, int iGame);
 extern int WritePNG(const char *sz, unsigned char *puch,
                     unsigned int nStride, unsigned int nSizeX, unsigned int nSizeY);
 
@@ -99,6 +97,6 @@ void GenerateImage3d(const char *szName, unsigned int nSize, unsigned int nSizeX
 #endif
 
 extern void TextAnalysis(GString * gsz, const matchstate * pms, moverecord * pmr);
-extern void TextPrologue(GString * gsz, const matchstate * pms, const int iGame);
-extern void TextBoardHeader(GString * gsz, const matchstate * pms, const int iGame, const int iMove);
+extern void TextPrologue(GString * gsz, const matchstate * pms, int iGame);
+extern void TextBoardHeader(GString * gsz, const matchstate * pms, int iGame, int iMove);
 #endif

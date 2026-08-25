@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2003-2021 Jon Kinsey <jonkinsey@gmail.com>
- * Copyright (C) 2003-2019 the AUTHORS
+ * Copyright (C) 2003-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,11 @@
 #include "renderprefs.h"
 #include "sound.h"
 #include "export.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "util.h"
 #include <glib/gstdio.h>
-#include "gtklocdefs.h"
-#include "gtkboard.h"
+#include "gtk/gtklocdefs.h"
+#include "gtk/gtkboard.h"
 
 #define MAX_FRAMES 10
 #define DOT_SIZE 32
@@ -56,6 +56,9 @@ Flag3d flag;                    /* Only one flag */
 static gboolean
 idle(BoardData3d * bd3d)
 {
+    if (!pIdleFun)
+        return FALSE;
+
     if (pIdleFun(bd3d))
         DrawScene3d(bd3d);
 
@@ -64,8 +67,8 @@ idle(BoardData3d * bd3d)
 
 void
 StopIdle3d(const BoardData * bd, BoardData3d * bd3d)
-{                               /* Animation has finished (or could have been interruptted) */
-    /* If interruptted - reset dice/moving piece details */
+{                               /* Animation has finished (or could have been interrupted) */
+    /* If interrupted - reset dice/moving piece details */
     if (bd3d->shakingDice) {
         bd3d->shakingDice = 0;
         updateDiceOccPos(bd, bd3d);
@@ -343,23 +346,23 @@ const Material* GetCurrentMaterial(void)
 void
 setMaterial(const Material * pMat)
 {
-	if (pMat != NULL && pMat != currentMat)
-	{
-		currentMat = pMat;
+    if (pMat != NULL && pMat != currentMat)
+    {
+        currentMat = pMat;
 
-		glMaterialfv(GL_FRONT, GL_AMBIENT, pMat->ambientColour);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, pMat->diffuseColour);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, pMat->specularColour);
-		glMateriali(GL_FRONT, GL_SHININESS, pMat->shine);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, pMat->ambientColour);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, pMat->diffuseColour);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, pMat->specularColour);
+        glMateriali(GL_FRONT, GL_SHININESS, pMat->shine);
 
-		if (pMat->pTexture) {
-			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, pMat->pTexture->texID);
-		}
-		else {
-			glDisable(GL_TEXTURE_2D);
-		}
-	}
+        if (pMat->pTexture) {
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, pMat->pTexture->texID);
+        }
+        else {
+            glDisable(GL_TEXTURE_2D);
+        }
+    }
 }
 void
 setMaterialReset(const Material* pMat)
@@ -581,7 +584,7 @@ LoadTexture(Texture * texture, const char *filename)
 
     if (pix_error) {
         g_printerr(_("Failed to open texture: %s, %s\n"), filename, pix_error->message);
-	g_object_unref(fpixbuf);
+    g_object_unref(fpixbuf);
         return 0;               /* failed to load file */
     }
 
@@ -930,8 +933,8 @@ calculateEigthPoints(EigthPoints* eigthPoints, float radius, unsigned int accura
     float step = 0;
     unsigned int corner_steps = (accuracy / 4) + 1;
 
-	eigthPoints->points = Alloc3d(corner_steps, corner_steps, 3);
-	eigthPoints->accuracy = accuracy;
+    eigthPoints->points = Alloc3d(corner_steps, corner_steps, 3);
+    eigthPoints->accuracy = accuracy;
 
     lat_angle = 0;
     lat_step = (2 * F_PI) / (float) accuracy;
@@ -960,13 +963,13 @@ calculateEigthPoints(EigthPoints* eigthPoints, float radius, unsigned int accura
 void
 freeEigthPoints(EigthPoints* eigthPoints)
 {
-	if (eigthPoints->points != NULL)
-	{
-		unsigned int corner_steps = (eigthPoints->accuracy / 4) + 1;
+    if (eigthPoints->points != NULL)
+    {
+        unsigned int corner_steps = (eigthPoints->accuracy / 4) + 1;
 
-		Free3d(eigthPoints->points, corner_steps, corner_steps);
-		eigthPoints->points = NULL;
-	}
+        Free3d(eigthPoints->points, corner_steps, corner_steps);
+        eigthPoints->points = NULL;
+    }
 }
 
 void
@@ -1133,12 +1136,17 @@ RollDice3d(BoardData * bd, BoardData3d * bd3d, const renderdata * prd)
         setupDicePaths(bd, bd3d->dicePaths, bd3d->diceMovingPos, bd3d->diceRotation);
         /* Make sure shadows are in correct place */
         UpdateShadows(bd->bd3d);
-		gtk_main();
+        gtk_main();
     } else {
         /* Show dice on board */
         gtk_widget_queue_draw(bd3d->drawing_area3d);
+#if GTK_CHECK_VERSION(4,0,0)
+        while (g_main_context_pending(NULL))
+            g_main_context_iteration(NULL, FALSE);
+#else
         while (gtk_events_pending())
             gtk_main_iteration();
+#endif
     }
     GTKResumeInput();
 }
@@ -1224,29 +1232,29 @@ EmptyPos(BoardData * bd)
 void
 SetupViewingVolume3d(const BoardData * bd, BoardData3d * bd3d, const renderdata * prd, int viewport[4])
 {
-   	float *projMat, *modelMat;
+    float *projMat, *modelMat;
 
-	SetupViewingVolume3dNew(bd, bd3d, prd, &projMat, &modelMat, viewport);
+    SetupViewingVolume3dNew(bd, bd3d, prd, &projMat, &modelMat, viewport);
 
 #if !GTK_CHECK_VERSION(3,0,0)
-	/* Setup openGL legacy matrices */
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(projMat);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(modelMat);
+    /* Setup openGL legacy matrices */
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixf(projMat);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadMatrixf(modelMat);
 #else
     SetViewPos();
 #endif
 
     SetupLight3d(bd3d, prd);
 
-	calculateBackgroundSize(bd3d, viewport);
+    calculateBackgroundSize(bd3d, viewport);
 #if !GTK_CHECK_VERSION(3,0,0)
     if (bd3d->modelHolder.vertexData != NULL)
 #endif
-	{	/* Update background to new size */
+    {	/* Update background to new size */
         UPDATE_OGL(&bd3d->modelHolder, MT_BACKGROUND, drawBackground, prd, bd3d->backGroundPos, bd3d->backGroundSize);
-	}
+    }
 }
 
 void
@@ -1284,7 +1292,7 @@ SetupSimpleMatAlpha(Material * pMat, float r, float g, float b, float a)
 void
 SetupSimpleMat(Material * pMat, float r, float g, float b)
 {
-    SetupMat(pMat, r, g, b, r, g, b, 0.f, 0.f, 0.f, 0, 0.f);
+    SetupMat(pMat, r, g, b, r, g, b, 0.f, 0.f, 0.f, 0, 1.f);
 }
 
 /* Not currently used
@@ -1295,10 +1303,10 @@ SetupSimpleMat(Material * pMat, float r, float g, float b)
  * int i = 0;
  * while (&bd->textureList[i] != pMat->pTexture)
  * i++;
- * 
+ *
  * DeleteTexture(&bd->textureList[i]);
  * g_free(bd->textureName[i]);
- * 
+ *
  * while (i != bd->numTextures - 1)
  * {
  * bd->textureList[i] = bd->textureList[i + 1];
@@ -1380,8 +1388,8 @@ GenerateImage3d(const char *szName, unsigned int nSize, unsigned int nSizeX, uns
     RenderToBufferData renderToBufferData;
 
     if (!fX) {
-	outputerrf(_("PNG file creation failed: %s\n"), _("exporting a 3D image is only supported from the GUI"));
-	return;
+    outputerrf(_("PNG file creation failed: %s\n"), _("exporting a 3D image is only supported from the GUI"));
+    return;
     }
 
     renderToBufferData.bd = BOARD(pwBoard)->board_data;
@@ -1449,30 +1457,30 @@ Animating3d(const BoardData3d * bd3d)
 extern void
 Draw3d(const BoardData * bd)
 {                               /* Render board: standard or 2 passes for shadows */
-	drawBoard(bd, bd->bd3d, bd->rd);
-	if (bd->rd->showShadows)
-		shadowDisplay(bd, bd->bd3d, bd->rd);
+    drawBoard(bd, bd->bd3d, bd->rd);
+    if (bd->rd->showShadows)
+        shadowDisplay(bd, bd->bd3d, bd->rd);
 }
 
 void
 ClearScreen(const renderdata* prd)
 {
-	glClearColor(prd->BackGroundMat.ambientColour[0], prd->BackGroundMat.ambientColour[1],
-		prd->BackGroundMat.ambientColour[2], 0.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(prd->BackGroundMat.ambientColour[0], prd->BackGroundMat.ambientColour[1],
+        prd->BackGroundMat.ambientColour[2], 0.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void
 glSetViewport(int viewport[4])
 {
-	glViewport(viewport[0], viewport[1], viewport[2] - viewport[0], viewport[3] - viewport[1]);
+    glViewport(viewport[0], viewport[1], viewport[2] - viewport[0], viewport[3] - viewport[1]);
 }
 
 void RecalcViewingVolume(const BoardData* bd)
 {
-	int viewport[4];
-	glGetIntegerv(GL_VIEWPORT, viewport);
-	SetupViewingVolume3d(bd, bd->bd3d, bd->rd, viewport);
+    int viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    SetupViewingVolume3d(bd, bd->bd3d, bd->rd, viewport);
 }
 
 void computeNormal(vec3 a, vec3 b, vec3 c, vec3 ret)

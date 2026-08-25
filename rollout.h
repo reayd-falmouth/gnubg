@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: rollout.h,v 1.45 2021/06/09 19:43:19 plm Exp $
  */
 
 #ifndef ROLLOUT_H
@@ -73,18 +71,18 @@ extern int
 RolloutGeneral(ConstTanBoard * apBoard,
                float (*apOutput[])[NUM_ROLLOUT_OUTPUTS],
                float (*apStdDev[])[NUM_ROLLOUT_OUTPUTS],
-               rolloutstat apStatistics[][2],
+               rolloutstat aarsStatistics[][2],
                evalsetup *apes[],
                const cubeinfo *apci[],
                int *apCubeDecTop[], int alternatives,
-               int fInvert, int fCubeRollout, rolloutprogressfunc * pfRolloutProgress, void *pUserData);
+               int fInvert, int fCubeRollout, rolloutprogressfunc * pfProgress, void *pUserData);
 
 extern int
 GeneralEvaluation(float arOutput[NUM_ROLLOUT_OUTPUTS],
                   float arStdDev[NUM_ROLLOUT_OUTPUTS],
                   rolloutstat arsStatistics[2],
                   TanBoard anBoard,
-                  cubeinfo * const pci, const evalsetup * pes,
+                  cubeinfo * pci, const evalsetup * pes,
                   rolloutprogressfunc * pfRolloutProgress, void *pUserData);
 
 extern int
@@ -117,7 +115,7 @@ GeneralCubeDecisionR(float aarOutput[2][NUM_ROLLOUT_OUTPUTS],
 
 extern int
 getResignation(float arResign[NUM_ROLLOUT_OUTPUTS],
-               TanBoard anBoard, cubeinfo * const pci, const evalsetup * pesResign);
+               TanBoard anBoard, cubeinfo * pci, const evalsetup * pesResign);
 
 extern void
  getResignEquities(float arResign[NUM_ROLLOUT_OUTPUTS], cubeinfo * pci, int nResigned, float *prBefore, float *prAfter);
@@ -148,7 +146,7 @@ EXP_LOCK_FUN(int, BasicCubefulRollout, unsigned int aanBoard[][2][25], float aar
 extern void log_cube(FILE * logfp, const char *action, int side);
 extern void log_move(FILE * logfp, const int *anMove, int side, int die0, int die1);
 extern int RolloutDice(int iTurn, int iGame, int fInitial, unsigned int anDice[2], rng * rngx, void *rngctx,
-                       const int fRotate, const perArray * dicePerms);
+                       int fRotate, const perArray * dicePerms);
 extern void ClosedBoard(int afClosedBoard[2], const TanBoard anBoard);
 extern void InvertStdDev(float ar[NUM_ROLLOUT_OUTPUTS]);
 #endif

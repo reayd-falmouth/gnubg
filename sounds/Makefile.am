@@ -14,10 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#
-# $Id: $
-# 
-
 soundsdir = $(pkgdatadir)/sounds
 sounds_DATA = chequer.wav dance.wav double.wav drop.wav fanfare.wav \
 	gameover.wav haere-ra.wav matchover.wav move.wav resign.wav roll.wav \

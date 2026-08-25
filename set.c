@@ -61,13 +61,13 @@
 #include "set.h"
 
 #if defined(USE_GTK)
-#include "gtklocdefs.h"
-#include "gtkgame.h"
-#include "gtkoptions.h"
-#include "gtkprefs.h"
-#include "gtkchequer.h"
-#include "gtkwindows.h"
-#include "gtkscoremap.h"
+#include "gtk/gtklocdefs.h"
+#include "gtk/gtkgame.h"
+#include "gtk/gtkoptions.h"
+#include "gtk/gtkprefs.h"
+#include "gtk/gtkchequer.h"
+#include "gtk/gtkwindows.h"
+#include "gtk/gtkscoremap.h"
 #endif                          /* USE_GTK */
 
 #include "matchequity.h"
@@ -1916,7 +1916,7 @@ CommandSetRolloutMaxError(char *sz)
 
     prcSet->rStdLimit = r;
 
-    outputf(_("Rollouts can stop when the estimated equities' STD are less than " "%5.4f)\n"), r);
+    outputf(_("Rollouts can stop when the estimated equities' STD are less than " "%5.4f\n"), r);
 }
 
 extern void
@@ -4302,7 +4302,7 @@ CommandSetCheatPlayerRoll(char *sz)
 
     int n;
     if ((n = ParseNumber(&sz)) < 1 || n > 21) {
-        outputl(_("You must specify a size between 1 and 21."));
+        outputl(_("You must specify a roll ranking between 1 and 21."));
         return;
     }
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2004 Joern Thyssen <joern@thyssen.nu>
- * Copyright (C) 2000-2023 the AUTHORS
+ * Copyright (C) 2000-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ When analyzing in the background, various menus are disabled so the user does no
 #include "drawboard.h"
 #include "eval.h"
 #if defined(USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #endif
 #include "positionid.h"
 #include "analysis.h"
@@ -64,15 +64,12 @@ When analyzing in the background, various menus are disabled so the user does no
 #include "lib/simd.h"
 
 const char *aszRating[N_RATINGS] = {
-    N_("rating|Awful!"),
     N_("rating|Beginner"),
-    N_("rating|Casual player"),
     N_("rating|Intermediate"),
     N_("rating|Advanced"),
-    N_("rating|Expert"),
-    N_("rating|World class"),
-    N_("rating|Supernatural"),
-    N_("rating|N/A")
+    N_("rating|Master"),
+    N_("rating|Grandmaster"),
+    N_("rating|Super Grandmaster"),
 };
 
 const char *aszLuckRating[N_LUCKS] = {
@@ -83,11 +80,9 @@ const char *aszLuckRating[N_LUCKS] = {
     N_("luck|Go to Las Vegas"),
 };
 
-static const float arThrsRating[RAT_SUPERNATURAL + 1] = {
-    1e38f, 0.035f, 0.026f, 0.018f, 0.012f, 0.008f, 0.005f, 0.002f
+static const float arThrsRating[N_RATINGS] = {
+    1e38f, 0.032f, 0.020f, 0.013f, 0.008f, 0.005f
 };
-
-/* 1e38, 0.060, 0.030, 0.025, 0.020, 0.015, 0.010, 0.005 }; */
 
 int afAnalysePlayers[2] = { TRUE, TRUE };
 
@@ -96,14 +91,14 @@ evalcontext ecLuck = { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDete
 extern ratingtype
 GetRating(const float rError)
 {
-
     int i;
 
-    for (i = RAT_SUPERNATURAL; i >= 0; i--)
+    for (i = RAT_SUPERGRANDMASTER; i >= 0; i--)
         if (rError < arThrsRating[i])
             return (ratingtype) i;
 
-    return RAT_UNDEFINED;
+    g_assert_not_reached();
+    return RAT_BEGINNER;
 }
 
 static float
@@ -126,7 +121,7 @@ LuckFirst(const TanBoard anBoard, const int n0, const int n1, cubeinfo * pci, co
             memcpy(&anBoardTemp[0][0], &anBoard[0][0], 2 * 25 * sizeof(int));
 
             /* Find the best move for each roll at ply 0 only. */
-            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, 0.0f,
+            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, FALSE, 0.0f,
                                    pci, pec, defaultFilters) < 0) {
                 g_free(ml.amMoves);
                 return ERR_VAL;
@@ -164,7 +159,7 @@ LuckFirst(const TanBoard anBoard, const int n0, const int n1, cubeinfo * pci, co
             SwapSides(anBoardTemp);
 
             /* Find the best move for each roll at ply 0 only. */
-            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, 0.0f,
+            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, FALSE, 0.0f,
                                    &ciOpp, pec, defaultFilters) < 0) {
                 g_free(ml.amMoves);
                 return ERR_VAL;
@@ -219,7 +214,7 @@ LuckNormal(const TanBoard anBoard, const int n0, const int n1, const cubeinfo * 
             memcpy(&anBoardTemp[0][0], &anBoard[0][0], 2 * 25 * sizeof(int));
 
             /* Find the best move for each roll at ply 0 only. */
-            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, 0.0f,
+            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, FALSE, 0.0f,
                                    pci, pec, defaultFilters) < 0) {
                 g_free(ml.amMoves);
                 return ERR_VAL;
@@ -712,7 +707,7 @@ AnalyzeMove(moverecord * pmr, matchstate * pms, const listOLD * plParentGame,
                     MT_Release();
                     if (FindnSaveBestMoves(&ml, pmr->anDice[0],
                                            pmr->anDice[1],
-                                           (ConstTanBoard) pms->anBoard, &key,
+                                           (ConstTanBoard) pms->anBoard, &key, TRUE,
                                            arSkillLevel[SKILL_DOUBTFUL], &ci, &pesChequer->ec, aamf) < 0) {
                         g_free(ml.amMoves);
                         return -1;
@@ -1194,7 +1189,7 @@ CommandAnalyseGame(char *UNUSED(sz))
         fAnalysisRunning = TRUE;
         ProgressStartValue(_("Background analysis. Browsing-only mode: "
           "feel free to browse and check the early analysis results."), nMoves);
-        ShowBoard(); /* hide unallowd toolbar items*/
+        ShowBoard(); /* hide unallowed toolbar items*/
         GTKRegenerateGames(); /* hide unallowed menu items*/
     } else
 #endif

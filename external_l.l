@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: external_l.l,v 1.33 2023/06/11 21:20:12 plm Exp $
  */
 
 #include "common.h"
@@ -46,7 +44,7 @@ void escapes(const char *cp, char *tp);
 %option 8bit
 %option case-insensitive
 
-%x SBOARDP1 
+%x SBOARDP1
 %x SBOARDP2
 %x OPTIONS
 %x VALLIST
@@ -75,10 +73,10 @@ version{EOT}            {   return INTERFACEVERSION; }
 evaluation{EOT}         {   return EVALUATION; }
 fibsboard{EOT}          {   return FIBSBOARD; }
 
-<*>(yes|on|true){EOT}   {   yylval->boolean = 1; 
+<*>(yes|on|true){EOT}   {   yylval->boolean = 1;
                             return (E_BOOLEAN);
                         }
-<*>(no|off|false){EOT}  {   yylval->boolean = 0; 
+<*>(no|off|false){EOT}  {   yylval->boolean = 0;
                             return (E_BOOLEAN);
                         }
 
@@ -93,10 +91,10 @@ fibsboard{EOT}          {   return FIBSBOARD; }
                             return E_FLOAT;
                         }
 		
-<*>{SIGNEDINTSTR}       {   yylval->intnum = atoi(yytext); 
-                            return E_INTEGER; 
+<*>{SIGNEDINTSTR}       {   yylval->intnum = atoi(yytext);
+                            return E_INTEGER;
                         }
-                        
+
 [\[\],\(\)\{\}]         return (yytext[0]);
 
 <OPTIONS>{
@@ -112,11 +110,11 @@ noise{EOT}              {   return NOISE; }
 plies{EOT}              {   return PLIES; }
 prune{EOT}              {   return PRUNE; }
 }
-                        
+
 <VALLIST,SBOARDP1,SBOARDP2>: {
                             return (yytext[0]);
                         }
-                        
+
 <VALLIST,SBOARDP1,SBOARDP2>{EOT} {
                             BEGIN(OPTIONS);
                             return FIBSBOARDEND;
@@ -135,12 +133,12 @@ prune{EOT}              {   return PRUNE; }
 
 <*>[\t\r\n ]+             ; /* ignore whitespace */
 
-<<EOF>>                 {   BEGIN(INITIAL); 
-                            return (EOL); 
+<<EOF>>                 {   BEGIN(INITIAL);
+                            return (EOL);
                         }
 
 <*>.                    {   BEGIN(INITIAL);
-                            yylval->character = yytext[0]; 
+                            yylval->character = yytext[0];
                             return (E_CHARACTER);
                         }
 
@@ -154,7 +152,7 @@ void escapes(const char *cp, char *tp)
 
 	if (*cp == '\\' && strchr("0123456789xX", cp[1]))
 	{
-	    char *dp;
+	    const char *dp;
 	    const char *hex = "00112233445566778899aAbBcCdDeEfF";
 	    int dcount = 0;
 
@@ -192,7 +190,7 @@ void ExtStartParse(yyscan_t scanner, const char* szCommand)
 {
     struct yyguts_t * yyg = (struct yyguts_t *) scanner;
     YY_BUFFER_STATE buf_state = NULL;
-    BEGIN(INITIAL);    
+    BEGIN(INITIAL);
     buf_state = yy_scan_string(szCommand, scanner);
     ext_parse(scanner);
     yy_flush_buffer(buf_state, scanner);

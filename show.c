@@ -46,18 +46,18 @@
 #include "multithread.h"
 
 #if defined(USE_GTK)
-#include "gtkboard.h"
-#include "gtkgame.h"
+#include "gtk/gtkboard.h"
+#include "gtk/gtkgame.h"
 #include "gtktheory.h"
 #include "gtkrace.h"
-#include "gtkexport.h"
-#include "gtkmet.h"
+#include "gtk/gtkexport.h"
+#include "gtk/gtkmet.h"
 #include "gtkrolls.h"
 #include "gtktempmap.h"
-#include "gtkscoremap.h"
-#include "gtkoptions.h"
-#include "gtkcube.h"
-#include "gtkrelational.h"
+#include "gtk/gtkscoremap.h"
+#include "gtk/gtkoptions.h"
+#include "gtk/gtkcube.h"
+#include "gtk/gtkrelational.h"
 #endif
 
 #if defined(WIN32)

@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: sound.h,v 1.26 2020/01/05 19:51:24 plm Exp $
  */
 
 #ifndef SOUND_H
@@ -53,12 +51,12 @@ extern const char *sound_command[NUM_SOUNDS];
 extern int fSound;
 extern int fQuiet;
 
-extern void playSound(const gnubgsound gs);
+extern void playSound(gnubgsound gs);
 extern void SoundWait(void);
 
 extern char *GetDefaultSoundFile(gnubgsound sound);
 extern void playSoundFile(char *file, gboolean sync);
-extern void SetSoundFile(const gnubgsound sound, const char *file);
+extern void SetSoundFile(gnubgsound sound, const char *file);
 extern char *GetSoundFile(gnubgsound sound);
 extern const char *sound_get_command(void);
 extern char *sound_set_command(const char *sz);

@@ -41,7 +41,7 @@
 #if defined(USE_GTK)
 #include <gtk/gtk.h>
 #include <cairo.h>
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 #endif
 
 #if defined(USE_BOARD3D)

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 1998-1999 Mark Spencer <markster@marko.net>
  * Copyright (C) 2002-2004 Joern Thyssen <jthyssen@dk.ibm.com>
- * Copyright (C) 2002-2018 the AUTHORS
+ * Copyright (C) 2002-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #include "config.h"
 #include <string.h>
 #if defined(USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #else
 #include "backgammon.h"
 #include <glib.h>
@@ -36,119 +36,8 @@
 #include <windows.h>
 #include <mmsystem.h>
 
-#elif defined(HAVE_APPLE_QUICKTIME)
-#include <QuickTime/QuickTime.h>
-#include <pthread.h>
-#include "lib/list.h"
-
-static int fQTInitialised = FALSE;
-static int fQTPlaying = FALSE;
-listOLD movielist;
-static pthread_mutex_t mutexQTAccess;
-
-
-void *
-Thread_PlaySound_QuickTime(void *data)
-{
-    int done = FALSE;
-
-    fQTPlaying = TRUE;
-
-    do {
-        listOLD *pl;
-
-        pthread_mutex_lock(&mutexQTAccess);
-
-        /* give CPU time to QT to process all running movies */
-        MoviesTask(NULL, 0);
-
-        /* check if there are any running movie left */
-        pl = &movielist;
-        done = TRUE;
-        do {
-            listOLD *next = pl->plNext;
-            if (pl->p != NULL) {
-                Movie *movie = (Movie *) pl->p;
-                if (IsMovieDone(*movie)) {
-                    DisposeMovie(*movie);
-                    free(movie);
-                    ListDelete(pl);
-                } else
-                    done = FALSE;
-            }
-            pl = next;
-        } while (pl != &movielist);
-
-        pthread_mutex_unlock(&mutexQTAccess);
-    } while (!done && fQTPlaying);
-
-    fQTPlaying = FALSE;
-
-    return NULL;
-}
-
-
-void
-PlaySound_QuickTime(const char *cSoundFilename)
-{
-    int err;
-    FSSpec fsSoundFile;         /* movie file location descriptor */
-    short resRefNum;            /* open movie file reference */
-
-    if (!fQTInitialised) {
-        pthread_mutex_init(&mutexQTAccess, NULL);
-        ListCreate(&movielist);
-        fQTInitialised = TRUE;
-    }
-
-    /* QuickTime is NOT reentrant in Mac OS (it is in MS Windows!) */
-    pthread_mutex_lock(&mutexQTAccess);
-
-    EnterMovies();              /* can be called multiple times */
-
-    err = NativePathNameToFSSpec(cSoundFilename, &fsSoundFile, 0);
-    if (err != 0) {
-        outputf(_("PlaySound_QuickTime: error #%d, can't find %s.\n"), err, cSoundFilename);
-    } else {
-        /* open movie (WAV or whatever) file */
-        err = OpenMovieFile(&fsSoundFile, &resRefNum, fsRdPerm);
-        if (err != 0) {
-            outputf(_("PlaySound_QuickTime: error #%d opening %s.\n"), err, cSoundFilename);
-        } else {
-            /* create movie from movie file */
-            Movie *movie = (Movie *) malloc(sizeof(Movie));
-            err = NewMovieFromFile(movie, resRefNum, NULL, NULL, 0, NULL);
-            CloseMovieFile(resRefNum);
-            if (err != 0) {
-                outputf(_("PlaySound_QuickTime: error #%d reading %s.\n"), err, cSoundFilename);
-            } else {
-                /* reset movie timebase */
-                TimeRecord t = { 0 };
-                t.base = GetMovieTimeBase(*movie);
-                SetMovieTime(*movie, &t);
-                /* add movie to list of running movies */
-                ListInsert(&movielist, movie);
-                /* run movie */
-                StartMovie(*movie);
-            }
-        }
-    }
-
-    pthread_mutex_unlock(&mutexQTAccess);
-
-    if (!fQTPlaying) {
-        /* launch playing thread if necessary */
-        pthread_t qtthread;
-        fQTPlaying = TRUE;
-        err = pthread_create(&qtthread, 0L, Thread_PlaySound_QuickTime, NULL);
-        if (err == 0)
-            pthread_detach(qtthread);
-        else
-            fQTPlaying = FALSE;
-    }
-}
 #elif defined(HAVE_APPLE_COREAUDIO)
-/* Apple CoreAudio Sound support 
+/* Apple CoreAudio Sound support
  * Written by Michael Petch */
 
 #include <AudioToolbox/AudioToolbox.h>
@@ -162,20 +51,17 @@ static int fCAInitialised = FALSE;
 static Float64 fileDuration = 0.0;
 
 #define CoreAudioChkError(func,context,ret) \
-	{ \
-		int result; \
-		if ((result = func)!=0) \
-		{ \
-			outputf(_("Apple CoreAudio Error (" context "): %d\n"), result); \
-		        pthread_mutex_unlock (&mutexCAAccess); \
-			return ret; \
-		} \
-	}
-Float64 CoreAudio_PrepareFileAU(AudioUnit * au, AudioStreamBasicDescription * fileFormat, AudioFileID audioFile);
-void CoreAudio_MakeSimpleGraph(AUGraph * theGraph, AudioUnit * fileAU,
-                               AudioStreamBasicDescription * fileFormat, AudioFileID audioFile);
+    { \
+        int result; \
+        if ((result = func)!=0) \
+        { \
+            outputf(_("Apple CoreAudio Error (" context "): %d\n"), result); \
+            pthread_mutex_unlock (&mutexCAAccess); \
+            return ret; \
+        } \
+    }
 
-void
+static void
 CoreAudio_ShutDown()
 {
     AUGraphStop(theGraph);
@@ -184,7 +70,7 @@ CoreAudio_ShutDown()
     AUGraphClose(theGraph);
 }
 
-void
+static void
 CoreAudio_PlayFile_Thread(void *UNUSED(auGraph))
 {
     /* Start playing the sound file, and wait for it to complete */
@@ -197,56 +83,8 @@ CoreAudio_PlayFile_Thread(void *UNUSED(auGraph))
     pthread_mutex_unlock(&mutexCAAccess);
 }
 
-void
-CoreAudio_PlayFile(char *const fileName)
-{
-    pthread_t CAThread;
-
-    /* first time through initialise the mutex */
-    if (!fCAInitialised) {
-        pthread_mutex_init(&mutexCAAccess, NULL);
-        fCAInitialised = TRUE;
-    }
-
-    /*  Apparently CoreAudio is not fully reentrant */
-    pthread_mutex_lock(&mutexCAAccess);
-
-    /* Open the sound file */
-    CFURLRef outInputFileURL = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault,
-                                                                       (const UInt8 *) fileName, strlen(fileName),
-                                                                       false);
-    if (AudioFileOpenURL(outInputFileURL, kAudioFileReadPermission, 0, &audioFile)) {
-        outputf(_("Apple CoreAudio Error, can't find %s\n"), fileName);
-        return;
-    }
-
-    /* Get properties of the file */
-    AudioStreamBasicDescription fileFormat;
-    UInt32 propsize = sizeof(AudioStreamBasicDescription);
-    CoreAudioChkError(AudioFileGetProperty(audioFile, kAudioFilePropertyDataFormat,
-                                           &propsize, &fileFormat), "AudioFileGetProperty Dataformat",);
-
-    /* Setup sound state */
-    AudioUnit fileAU;
-    memset(&fileAU, 0, sizeof(AudioUnit));
-    memset(&theGraph, 0, sizeof(AUGraph));
-
-    /* Setup a simple output graph and AU */
-    CoreAudio_MakeSimpleGraph(&theGraph, &fileAU, &fileFormat, audioFile);
-
-    /* Load the file contents */
-    fileDuration = CoreAudio_PrepareFileAU(&fileAU, &fileFormat, audioFile);
-
-    if (pthread_create(&CAThread, 0L, (void *) CoreAudio_PlayFile_Thread, NULL) == 0)
-        pthread_detach(CAThread);
-    else {
-        CoreAudio_ShutDown();
-        pthread_mutex_unlock(&mutexCAAccess);
-    }
-}
-
-Float64
-CoreAudio_PrepareFileAU(AudioUnit *au, AudioStreamBasicDescription *fileFormat, AudioFileID audioFile)
+static Float64
+CoreAudio_PrepareFileAU(AudioUnit *au, const AudioStreamBasicDescription *fileFormat, AudioFileID audioFile)
 {
     UInt64 nPackets;
     UInt32 propsize = sizeof(nPackets);
@@ -293,7 +131,7 @@ CoreAudio_PrepareFileAU(AudioUnit *au, AudioStreamBasicDescription *fileFormat, 
     return fileDuration;
 }
 
-void
+static void
 CoreAudio_MakeSimpleGraph(AUGraph *theGraph, AudioUnit *fileAU, AudioStreamBasicDescription *UNUSED(fileFormat),
                           AudioFileID audioFile)
 {
@@ -332,6 +170,54 @@ CoreAudio_MakeSimpleGraph(AUGraph *theGraph, AudioUnit *fileAU, AudioStreamBasic
                       "SetScheduleFile",);
     CoreAudioChkError(AUGraphConnectNodeInput(*theGraph, fileNode, 0, outputNode, 0), "AUGraphConnectNodeInput",);
     CoreAudioChkError(AUGraphInitialize(*theGraph), "AUGraphInitialize",);
+}
+
+static void
+CoreAudio_PlayFile(char *const fileName)
+{
+    pthread_t CAThread;
+
+    /* first time through initialise the mutex */
+    if (!fCAInitialised) {
+        pthread_mutex_init(&mutexCAAccess, NULL);
+        fCAInitialised = TRUE;
+    }
+
+    /*  Apparently CoreAudio is not fully reentrant */
+    pthread_mutex_lock(&mutexCAAccess);
+
+    /* Open the sound file */
+    CFURLRef outInputFileURL = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault,
+                                                                       (const UInt8 *) fileName, strlen(fileName),
+                                                                       false);
+    if (AudioFileOpenURL(outInputFileURL, kAudioFileReadPermission, 0, &audioFile)) {
+        outputf(_("Apple CoreAudio Error, can't find %s\n"), fileName);
+        return;
+    }
+
+    /* Get properties of the file */
+    AudioStreamBasicDescription fileFormat;
+    UInt32 propsize = sizeof(AudioStreamBasicDescription);
+    CoreAudioChkError(AudioFileGetProperty(audioFile, kAudioFilePropertyDataFormat,
+                                           &propsize, &fileFormat), "AudioFileGetProperty Dataformat",);
+
+    /* Setup sound state */
+    AudioUnit fileAU;
+    memset(&fileAU, 0, sizeof(AudioUnit));
+    memset(&theGraph, 0, sizeof(AUGraph));
+
+    /* Setup a simple output graph and AU */
+    CoreAudio_MakeSimpleGraph(&theGraph, &fileAU, &fileFormat, audioFile);
+
+    /* Load the file contents */
+    fileDuration = CoreAudio_PrepareFileAU(&fileAU, &fileFormat, audioFile);
+
+    if (pthread_create(&CAThread, 0L, (void *) CoreAudio_PlayFile_Thread, NULL) == 0)
+        pthread_detach(CAThread);
+    else {
+        CoreAudio_ShutDown();
+        pthread_mutex_unlock(&mutexCAAccess);
+    }
 }
 
 #elif defined(HAVE_CANBERRA)
@@ -425,8 +311,6 @@ playSoundFile(char *file, gboolean UNUSED(sync))
         }
         Sleep(1);               /* Wait (1ms) for current sound to finish */
     }
-#elif defined(HAVE_APPLE_QUICKTIME)
-    PlaySound_QuickTime(file);
 #elif defined(HAVE_APPLE_COREAUDIO)
     CoreAudio_PlayFile(file);
 #elif defined(HAVE_CANBERRA)

@@ -13,10 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#
-# $Id: $
-# 
-
 fontsdir = $(pkgdatadir)/fonts
 fontfiles = COPYRIGHT.TXT.gz VeraBd.ttf VeraSeBd.ttf Vera.ttf
 fonts_DATA = $(fontfiles)

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2019 Jon Kinsey <jonkinsey@gmail.com>
+ * Copyright (C) 2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +20,9 @@
 
 //#define TEST_LEGACY_OGL
 #ifdef TEST_LEGACY_OGL
-	/* Debug no legacy OGL functions */
-	#define GL_GLEXT_PROTOTYPES
-	#include <gl\glcorearb.h>
+    /* Debug no legacy OGL functions */
+    #define GL_GLEXT_PROTOTYPES
+    #include <gl\glcorearb.h>
 #else
 
 #if defined(WIN32)
@@ -30,7 +31,7 @@
 #endif
 
 #if defined(USE_APPLE_OPENGL)
-#include <gl.h>
+#include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif

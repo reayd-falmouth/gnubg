@@ -44,7 +44,7 @@
 #endif
 
 #if defined(USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #endif
 
 int cOutputDisabled;

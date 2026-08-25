@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: latex.c,v 1.60 2021/12/06 23:15:17 plm Exp $
  */
 
 #include "config.h"
@@ -519,6 +517,7 @@ CommandExportGameLaTeX(char *sz)
 {
 
     FILE *pf;
+    int fDontClose = FALSE;
 
     sz = NextToken(&sz);
 
@@ -535,9 +534,10 @@ CommandExportGameLaTeX(char *sz)
         return;
     }
 
-    if (!strcmp(sz, "-"))
+    if (!strcmp(sz, "-")) {
         pf = stdout;
-    else if ((pf = g_fopen(sz, "w")) == 0) {
+        fDontClose = TRUE;
+    } else if ((pf = g_fopen(sz, "w")) == 0) {
         outputerr(sz);
         return;
     }
@@ -548,7 +548,7 @@ CommandExportGameLaTeX(char *sz)
 
     LaTeXEpilogue(pf);
 
-    if (pf != stdout)
+    if (!fDontClose)
         fclose(pf);
 
     setDefaultFileName(sz);

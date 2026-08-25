@@ -947,55 +947,51 @@ msgid "Clear initialized cube action and dice roll"
 msgstr ""
 
 #: commands.inc:197
-msgid "Records a log of the game in .gam format"
+msgid "Save the current game in .gam format"
 msgstr "Înregistrează un istoric al jocului în format .gam"
 
 #: commands.inc:199
-#, fuzzy
-msgid "Records a log of the game in Snowie .txt format"
-msgstr "Înregistrează un istoric al jocului în format PS"
+msgid "Save the current game in Snowie .txt format"
+msgstr "Înregistrează un istoric al jocului în format Snowie .txt"
 
 #: commands.inc:201
-#, fuzzy
-msgid "Records a log of the game in HTML format"
-msgstr "Înregistrează un istoric al jocului în format PS"
+msgid "Save the current game in HTML format"
+msgstr "Înregistrează un istoric al jocului în format HTML"
 
 #: commands.inc:203
-msgid "Records a log of the game in LaTeX format"
+msgid "Save the current game in LaTeX format"
 msgstr "Înregistrează un istoric al jocului în format LaTeX"
 
 #: commands.inc:205
-msgid "Records a log of the game in PDF format"
+msgid "Save the current game in PDF format"
 msgstr "Înregistrează un istoric al jocului în format PDF"
 
 #: commands.inc:207
-msgid "Records a log of the game in PS format"
-msgstr "Înregistrează un istoric al jocului în format PS"
+msgid "Save the current game in PostScript format"
+msgstr "Înregistrează un istoric al jocului în format PostScript"
 
 #: commands.inc:209
-msgid "Export a log of the game in text format"
+msgid "Save the current game in text format"
 msgstr "Exportă un istoric al jocului în format text"
 
 #: commands.inc:213
-msgid "Records a log of the match in .mat format"
+msgid "Save the current match in .mat format"
 msgstr "Înregistrează un istoric la partidei în format .mat"
 
 #: commands.inc:215
-#, fuzzy
-msgid "Records a log of the match in Snowie .txt format"
-msgstr "Înregistrează un istoric al partidei în format text"
+msgid "Save the current match in Snowie .txt format"
+msgstr "Înregistrează un istoric al partidei în format Snowie .txt"
 
 #: commands.inc:217
-#, fuzzy
-msgid "Records a log of the match in HTML format"
-msgstr "Înregistrează un istoric al partidei în format LaTeX"
+msgid "Save the current match in HTML format"
+msgstr "Înregistrează un istoric al partidei în format HTML"
 
 #: commands.inc:220
-msgid "Records a log of the match in LaTeX format"
+msgid "Save the current match in LaTeX format"
 msgstr "Înregistrează un istoric al partidei în format LaTeX"
 
 #: commands.inc:223
-msgid "Records a log of the match in text format"
+msgid "Save the current match in text format"
 msgstr "Înregistrează un istoric al partidei în format text"
 
 #: commands.inc:225
@@ -1003,9 +999,8 @@ msgid "Save the current match in PDF format"
 msgstr "Salvează jocul curent în format PDF"
 
 #: commands.inc:227
-#, fuzzy
-msgid "Save the current match in PS format"
-msgstr "Salvează jocul curent în format PDF"
+msgid "Save the current match in PostScript format"
+msgstr "Salvează jocul curent în format PostScript"
 
 #: commands.inc:232
 #, fuzzy
@@ -1038,8 +1033,8 @@ msgid "Save the current position in HTML format"
 msgstr "Salvează poziţia curentă în format PDF"
 
 #: commands.inc:251
-msgid "Save the current position in Portable Network Graphics (PNG) format"
-msgstr "Salvează poziţia curentă în format Grafici de Reţea Portabile (PNG)"
+msgid "Save the current position in PNG format"
+msgstr "Salvează poziţia curentă în format PNG"
 
 #: commands.inc:254
 msgid "Save the current position in .pos format"
@@ -1054,20 +1049,19 @@ msgid "Save the current position in text format"
 msgstr "Salvează poziţia curentă în format text"
 
 #: commands.inc:265
-#, fuzzy
-msgid "Records a log of the session in HTML format"
-msgstr "Înregistrează un istoric al sesiunii în format LaTeX"
+msgid "Save the current session in HTML format"
+msgstr "Înregistrează un istoric al sesiunii în format HTML"
 
 #: commands.inc:267
-msgid "Records a log of the session in LaTeX format"
+msgid "Save the current session in LaTeX format"
 msgstr "Înregistrează un istoric al sesiunii în format LaTeX"
 
 #: commands.inc:270
-msgid "Records a log of the session in text format"
+msgid "Save the current session in text format"
 msgstr "Înregistrează un istoric al sesiunii în format text"
 
 #: commands.inc:274 commands.inc:383
-msgid "Record a log of the game so far to a file"
+msgid "Save the current game to a file"
 msgstr "Înregistrează un istoric al jocului într-un fişier"
 
 #: commands.inc:276
@@ -1075,7 +1069,7 @@ msgid "Generate images to be used by the HTML export commands"
 msgstr "Generează imaginile folosite de comenzile de export HTML"
 
 #: commands.inc:278 commands.inc:386
-msgid "Record a log of the match so far to a file"
+msgid "Save the current match to a file"
 msgstr "Înregistrează un istoric al partidei într-un fişier"
 
 #: commands.inc:280
@@ -1084,7 +1078,7 @@ msgid "Write the current position to a file"
 msgstr "Înregistrează poziţia curentă într-un fişier"
 
 #: commands.inc:282
-msgid "Record a log of the session so far to a file"
+msgid "Save the current session to a file"
 msgstr "Înregistrează un istoric al sesiunii într-un fişier"
 
 #: commands.inc:287
@@ -1235,7 +1229,7 @@ msgid "Test connexion to the external relational database"
 msgstr "Testează baza de date relaţională externă"
 
 #: commands.inc:388
-msgid "Record the current board position to a file"
+msgid "Save the current position to a file"
 msgstr "Înregistrează poziţia curentă într-un fişier"
 
 #: commands.inc:390
@@ -3680,9 +3674,9 @@ msgstr "Nu pot şterge analiza la această mutare"
 
 #: export.c:281 export.c:319 export.c:357 export.c:384 export.c:411
 #: export.c:444 export.c:477
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to create cairo surface for %s"
-msgstr "Eşuat în a crea suprafaţa PS pentru %s"
+msgstr ""
 
 #: export.c:1160
 #, fuzzy
@@ -7862,7 +7856,7 @@ msgid ""
 "Truncated rollouts are rollouts played to a certain number of moves as "
 "opposed to the end of the game or a double/pass cube action. They are faster "
 "and their results have a lower variance than full rollouts, but their "
-"accuracy depends on that of the static evaluation at the trucation point."
+"accuracy depends on that of the static evaluation at the truncation point."
 msgstr ""
 
 #: gtkgame.c:5807
@@ -7949,7 +7943,7 @@ msgstr "Trunchiere scoatere"
 
 #: gtkgame.c:5973
 msgid ""
-"Truncating the rollouts when reaching the bearoff databases slighly improves "
+"Truncating the rollouts when reaching the bearoff databases slightly improves "
 "the speed and decrease their variance. The first option is totally accurate "
 "and should be selected for practical use; the second one can be slightly "
 "inaccurate but is useful on average and its use is recommended."
@@ -9464,15 +9458,15 @@ msgstr "Ajutor"
 msgid "GNU Backgammon - Annotation"
 msgstr "Table GNU - Evaluare"
 
-#: gtkpanels.c:757
-#, fuzzy, c-format
-msgid "Game %d: %d, %d Crawford"
-msgstr "Joc %d: %d, %d"
-
-#: gtkpanels.c:759
+#: gtkpanels.c:732
 #, c-format
-msgid "Game %d: %d, %d"
-msgstr "Joc %d: %d, %d"
+msgid "Game %d: %d - %d Crawford"
+msgstr "Joc %d: %d - %d Crawford"
+
+#: gtkpanels.c:734
+#, c-format
+msgid "Game %d: %d - %d"
+msgstr "Joc %d: %d - %d"
 
 #: gtkpanels.c:830
 #, fuzzy
@@ -10923,9 +10917,8 @@ msgid "Current match score:"
 msgstr "Scor partidă"
 
 #: gtkscoremap.c:927
-#, fuzzy
 msgid "Like current match score:"
-msgstr "Salvează jocul curent în format PS"
+msgstr ""
 
 #: gtkscoremap.c:943
 #, fuzzy

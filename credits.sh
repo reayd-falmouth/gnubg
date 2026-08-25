@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Copyright (C) 1998-2004 Gary Wong <gtw@gnu.org>
-# Copyright (C) 2004-2025 the AUTHORS
+# Copyright (C) 2004-2026 the AUTHORS
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ Vangelis Skarmoutsos,Greek
 Hlynur Sigurgislason,Icelandic
 Renzo Campagna,Italian
 Yoshito Takeuchi,Japanese
+Annibal Biondi Mendes da Silva,Portuguese
 Mihai Varzaru,Romanian
 Dmitri I Gouliaev,Russian
 Fernando García García,Spanish
@@ -113,6 +114,7 @@ Morten Juul Henriksen
 Alain Henry
 Jens Hoefkens
 Casey Hopkins
+Naoki Iketani
 Martin Janke
 Neil Kazaross
 Mathias Kegelmann
@@ -269,7 +271,7 @@ cat > credits.c <<EOF
 #include "credits.h"
 
 const char aszCOPYRIGHT[] = N_("Copyright (C) 1999-2004 Gary Wong.\n"
-                               "Copyright (C) 2004-2025 the AUTHORS; for details type \`show version'.");
+                               "Copyright (C) 2004-2026 the AUTHORS; for details type \`show version'.");
 
 credEntry ceAuthors[] = {
 EOF

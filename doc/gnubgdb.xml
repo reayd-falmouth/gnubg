@@ -97,7 +97,7 @@ the section entitled &#8220;GNU Free Documentation License&#8221;.<xref linkend=
     <screenshot>
       <mediaobject>
         <imageobject>
-		<imagedata fileref="images/gtkinterface.png" width="100%"/>
+        <imagedata fileref="images/gtkinterface.png" width="100%"/>
         </imageobject>
         <textobject role="texinfo">
           <programlisting>
@@ -190,9 +190,9 @@ gnubg moves 8/5 6/5.
         <para>Python scripting ability.</para>
       </listitem>
       <listitem>
-        <para>Native language support; 15 languages are complete or in progress:
+        <para>Native language support; 16 languages are complete or in progress:
           (cs_CZ, da_DK, en_GB, en_US, es_ES, fi_FI, fr_FR, de_DE, el_GR, is_IS,
-          it_IT, ja_JP, ro_RO, ru_RU and tr_TR)</para>
+          it_IT, ja_JP, pt_BR, ro_RO, ru_RU and tr_TR)</para>
       </listitem>
     </itemizedlist>
     <sect2 id="gnubg-intro_gpl">
@@ -257,7 +257,7 @@ gnubg moves 8/5 6/5.
         player's eight point, and five on each player's six point.</para>
       <para>Both players have their own pair of dice and a dice cup used for
         shaking. A doubling cube, with the numerals 2, 4, 8, 16, 32, and 64 on
-	its faces, is used to keep track of the current stake of the game.</para>
+        its faces, is used to keep track of the current stake of the game.</para>
     </sect2>
     <sect2 id="gnubg-rules_object">
       <title>Object of the Game</title>
@@ -518,46 +518,47 @@ gnubg moves 8/5 6/5.
         <tgroup cols="4">
           <tbody>
             <row>
-                    <entry>Match to 5</entry>
-                    <entry>White</entry>
-                    <entry>Black</entry>
-		    <entry>Doubling</entry>
-                    </row> <row>
+              <entry>Match to 5</entry>
+              <entry>White</entry>
+              <entry>Black</entry>
+              <entry>Doubling</entry>
+            </row>
+            <row>
               <entry>White wins 2</entry>
               <entry>2</entry>
-<entry>0</entry>
+              <entry>0</entry>
               <entry>Allowed</entry>
-</row>
+            </row>
             <row>
-              <entry>Black wins 1 </entry>
+              <entry>Black wins 1</entry>
               <entry>2</entry>
-<entry>1</entry>
+              <entry>1</entry>
               <entry>Allowed</entry>
-</row>
+            </row>
             <row>
-              <entry>White wins 2 </entry>
+              <entry>White wins 2</entry>
               <entry>4</entry>
               <entry>1</entry>
               <entry>Allowed</entry>
-</row>
+            </row>
             <row>
-              <entry>Black wins 1 </entry>
+              <entry>Black wins 1</entry>
               <entry>4</entry>
               <entry>2</entry>
               <entry>Crawford Game</entry>
-</row>
+            </row>
             <row>
-              <entry>Black wins 2 </entry>
+              <entry>Black wins 2</entry>
               <entry>4</entry>
               <entry>4</entry>
               <entry>Allowed</entry>
-</row>
+            </row>
             <row>
-              <entry>White wins 2 </entry>
+              <entry>White wins 2</entry>
               <entry>6</entry>
               <entry>4</entry>
               <entry>Allowed</entry>
-</row>
+            </row>
           </tbody>
         </tgroup>
       </informaltable>
@@ -713,7 +714,7 @@ To start a new match in the CL version type 'new match' or
       <orderedlist continuation="restarts" inheritnum="ignore">
         <listitem>
           <para>In none of the above shortcuts is suitable, clicking OK
-	    will start a new match of the length set in the Match length field.
+            will start a new match of the length set in the Match length field.
           </para>
         </listitem>
         <listitem>
@@ -833,9 +834,9 @@ To roll the dice the CL version type 'roll'.
             <imageobject>
               <imagedata fileref="images/cubebuttons.png"/>
             </imageobject>
-	    <textobject>
-		    <phrase>[[cubebuttons.png]]</phrase>
-	    </textobject>
+            <textobject>
+              <phrase>[[cubebuttons.png]]</phrase>
+            </textobject>
           </mediaobject>
         </figure>
         <para>There are also menu options from the drop down menu for all the
@@ -886,9 +887,9 @@ To roll the dice the CL version type 'roll'.
           <imageobject>
             <imagedata fileref="images/hintwindow.png"/>
           </imageobject>
-	    <textobject>
-		    <phrase>[[hintwindow.png]]</phrase>
-	    </textobject>
+            <textobject>
+              <phrase>[[hintwindow.png]]</phrase>
+            </textobject>
         </mediaobject>
       </figure>
       <para>This Hint window shows a list of all possible moves for the position
@@ -985,9 +986,9 @@ To roll the dice the CL version type 'roll'.
           <imageobject>
             <imagedata fileref="images/hintcubewindow.png"/>
           </imageobject>
-	    <textobject>
-		    <phrase>[[hintcubewindow.png]]</phrase>
-	    </textobject>
+          <textobject>
+            <phrase>[[hintcubewindow.png]]</phrase>
+          </textobject>
         </mediaobject>
       </figure>
       <para>The first lines is the window dialog shows the evaluation depth, and
@@ -1092,9 +1093,9 @@ To roll the dice the CL version type 'roll'.
           <imageobject>
             <imagedata fileref="images/tutor.png"/>
           </imageobject>
-	    <textobject>
-		    <phrase>[[tutor.png]]</phrase>
-	    </textobject>
+            <textobject>
+                    <phrase>[[tutor.png]]</phrase>
+            </textobject>
         </mediaobject>
       </figure>
       <para>In Tutor Mode, <application>GNU Backgammon</application> will
@@ -1113,9 +1114,9 @@ To roll the dice the CL version type 'roll'.
           <imageobject>
             <imagedata fileref="images/tutorwarning.png"/>
           </imageobject>
-	    <textobject>
-		    <phrase>[[tutorwarning.png]]</phrase>
-	    </textobject>
+            <textobject>
+                    <phrase>[[tutorwarning.png]]</phrase>
+            </textobject>
         </mediaobject>
       </figure>
       <para>In the above figure, you can see a warning dialog from the tutor
@@ -1183,9 +1184,9 @@ To roll the dice the CL version type 'roll'.
           <imageobject>
             <imagedata fileref="images/clearboard.png"/>
           </imageobject>
-	    <textobject>
-		    <phrase>[[clearboard.png]]</phrase>
-	    </textobject>
+            <textobject>
+                    <phrase>[[clearboard.png]]</phrase>
+            </textobject>
         </mediaobject>
       </figure>
       <para>You can also just as easy generate the initial position by
@@ -1199,9 +1200,9 @@ To roll the dice the CL version type 'roll'.
           <imageobject>
             <imagedata fileref="images/initialboard.png"/>
           </imageobject>
-	    <textobject>
-		    <phrase>[[initialboard.png]]</phrase>
-	    </textobject>
+            <textobject>
+                    <phrase>[[initialboard.png]]</phrase>
+            </textobject>
         </mediaobject>
       </figure>
       <para>Note that the bearoff trays change side when the board is displayed
@@ -1249,9 +1250,9 @@ To roll the dice the CL version type 'roll'.
           <imageobject>
             <imagedata fileref="images/setturn.png"/>
           </imageobject>
-	    <textobject>
-		    <phrase>[[initialboard.png]]</phrase>
-	    </textobject>
+            <textobject>
+                    <phrase>[[initialboard.png]]</phrase>
+            </textobject>
         </mediaobject>
       </figure>
       <para>Note that setting the turn sets the turn before the dice has been
@@ -1277,9 +1278,9 @@ To roll the dice the CL version type 'roll'.
           <imageobject>
             <imagedata fileref="images/setdice.png"/>
           </imageobject>
-	  <textobject>
-		  <phrase>[[setdice.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[setdice.png]]</phrase>
+          </textobject>
         </mediaobject>
       </figure>
       <para>Setting the dice in edit mode sets both dice and the player on turn.
@@ -1512,7 +1513,7 @@ To roll the dice the CL version type 'roll'.
             <listitem>
               <para>the BBS images used by Kit Woolsey's GammOnLine e-magazine,
               Stick's BGonline or the Danish Backgammon Federation's web-based
-	      discussion groups and others</para>
+              discussion groups and others</para>
             </listitem>
             <listitem>
               <para>the fibs2html images used by the Joseph Heled's program
@@ -1539,7 +1540,7 @@ To roll the dice the CL version type 'roll'.
             Also, you may enter a specific URL to the pictures used to compose
             the board which is useful for posting positions on web-based
             discussion groups such as Stick's BGonline, Kit Woolsey's GammOnLine,
-	    or the Danish Backgammon Federation's Debat Forum.</para>
+            or the Danish Backgammon Federation's Debat Forum.</para>
           <para>If you want to have html images locally on your computer, you
             can have <application>GNU Backgammon</application> generate these.
             The html images will be generated based on the current appearance
@@ -1566,8 +1567,8 @@ To roll the dice the CL version type 'roll'.
             this package at your nearest CTAN mirror (the produced LaTeX file
             also needs epic, textcomp and ucs, but these are more common in
             LaTeX distributions so you probably already have these).</para>
-	  <para>Note that these prerequiste packages are only compatible with
-	    the original LaTeX, not PDFLaTeX.</para>
+          <para>Note that these prerequisite packages are only compatible with
+            the original LaTeX, not PDFLaTeX.</para>
         </sect4>
       </sect3>
     </sect2>
@@ -1687,9 +1688,9 @@ To roll the dice the CL version type 'roll'.
             <imageobject>
               <imagedata fileref="images/analysesettings.png"/>
             </imageobject>
-	  <textobject>
-		  <phrase>[[analysesettings.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[analysesettings.png]]</phrase>
+          </textobject>
           </mediaobject>
         </figure>
         <para>In the top left frame in this dialog box, you can select what to
@@ -1746,9 +1747,9 @@ To roll the dice the CL version type 'roll'.
             <imageobject>
               <imagedata fileref="images/gamerecord.png"/>
             </imageobject>
-	  <textobject>
-		  <phrase>[[gamerecord.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[gamerecord.png]]</phrase>
+          </textobject>
           </mediaobject>
         </figure>
         <para>The figure shows a typical game record list. The moves are shown
@@ -1867,9 +1868,9 @@ To roll the dice the CL version type 'roll'.
             <imageobject>
               <imagedata fileref="images/analysepane.png"/>
             </imageobject>
-	  <textobject>
-		  <phrase>[[analasyepane.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[analasyepane.png]]</phrase>
+          </textobject>
           </mediaobject>
         </figure>
         <para>In the figure you can see the analysis panel. At the top of the
@@ -1967,9 +1968,9 @@ To roll the dice the CL version type 'roll'.
             <listitem>
               <para>Checker play rating: <application>GNU
                 Backgammon</application> will assign a rating for your checker
-                play ranging from <emphasis>Awful!</emphasis> to
-                  <emphasis>Supernatural</emphasis>. See the description for the
-                overall rating below. </para>
+                play ranging from <emphasis>Beginner</emphasis> to
+                <emphasis>Super Grandmaster</emphasis>.
+                See the description for the overall rating below. </para>
             </listitem>
           </orderedlist>
         </sect4>
@@ -2135,9 +2136,9 @@ To roll the dice the CL version type 'roll'.
             <listitem>
               <para>Cube decision rating: <application>GNU
                 Backgammon</application> will assign a rating for your cube
-                decisions ranging from <emphasis>Awful!</emphasis> to
-                  <emphasis>Supernatural</emphasis>. See the description for the
-                overall rating below. </para>
+                decisions ranging from <emphasis>Beginner</emphasis> to
+                <emphasis>Super Grandmaster</emphasis>.
+                See the description for the overall rating below. </para>
             </listitem>
           </orderedlist>
         </sect4>
@@ -2172,9 +2173,9 @@ To roll the dice the CL version type 'roll'.
             <listitem>
               <para>Overall rating: Based on your normalized error rate per move
                 GNU Backgammon will assign you a rating ranging from
-                  <emphasis>Awful!</emphasis> to
-                <emphasis>Supernatural</emphasis>. See the table below for the
-                thresholds. </para>
+                  <emphasis>Beginner</emphasis> to
+                  <emphasis>Super Grandmaster</emphasis>.
+                  See the table below for the thresholds. </para>
             </listitem>
             <listitem>
               <para>Actual result: The actual result of the game or match. For
@@ -2214,6 +2215,14 @@ To roll the dice the CL version type 'roll'.
             </listitem>
           </orderedlist>
           <para>Threshold for ratings:</para>
+          <para>These values are chosen to give similar ratings to
+          those of the <ulink
+          url="https://bgmastersab.com/about">Backgammon Masters
+          Awarding Body (BMAB)</ulink>, although not necessarily
+          identical since they are computed with different software
+          and settings. Moreover, ratings for a single match will show
+          higher variance than the BMAB numbers that are averaged on
+          10 matches or more.</para>
           <informaltable frame="all">
             <tgroup cols="2">
               <colspec colname="c1" colnum="1" colwidth="1*"/>
@@ -2224,36 +2233,28 @@ To roll the dice the CL version type 'roll'.
                   <entry>Rating</entry>
                 </row>
                 <row>
-                  <entry>0.000 - 0.002</entry>
-                  <entry>Supernatural</entry>
-                </row>
-                <row>
-                  <entry>0.002 - 0.005</entry>
-                  <entry>World Class</entry>
+                  <entry>0.000 - 0.005</entry>
+                  <entry>Super Grandmaster</entry>
                 </row>
                 <row>
                   <entry>0.005 - 0.008</entry>
-                  <entry>Expert</entry>
+                  <entry>Grandmaster</entry>
                 </row>
                 <row>
-                  <entry>0.008 - 0.012</entry>
+                  <entry>0.008 - 0.013</entry>
+                  <entry>Master</entry>
+                </row>
+                <row>
+                  <entry>0.013 - 0.020</entry>
                   <entry>Advanced</entry>
                 </row>
                 <row>
-                  <entry>0.012 - 0.018</entry>
+                  <entry>0.020 - 0.032</entry>
                   <entry>Intermediate</entry>
                 </row>
                 <row>
-                  <entry>0.018 - 0.026</entry>
-                  <entry>Casual Player</entry>
-                </row>
-                <row>
-                  <entry>0.026 - 0.035</entry>
+                  <entry>&gt; 0.032</entry>
                   <entry>Beginner</entry>
-                </row>
-                <row>
-                  <entry>&gt; 0.035</entry>
-                  <entry>Awful!</entry>
                 </row>
               </tbody>
             </tgroup>
@@ -2553,9 +2554,9 @@ To roll the dice the CL version type 'roll'.
             <imageobject>
               <imagedata fileref="images/evalsetting.png"/>
             </imageobject>
-	  <textobject>
-		  <phrase>[[evalsettings.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[evalsettings.png]]</phrase>
+          </textobject>
           </mediaobject>
         </figure>
         <para>The dialog is consisting of two columns, the left column is for
@@ -2671,9 +2672,9 @@ To roll the dice the CL version type 'roll'.
               <imageobject>
                 <imagedata fileref="images/movefilterex.png"/>
               </imageobject>
-	  <textobject>
-		  <phrase>[[movefilterex.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[movefilterex.png]]</phrase>
+          </textobject>
             </mediaobject>
           </figure>
           <para><application>GNU Backgammon</application> starts by finding all
@@ -2939,9 +2940,9 @@ To roll the dice the CL version type 'roll'.
               <imageobject>
                 <imagedata fileref="images/movefilter1.png"/>
               </imageobject>
-	  <textobject>
-		  <phrase>[[movefilter1.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[movefilter1.png]]</phrase>
+          </textobject>
             </mediaobject>
           </figure>
           <para>If you are playing Expert level
@@ -2974,9 +2975,9 @@ To roll the dice the CL version type 'roll'.
               <imageobject>
                 <imagedata fileref="images/movefilter2.png"/>
               </imageobject>
-	  <textobject>
-		  <phrase>[[movefilter2.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[movefilter2.png]]</phrase>
+          </textobject>
             </mediaobject>
           </figure>
           <para>Take a look at next figure.</para>
@@ -2986,9 +2987,9 @@ To roll the dice the CL version type 'roll'.
               <imageobject>
                 <imagedata fileref="images/movefilter3.png"/>
               </imageobject>
-	  <textobject>
-		  <phrase>[[movefilter3.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[movefilter3.png]]</phrase>
+          </textobject>
             </mediaobject>
           </figure>
           <para>Here, the exact same settings were maintained, but the 1-ply
@@ -3019,9 +3020,9 @@ To roll the dice the CL version type 'roll'.
             <imageobject>
               <imagedata fileref="images/cubeful-ex1.png"/>
             </imageobject>
-	  <textobject>
-		  <phrase>[[cubeful-ex1.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[cubeful-ex1.png]]</phrase>
+          </textobject>
           </mediaobject>
         </figure>
         <para>In this position black has rolled 51 and he has a good position.
@@ -3040,9 +3041,9 @@ To roll the dice the CL version type 'roll'.
             <imageobject>
               <imagedata fileref="images/cubeful-ex2.png"/>
             </imageobject>
-	  <textobject>
-		  <phrase>[[cubeful-ex2.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[cubeful-ex2.png]]</phrase>
+          </textobject>
           </mediaobject>
         </figure>
         <para>This is from a 5 point match where black has 1 point and white has
@@ -3106,9 +3107,9 @@ To roll the dice the CL version type 'roll'.
           <imageobject>
             <imagedata fileref="images/appearence.png"/>
           </imageobject>
-	  <textobject>
-		  <phrase>[[appearance.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[appearance.png]]</phrase>
+          </textobject>
         </mediaobject>
       </figure>
       <para>In this dialog box you see a preview picture of the board at the
@@ -3190,7 +3191,7 @@ To roll the dice the CL version type 'roll'.
         <para>You may download the two sided database with 6 checkers on 6
           points from <ulink url="https://alpha.gnu.org/gnu/gnubg/gnubg_ts0.bd.gz">https://alpha.gnu.org/gnu/gnubg/gnubg_ts0.bd.gz</ulink> and the one
           sided database with 15 checkers 6 points from <ulink url="https://alpha.gnu.org/gnu/gnubg/gnubg_os0.bd.gz">https://alpha.gnu.org/gnu/gnubg/gnubg_os0.bd.gz</ulink>. </para>
-	  <para>Larger databases are available for download from <ulink url="https://dl.xs4all.nl/Museum/Demon/games/gnubg/databases/">https://dl.xs4all.nl/Museum/Demon/games/gnubg/databases/</ulink>. </para>
+          <para>Larger databases are available for download from <ulink url="https://dl.xs4all.nl/Museum/Demon/games/gnubg/databases/">https://dl.xs4all.nl/Museum/Demon/games/gnubg/databases/</ulink>. </para>
       </sect3>
       <sect3 id="gnubg-tech_databases_install">
         <title>Installation of the databases</title>
@@ -3418,7 +3419,7 @@ To roll the dice the CL version type 'roll'.
         <para><application>GNU Backgammon</application> Position ID:
           ADAAAQAkIAAAAA</para>
   <example id="gnubg-hypergammon">
-	  <title>Random position from hypergammon database</title>
+          <title>Random position from hypergammon database</title>
   <programlisting>
  GNU Backgammon  Position ID: ADAAAQAkIAAAAA
                  Match ID   : cAkAAAAAAAAA
@@ -3631,7 +3632,7 @@ Correct cube action: No double, beaver
           equity is much more difficult; it can either be estimated from the
           cubeless equity by using transformations as outlined by Rick Janowski
           or by constructing a neural net that directly outputs cubeful
-	  equities. GNU Backgammon uses the former approach (<xref linkend="gnubg-tech_equities_cubeful"/>).</para>
+          equities. GNU Backgammon uses the former approach (<xref linkend="gnubg-tech_equities_cubeful"/>).</para>
       </sect3>
       <sect3 id="gnubg-tech_equities_match">
         <title>Match Winning Chance</title>
@@ -3755,9 +3756,9 @@ Correct cube action: No double, beaver
             <imageobject>
               <imagedata fileref="images/cubefuleq-ex1.png"/>
             </imageobject>
-	  <textobject>
-		  <phrase>[[cubefuleq-ex1.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[cubefuleq-ex1.png]]</phrase>
+          </textobject>
           </mediaobject>
         </figure>
         <para><application>GNU Backgammon</application> evaluates</para>
@@ -4287,7 +4288,7 @@ Equity
           <para>You can set the board in GNUbg either by writing the position ID
             into the position text input field in the GUI or by executing the
             command</para>
-          <para>set board 4HPwATDgc/ABMA.</para>
+          <para>set board 4HPwATDgc/ABMA</para>
           <para><emphasis>Notes</emphasis></para>
           <orderedlist continuation="restarts" inheritnum="ignore">
             <listitem>
@@ -4314,25 +4315,19 @@ Equity
           representation of the match score, match length, value of cube, owner
           of cube, Crawford game flag, player on roll, player to make a
           decision, doubled flag, resigned flag, and the dice rolled. The match
-          ID is the 12 character Base64 encoding of the match key. Match key</para>
-        <para>The match key is a bit string of length 66:</para>
+          ID is the 12 character Base64 encoding of the match key.</para>
+        <para>The match key is a bit string of length 67:</para>
         <informaltable frame="all">
-          <tgroup cols="8">
+          <tgroup cols="7">
             <tbody>
               <row>
                 <entry>1-4</entry>
-               <entry>5-6</entry>
-               <entry>7</entry>
-               <entry>8</entry>
-               <entry>9-11</entry>
-               <entry>12</entry>
-               <entry>13</entry>
-               <entry>14-15</entry>
-               <entry>16-18</entry>
-               <entry>19-21</entry>
-               <entry>22-36</entry>
-               <entry>37-51</entry>
-               <entry>52</entry>
+                <entry>5-6</entry>
+                <entry>7</entry>
+                <entry>8</entry>
+                <entry>9-11</entry>
+                <entry>12</entry>
+                <entry>13</entry>
               </row>
               <row>
                 <entry>Cube</entry>
@@ -4342,12 +4337,24 @@ Equity
                 <entry>GameState</entry>
                 <entry>TurnOwner</entry>
                 <entry>Double</entry>
+              </row>
+              <row>
+                <entry>14-15</entry>
+                <entry>16-18</entry>
+                <entry>19-21</entry>
+                <entry>22-36</entry>
+                <entry>37-51</entry>
+                <entry>52-66</entry>
+                <entry>67</entry>
+              </row>
+              <row>
                 <entry>Resign</entry>
                 <entry>Dice1</entry>
                 <entry>Dice2</entry>
-                <entry>MatchLen x 15 </entry>
-                <entry>Score1 x 15</entry>
-                <entry>Score2 x 15</entry>
+                <entry>MatchLen</entry>
+                <entry>Score1</entry>
+                <entry>Score2</entry>
+                <entry>!Jacoby</entry>
               </row>
             </tbody>
           </tgroup>
@@ -4412,31 +4419,37 @@ Equity
               respectively. The maximum value of the match score is 32767.
             </para>
           </listitem>
+          <listitem>
+            <para>Bit 67 indicates whether the Jacoby rule is in use or not
+              (1 if not in use, 0 if in use). This is only valid for cash games
+              and can be ignored for match play.
+            </para>
+          </listitem>
         </orderedlist>
         <para>For example, assume the score is 2-4 in a 9 point match with
           player 0 holding a 2-cube, and player 1 has just rolled 52. The match
           key for this will be (note that the bit order is reversed below for
           readability)</para>
         <para>1000 00 1 0 100 1 0 00 101 010 100100000000000 010000000000000
-          001000000000000</para>
+          001000000000000 1</para>
         <para>In little endian the bytes looks like:</para>
         <para>01000001 10001001 00101010 00000001 00100000 00000000 00100000
-          00000000 00</para>
-        <para>0x41 0x89 0x2A 0x01 0x20 0x00 0x20 0x00 0x00</para>
+          00000000 00000100</para>
+        <para>0x41 0x89 0x2A 0x01 0x20 0x00 0x20 0x00 0x04</para>
         <para>Analogous to the position ID from the previous section the match
           ID format is simply the Base64 encoding of the key.</para>
         <para>To continue the example above, the 9 8-bit bytes are grouped into
           12 6-bits groups:</para>
         <para>010000 011000 100100 101010 000000 010010 000000 000000 001000
-          000000 000000 000000</para>
+          000000 000000 000100</para>
         <para>In Base64 encoding, the groups are represented as:</para>
-        <para>Q Y k q A S A A I A A A</para>
+        <para>Q Y k q A S A A I A A E</para>
         <para>So, the match id is simply:</para>
-        <para>QYkqASAAIAAA</para>
+        <para>QYkqASAAIAAE</para>
         <para>If someone post a match ID you can set up the position in GNUbg by
           writing or pasting it into the Match ID text input field on the main
           window, or by executing the command</para>
-        <para>set matchid QYkqASAAIAAA.</para>
+        <para>set matchid QYkqASAAIAAE</para>
       </sect2>
       <sect2 id="gnubg-tech_css">
         <title>Description of the CSS style sheet</title>
@@ -4596,14 +4609,14 @@ Equity
           <emphasis>BSD</emphasis> or
           <emphasis>Solaris</emphasis>. The main prerequisite is the
           availability of the GLib library at version 2.8 or later.
-	</para>
-	<para>Installable packages for <emphasis>Microsoft
-	Windows</emphasis> and <emphasis>Mac OS X</emphasis> are
-	available for download at the project official
-	website. Already built packages are often provided by GNU/Linux
-	distributions as well.
-	</para>
-	<para>When you successfully port
+        </para>
+        <para>Installable packages for <emphasis>Microsoft
+        Windows</emphasis> and <emphasis>Mac OS X</emphasis> are
+        available for download at the project official
+        website. Already built packages are often provided by GNU/Linux
+        distributions as well.
+        </para>
+        <para>When you successfully port
           <application>GNU Backgammon</application> to other operating systems, you are welcome to give us
           a note at <ulink url="mailto:bug-gnubg@gnu.org">the GNU Backgammon
             mailing list</ulink>.
@@ -4615,8 +4628,10 @@ Equity
         url="https://www.gnu.org/software/gnubg/">https://www.gnu.org/software/gnubg/</ulink>. Binaries
         and source code for <application>GNU Backgammon</application>
         can be downloaded from this site. Up to date source code can
-        be accessed through <ulink
-        url="https://savannah.gnu.org/cvs/?group=gnubg">CVS</ulink>.</para>
+        be accessed from the
+        <ulink url="https://cgit.git.savannah.gnu.org/cgit/gnubg.git/">
+        git repository</ulink>.
+        </para>
       </sect3>
       <sect3 id="gnubg-faq_general_pay">
         <title>What do I have to pay for <application>GNU
@@ -4666,8 +4681,8 @@ Equity
       <sect3 id="gnubg-faq_install_other">
         <title>Do I need some other software to run <application>GNU
           Backgammon</application>?</title>
-	<para>On Microsoft Windows everything you need is included in the installer.</para>
-	<para>On Mac OS/X you will need the XQuartz Window System.</para>
+        <para>On Microsoft Windows everything you need is included in the installer.</para>
+        <para>On Mac OS/X you will need the XQuartz Window System.</para>
         <para>On GNU/Linux there are prerequisites as well but your package manager (apt, yum, etc...) will take care of them.</para>
       </sect3>
       <sect3 id="gnubg-faq_install_new">
@@ -4685,14 +4700,14 @@ Equity
         sources as described <ulink
         url="https://www.gnu.org/software/gnubg/#downloading">here</ulink>
         and follow the instructions from <ulink
-        url="http://cvs.savannah.gnu.org/viewvc/*checkout*/gnubg/gnubg/INSTALL">this
+        url="https://cgit.git.savannah.gnu.org/cgit/gnubg.git/tree/INSTALL">this
         document</ulink>.</para>
         <para>Details like the exact names of the prerequisite packages will vary
           from a distribution to another but the general process will remain
           identical. If you are remotely familiar with software
           set up with <application>autoconf</application>, you will see that
-	  <application>GNU Backgammon</application> is straightforward to build.
-	</para>
+          <application>GNU Backgammon</application> is straightforward to build.
+        </para>
       </sect3>
       <sect3 id="gnubg-faq_install_nocompile">
         <title>It does not compile</title>
@@ -4704,7 +4719,7 @@ Equity
       <sect3 id="gnubg-faq_install_cpu">
         <title>On what CPU will <application>GNU Backgammon</application> run
           fastest?</title>
-	<para><application>GNU Backgammon</application>'s speed depends on the
+        <para><application>GNU Backgammon</application>'s speed depends on the
         CPU only. It doesn't need much memory (any machine not totally obsolete
         will have enough) and does little or no I/O (a fast disk or a SSD won't make any difference).
         </para>
@@ -5058,7 +5073,7 @@ Equity
           file called gnubg.weights. This file also contains the neural net
           weights, but is stored in ASCII format. If none of these files are
           found, <application>GNU Backgammon</application> will not start.
-	</para>
+        </para>
         <para><application>GNU Backgammon</application> will also read the
           bearoff databases at start-up. There are usually two bearoff
           databases. The first is called gnubg_os0.bd, and has stored data about
@@ -5228,10 +5243,10 @@ Equity
         <title>What are these funny letters at the right bottom?</title>
         <para>You will find a small window titled `GNUbg ID'
           at the bottom of the <application>GNU Backgammon</application> window.
-	It contains an short, textual, representation of the position at hand,
-	suitable for easily copying and pasting positions.</para>
+        It contains an short, textual, representation of the position at hand,
+        suitable for easily copying and pasting positions.</para>
         <para>It is composed of a `Position ID' describing the checkers position and a `Match ID' for the other features (match score, cube position and value, dice, who is on roll...).
-	A detailed description of both formats is found earlier in <xref linkend="gnubg-tech_postionid"/>.</para>
+        A detailed description of both formats is found earlier in <xref linkend="gnubg-tech_postionid"/>.</para>
        <para>Pasting a `XGID' (a similar shortcut used by <application>eXtreme Gammon</application>) there is recognized as well.</para>
       </sect3>
       <sect3 id="gnubg-faq_analysing_edit">
@@ -5454,9 +5469,9 @@ Equity
             <imageobject>
               <imagedata fileref="images/doubleline.png"/>
             </imageobject>
-	  <textobject>
-		  <phrase>[[doubleline.png]]</phrase>
-	  </textobject>
+          <textobject>
+                  <phrase>[[doubleline.png]]</phrase>
+          </textobject>
           </mediaobject>
         </figure>
         <para>The doubling windows (intervals) are:</para>
@@ -5477,7 +5492,7 @@ Equity
       </sect3>
       <sect3 id="gnubg-faq_abbr_epc">
         <title>EPC?</title>
-	<para>See <xref linkend="gnubg-faq_analysing_epc"/>
+        <para>See <xref linkend="gnubg-faq_analysing_epc"/>
         </para>
       </sect3>
     </sect2>

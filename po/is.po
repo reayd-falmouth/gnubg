@@ -949,79 +949,69 @@ msgid "Clear initialized cube action and dice roll"
 msgstr ""
 
 #: commands.inc:197
-msgid "Records a log of the game in .gam format"
+msgid "Save the current game in .gam format"
 msgstr "Skrásetur spilið á .gam sniði"
 
 #: commands.inc:199
-#, fuzzy
-msgid "Records a log of the game in Snowie .txt format"
-msgstr "Skrásetur spilið á .gam sniði"
+msgid "Save the current game in Snowie .txt format"
+msgstr "Skrásetur spilið á Snowie .txt sniði"
 
 #: commands.inc:201
-#, fuzzy
-msgid "Records a log of the game in HTML format"
-msgstr "Skrásetur spilið á .gam sniði"
+msgid "Save the current game in HTML format"
+msgstr "Skrásetur spilið á HTML sniði"
 
 #: commands.inc:203
-msgid "Records a log of the game in LaTeX format"
+msgid "Save the current game in LaTeX format"
 msgstr "Skrásetur spilið á LaTeX sniði"
 
 #: commands.inc:205
-#, fuzzy
-msgid "Records a log of the game in PDF format"
-msgstr "Skrásetur spilið á .gam sniði"
+msgid "Save the current game in PDF format"
+msgstr "Skrásetur spilið á PDF sniði"
 
 #: commands.inc:207
-#, fuzzy
-msgid "Records a log of the game in PS format"
-msgstr "Skrásetur spilið á .gam sniði"
+msgid "Records a log of the game in PostScript format"
+msgstr "Skrásetur spilið á PostScript sniði"
 
 #: commands.inc:209
-msgid "Export a log of the game in text format"
+msgid "Save the current game in text format"
 msgstr "Flytja út skrá yfir spilið á textasniði"
 
 #: commands.inc:213
-msgid "Records a log of the match in .mat format"
+msgid "Save the current match in .mat format"
 msgstr "Skrásetur keppnina á .mat sniði"
 
 #: commands.inc:215
-#, fuzzy
-msgid "Records a log of the match in Snowie .txt format"
-msgstr "Skrásetur keppnina á textasniði"
+msgid "Save the current match in Snowie .txt format"
+msgstr "Skrásetur keppnina á Snowie .txt sniði"
 
 #: commands.inc:217
-#, fuzzy
-msgid "Records a log of the match in HTML format"
-msgstr "Skrásetur keppnina á LaTeX sniði"
+msgid "Save the current match in HTML format"
+msgstr "Skrásetur keppnina á HTML sniði"
 
 #: commands.inc:220
-msgid "Records a log of the match in LaTeX format"
+msgid "Save the current match in LaTeX format"
 msgstr "Skrásetur keppnina á LaTeX sniði"
 
 #: commands.inc:223
-msgid "Records a log of the match in text format"
+msgid "Save the current match in text format"
 msgstr "Skrásetur keppnina á textasniði"
 
 #: commands.inc:225
-#, fuzzy
 msgid "Save the current match in PDF format"
-msgstr "Vista núverandi stöðu á .pos sniði"
+msgstr "Vista núverandi stöðu á PDF sniði"
 
 #: commands.inc:227
-#, fuzzy
-msgid "Save the current match in PS format"
-msgstr "Vista núverandi stöðu á .pos sniði"
+msgid "Save the current match in PostScript format"
+msgstr "Vista núverandi stöðu á PostScript sniði"
 
 #: commands.inc:232
-#, fuzzy
 msgid ""
 "Copy the current position in HTML format to clipboard (special for BGonline)"
-msgstr "Afrita núverandi stöðu á .html sniði á klippiborð (GammOnLine)"
+msgstr "Afrita núverandi stöðu á HTML sniði á klippiborð (BGonline)"
 
 #: commands.inc:236
-#, fuzzy
 msgid "Save the current position in HTML format (special for BGonline)"
-msgstr "Vista núverandi stöðu á .html sniði (GammOnLine)"
+msgstr "Vista núverandi stöðu á HTML sniði (BGonline)"
 
 #: commands.inc:240
 #, fuzzy
@@ -1044,7 +1034,7 @@ msgid "Save the current position in HTML format"
 msgstr "Vista núverandi stöðu á .pos sniði"
 
 #: commands.inc:251
-msgid "Save the current position in Portable Network Graphics (PNG) format"
+msgid "Save the current position in PNG format"
 msgstr "Vista núverandi stöðu á PNG sniði"
 
 #: commands.inc:254
@@ -1060,20 +1050,19 @@ msgid "Save the current position in text format"
 msgstr "Vista núverandi stöðu á textasniði"
 
 #: commands.inc:265
-#, fuzzy
-msgid "Records a log of the session in HTML format"
-msgstr "Skrásetur lotuna á LaTeX sniði"
+msgid "Save the current session in HTML format"
+msgstr "Skrásetur lotuna á HTML sniði"
 
 #: commands.inc:267
-msgid "Records a log of the session in LaTeX format"
+msgid "Save the current session in LaTeX format"
 msgstr "Skrásetur lotuna á LaTeX sniði"
 
 #: commands.inc:270
-msgid "Records a log of the session in text format"
+msgid "Save the current session in text format"
 msgstr "Skrásetur lotuna á textasniði"
 
 #: commands.inc:274 commands.inc:383
-msgid "Record a log of the game so far to a file"
+msgid "Save the current game to a file"
 msgstr "Skrásetja spilið fram að þessu í skrá"
 
 #: commands.inc:276
@@ -1082,7 +1071,7 @@ msgid "Generate images to be used by the HTML export commands"
 msgstr "Búa til myndir sem notaðar eru af HTML útflutningsskipunum"
 
 #: commands.inc:278 commands.inc:386
-msgid "Record a log of the match so far to a file"
+msgid "Save the current match to a file"
 msgstr "Skrásetja keppnina fram að þessu í skrá"
 
 #: commands.inc:280
@@ -1091,7 +1080,7 @@ msgid "Write the current position to a file"
 msgstr "Skrá núverandi uppstillingu í skrá"
 
 #: commands.inc:282
-msgid "Record a log of the session so far to a file"
+msgid "Save the current session so far to a file"
 msgstr "Skrásetja lotuna fram að þessu í skrá"
 
 #: commands.inc:287
@@ -1257,7 +1246,7 @@ msgid "Test connexion to the external relational database"
 msgstr "/_Greining/Greina spil"
 
 #: commands.inc:388
-msgid "Record the current board position to a file"
+msgid "Save the current position to a file"
 msgstr "Skrá núverandi uppstillingu í skrá"
 
 #: commands.inc:390
@@ -7966,7 +7955,7 @@ msgid ""
 "Truncated rollouts are rollouts played to a certain number of moves as "
 "opposed to the end of the game or a double/pass cube action. They are faster "
 "and their results have a lower variance than full rollouts, but their "
-"accuracy depends on that of the static evaluation at the trucation point."
+"accuracy depends on that of the static evaluation at the truncation point."
 msgstr ""
 
 #: gtkgame.c:5793
@@ -8050,7 +8039,7 @@ msgstr ""
 
 #: gtkgame.c:5959
 msgid ""
-"Truncating the rollouts when reaching the bearoff databases slighly improves "
+"Truncating the rollouts when reaching the bearoff databases slightly improves "
 "the speed and decrease their variance. The first option is totally accurate "
 "and should be selected for practical use; the second one can be slightly "
 "inaccurate but is useful on average and its use is recommended."
@@ -9521,15 +9510,15 @@ msgstr "/_Hjálp"
 msgid "GNU Backgammon - Annotation"
 msgstr "GNU Backgammon - Spurning"
 
-#: gtkpanels.c:757
-#, fuzzy, c-format
-msgid "Game %d: %d, %d Crawford"
-msgstr "Spil %d: %s %d, %s %d"
+#: gtkpanels.c:732
+#, c-format
+msgid "Game %d: %d - %d Crawford"
+msgstr "Spil %d: %d - %d Crawford"
 
-#: gtkpanels.c:759
-#, fuzzy, c-format
-msgid "Game %d: %d, %d"
-msgstr "Spil %d: %s %d, %s %d"
+#: gtkpanels.c:734
+#, c-format
+msgid "Game %d: %d - %d"
+msgstr "Spil %d: %d - %d"
 
 #: gtkpanels.c:830
 #, fuzzy

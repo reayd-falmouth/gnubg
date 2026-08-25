@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1998-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 2000-2022 the AUTHORS
+ * Copyright (C) 2000-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -222,7 +222,7 @@ f_GeneralEvaluationE GeneralEvaluationE = GeneralEvaluationENoLocking;
 #define CacheLookup CacheLookupNoLocking
 
 static int EvaluatePositionCache(NNState * nnStates, const TanBoard anBoard, float arOutput[],
-                                 cubeinfo * const pci, const evalcontext * pecx, int nPlies, positionclass pc);
+                                 cubeinfo * pci, const evalcontext * pecx, int nPlies, positionclass pc);
 
 static int FindBestMovePlied(int anMove[8], int nDice0, int nDice1,
                              TanBoard anBoard, const cubeinfo * pci,
@@ -304,10 +304,10 @@ const char *aszSettings[NUM_SETTINGS] = {
     N_("setting|casual play"),
     N_("setting|intermediate"),
     N_("setting|advanced"),
-    N_("setting|expert"),
-    N_("setting|world class"),
-    N_("setting|supremo"),
-    N_("setting|grandmaster"),
+    N_("setting|0ply"),
+    N_("setting|1ply"),
+    N_("setting|2ply"),
+    N_("setting|3ply"),
     N_("setting|4ply")
 };
 
@@ -317,11 +317,11 @@ evalcontext aecSettings[NUM_SETTINGS] = {
     {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.050f},     /* casual player */
     {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.040f},     /* intermediate */
     {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.015f},     /* advanced */
-    {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f},       /* expert */
-    {.fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* world class */
-    {.fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* supremo */
-    {.fCubeful = TRUE, .nPlies = 3, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* grand master */
-    {.fCubeful = TRUE, .nPlies = 4, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* 4ply */
+    {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f},       /* 0 ply */
+    {.fCubeful = TRUE, .nPlies = 1, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},       /* 1 ply */
+    {.fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},       /* 2 ply */
+    {.fCubeful = TRUE, .nPlies = 3, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},       /* 3 ply */
+    {.fCubeful = TRUE, .nPlies = 4, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f}        /* 4 ply */
 };
 
 /* which move filter does the predefined settings use */
@@ -330,29 +330,23 @@ int aiSettingsMoveFilter[NUM_SETTINGS] = {
     -1,                         /* casual play: n/a */
     -1,                         /* intermediate: n/a */
     -1,                         /* advanced: n/a */
-    -1,                         /* expert: n/a */
-    2,                          /* wc: normal */
-    3,                          /* supremo: large */
-    3,                          /* grandmaster: large */
-    3,                          /* 4ply: large */
+    -1,                         /* 0 ply: n/a */
+    0,                          /* 1 ply: normal */
+    0,                          /* 2 ply: normal */
+    0,                          /* 3 ply: normal */
+    0                           /* 4 ply: normal */
 };
 
 /* the predefined move filters */
 
 const char *aszMoveFilterSettings[NUM_MOVEFILTER_SETTINGS] = {
-    N_("Tiny"),
-    N_("Narrow"),
     N_("Normal"),
-    N_("Large"),
-    N_("Huge")
+    N_("Large")
 };
 
 movefilter aaamfMoveFilterSettings[NUM_MOVEFILTER_SETTINGS][MAX_FILTER_PLIES][MAX_FILTER_PLIES] = {
-    MOVEFILTER_TINY,
-    MOVEFILTER_NARROW,
     MOVEFILTER_NORMAL,
-    MOVEFILTER_LARGE,
-    MOVEFILTER_HUGE
+    MOVEFILTER_LARGE
 };
 
 
@@ -2107,10 +2101,8 @@ EvalRace(const TanBoard anBoard, float arOutput[], const bgvariation bgv, NNStat
     CalculateRaceInputs(anBoard, arInput);
 
 #if defined(USE_SIMD_INSTRUCTIONS)
-    // cppcheck-suppress duplicateExpression
     if (NeuralNetEvaluateSSE(&nnRace, arInput, arOutput, nnStates ? nnStates + (CLASS_RACE - CLASS_RACE) : NULL))
 #else
-    // cppcheck-suppress duplicateExpression
     if (NeuralNetEvaluate(&nnRace, arInput, arOutput, nnStates ? nnStates + (CLASS_RACE - CLASS_RACE) : NULL))
 #endif
         return -1;
@@ -2247,7 +2239,8 @@ Noise(const evalcontext * pec, const TanBoard anBoard, int iOutput)
     float r;
 
     if (pec->fDeterministic) {
-        char auchBoard[50], auch[16];
+        char auchBoard[50];
+        unsigned char auch[16];
         int i;
 
         for (i = 0; i < 25; i++) {
@@ -3423,7 +3416,7 @@ FindBestCubeDecision(float arDouble[], float aarOutput[2][NUM_ROLLOUT_OUTPUTS], 
                 else
                     return (pci->fCubeOwner == -1) ? DOUBLE_TAKE : REDOUBLE_TAKE;
             } else
-		/* no (presumably optional) double if we are sure to lose */
+                /* no (presumably optional) double if we are sure to lose */
                 return (pci->fCubeOwner == -1) ? NODOUBLE_TAKE : NO_REDOUBLE_TAKE;
 
         } else {
@@ -5025,7 +5018,7 @@ getPercent(const cubedecision cd, const float arDouble[])
 extern void
 RefreshMoveList(movelist * pml, int *ai)
 {
-    movelist ml;
+    static movelist ml;
 
     if (!pml->cMoves)
         return;
@@ -5283,9 +5276,9 @@ static int FindBestMovePlied(int anMove[8], int nDice0, int nDice1,
 #endif
 
 static int GeneralEvaluationEPlied(NNState * nnStates, float arOutput[NUM_ROLLOUT_OUTPUTS],
-                                   const TanBoard anBoard, cubeinfo * const pci, const evalcontext * pec, int nPlies);
+                                   const TanBoard anBoard, cubeinfo * pci, const evalcontext * pec, int nPlies);
 static int EvaluatePositionCubeful3(NNState * nnStates, const TanBoard anBoard, float arOutput[NUM_OUTPUTS],
-                                    float arCubeful[], const cubeinfo aciCubePos[], int cci, cubeinfo * const pciMove,
+                                    float arCubeful[], const cubeinfo aciCubePos[], int cci, cubeinfo * pciMove,
                                     const evalcontext * pec, int nPlies, int fTop);
 
 /* Functions that have both locking and non-locking versions below here */
@@ -5684,7 +5677,7 @@ FindBestMovePlied(int anMove[8], int nDice0, int nDice1,
         for (i = 0; i < 8; ++i)
             anMove[i] = -1;
 
-    if (FindnSaveBestMoves(&ml, nDice0, nDice1, (ConstTanBoard) anBoard, NULL, 0.0f, pci, &ec, aamf) < 0) {
+    if (FindnSaveBestMoves(&ml, nDice0, nDice1, (ConstTanBoard) anBoard, NULL, FALSE, 0.0f, pci, &ec, aamf) < 0) {
         g_free(ml.amMoves);
         return -1;
     }
@@ -5715,7 +5708,7 @@ FindBestMove(int anMove[8], int nDice0, int nDice1,
 
 extern int
 FindnSaveBestMoves(movelist * pml, int nDice0, int nDice1, const TanBoard anBoard, positionkey * keyMove, const
-                   float rThr, const cubeinfo * pci, const evalcontext * pec,
+                   int fAnalyse, float rThr, const cubeinfo * pci, const evalcontext * pec,
                    movefilter aamf[MAX_FILTER_PLIES][MAX_FILTER_PLIES])
 {
 
@@ -5818,6 +5811,34 @@ FindnSaveBestMoves(movelist * pml, int nDice0, int nDice1, const TanBoard anBoar
     cOldMoves = pml->cMoves;
     pml->cMoves = nMoves;
 
+    if (fAnalyse) {
+
+        /*
+         * If fAnalyse is true we don't want to have a move evaluated at a
+         * lower ply to appear better than a one evaluated at a higher ply:
+         * re-evaluate it at the ply of the previous move
+         */
+
+        int fChanged;
+
+        do {
+            fChanged = 0;
+            for (i = 1; i < pml->cMoves; i++)
+                if (pml->amMoves[i].esMove.ec.nPlies < pml->amMoves[i-1].esMove.ec.nPlies
+                    && pml->amMoves[i].rScore > pml->amMoves[i-1].rScore) {
+                float limit = pml->amMoves[i-1].rScore;
+                fChanged = 1;
+                for (unsigned int j = i; j < pml->cMoves; j++)
+                    if (pml->amMoves[j].rScore > limit) {
+                        ScoreMove(NULL, pml->amMoves + j, pci, pec, pml->amMoves[i-1].esMove.ec.nPlies);
+                        limit = MIN(limit, pml->amMoves[j].rScore);
+                    }
+                }
+
+            qsort(pml->amMoves, pml->cMoves, sizeof(move), (cfunc) CompareMoves);
+        } while (fChanged == 1);
+    }
+
     /* Make sure that keyMove and top move are both
      * evaluated at the deepest ply. */
     if (keyMove) {
@@ -5847,7 +5868,7 @@ FindnSaveBestMoves(movelist * pml, int nDice0, int nDice1, const TanBoard anBoar
 
                 /* move it up to the other moves evaluated on nMaxPly */
 
-                if (fResort && pec->nPlies) {
+                if (fResort && pec->nPlies && i > 0) {
                     move m;
                     unsigned int j;
 

@@ -79,7 +79,7 @@ Mon May 24 8:56:45 2003 GMT  Jon Kinsey <Jon_Kinsey@hotmail.com>
 
 Wed May 17 9:56:45 2003 GMT  Jon Kinsey <Jon_Kinsey@hotmail.com>
 
-	* drawboard3d.c, misc3d.c: Vary board tesselation based on accuracy setting
+	* drawboard3d.c, misc3d.c: Vary board tessellation based on accuracy setting
 
 Wed May 12 10:56:45 2003 GMT  Jon Kinsey <Jon_Kinsey@hotmail.com>
 
@@ -148,7 +148,7 @@ Fri Nov 21 11:38:45 2003 GMT  Jon Kinsey <Jon_Kinsey@hotmail.com>
 
 Tue Nov 18 12:38:45 2003 GMT  Jon Kinsey <Jon_Kinsey@hotmail.com>
 
-	* drawboard3d.c: Fixed chequer transparancy problem
+	* drawboard3d.c: Fixed chequer transparency problem
 
 Mon Oct 20 10:38:45 2003 GMT  Jon Kinsey <Jon_Kinsey@hotmail.com>
 

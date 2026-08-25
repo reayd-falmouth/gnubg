@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2003-2019 Jon Kinsey <jonkinsey@gmail.com>
- * Copyright (C) 2006-2022 the AUTHORS
+ * Copyright (C) 2006-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,15 @@
 #include "config.h"
 #include "legacyGLinc.h"
 #include "fun3d.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 
+#if defined(USE_APPLE_OPENGL)
+#include <OpenGL/glu.h>
+#else
 #include <GL/glu.h>	/* Used for colour widget - todo: remove? */
+#endif
 
-#include "gtkprefs.h"
+#include "gtk/gtkprefs.h"
 
 typedef struct UpdateDetails_T {
     Material mat;
@@ -220,7 +224,7 @@ TextureChange(GtkComboBoxText * combo, gpointer UNUSED(data))
 static gboolean
 exposePreviewCB(GtkWidget* UNUSED(widget), GdkEventExpose* UNUSED(eventData), void* data)
 {
-	Material* pMat = (Material*)data;
+    Material* pMat = (Material*)data;
     SetupLight();
     Draw(pMat);
     return TRUE;
@@ -235,8 +239,8 @@ realizePreviewCB(void *UNUSED(data))
 static GtkWidget *
 CreateGLPreviewWidget(Material * pMat)
 {
-	GtkWidget* p3dWidget = GLWidgetCreate(realizePreviewCB, NULL, exposePreviewCB, pMat);
-	if (p3dWidget == NULL)
+    GtkWidget* p3dWidget = GLWidgetCreate(realizePreviewCB, NULL, exposePreviewCB, pMat);
+    if (p3dWidget == NULL)
         return NULL;
 
     return p3dWidget;
@@ -430,12 +434,24 @@ UpdateColour3d(GtkButton * UNUSED(button), UpdateDetails * pDetails)
     col3d = pDetails->mat;
 
     if (pwColourDialog3d == NULL) {
+        GtkWidget *parent = gtk_widget_get_toplevel(pDetails->preview);
         pwColourDialog3d = GTKCreateDialog(_("3D colour selection"), DT_QUESTION,
-                                           pDetails->preview, DIALOG_FLAG_MODAL | DIALOG_FLAG_NORESPONSE, NULL, NULL);
+                                           parent, DIALOG_FLAG_MODAL | DIALOG_FLAG_NORESPONSE,
+                                           NULL, NULL);
+
+        /*
+         * If GTK destroys this widget, automatically set
+         * pwColourDialog3d to NULL.
+         */
+        g_object_add_weak_pointer(G_OBJECT(pwColourDialog3d),
+                                  (gpointer *)&pwColourDialog3d);
+
         AddWidgets(DialogArea(pwColourDialog3d, DA_MAIN));
-        g_signal_connect(pwColourDialog3d, "response", G_CALLBACK(DialogClose), NULL);
-    } else
+        g_signal_connect(pwColourDialog3d, "response",
+                         G_CALLBACK(DialogClose), NULL);
+    } else {
         gtk_widget_show(pwColourDialog3d);
+    }
 
     /* Avoid updating preview */
     bUpdate = FALSE;

@@ -13,10 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#
-# $Id: $
-# 
-
 scriptfiles= gnubg.py batch.py database.py batch_win.py \
              matchseries.py db_import.py query_player.sh
 scriptsdir = $(pkgdatadir)/scripts

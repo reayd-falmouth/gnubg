@@ -3,7 +3,7 @@ dnl     autoconf
 dnl in the directory containing this script.
 
 dnl Copyright (C) 1999-2002 Gary Wong <gtw@gnu.org>
-dnl Copyright (C) 2002-2024 the AUTHORS
+dnl Copyright (C) 2002-2026 the AUTHORS
 
 dnl This program is free software: you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ case "$host" in
     ;;
   *-*-darwin*)
     darwin=yes
-    LDFLAGS="$LDFLAGS -dylib_file /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib"
+    LDFLAGS="$LDFLAGS -framework OpenGL"
     AC_DEFINE(USE_APPLE_OPENGL, 1, [Define if using Apple OpenGL])
     ;;
   *-*-*bsd*)
@@ -122,12 +122,34 @@ AC_PROG_YACC
 AM_YFLAGS='-d'
 AC_SUBST(AM_YFLAGS)
 
+dnl
+dnl Check for gtk options
+dnl
+
+no_gtk="yes"
+no_board3d="yes"
+AC_ARG_WITH(gtk,
+    AS_HELP_STRING([--with-gtk], [use GTK 2.0 (Default if found)]))
+AC_ARG_WITH(gtk3,
+    AS_HELP_STRING([--with-gtk3], [use GTK 3.0 (Disabled by default)]))
+AC_ARG_WITH(gtk4,
+    AS_HELP_STRING([--with-gtk4], [use GTK 4.0 (Experimental, disabled by default)]))
+AC_ARG_WITH(board3d,
+    AS_HELP_STRING([--with-board3d], [compile with 3D boards (Default if found)]))
+
+if test "x$with_gtk3" = "xyes" && \
+   test "x$with_gtk4" = "xyes"; then
+    AC_MSG_ERROR([GTK3 and GTK4 options are mutually exclusive])
+fi
+
+AS_IF([test "x$with_gtk4" = "xyes"], [with_gtk=yes])
+AS_IF([test "x$with_gtk3" = "xyes"], [with_gtk=yes])
 
 dnl
 dnl check for compiler support
 dnl
 
-glib2minrev=22.0
+glib2minrev=32.0
 
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.$glib2minrev], have_glib="yes", AC_MSG_ERROR([You need to have glib2 version 2.$glib2minrev or higher to compile GNU Backgammon]))
 
@@ -149,7 +171,7 @@ else
     elif test "x$with_gtk" != "xno"; then
         if test "x$with_gtk3" = "xyes"; then
             PKG_CHECK_MODULES(CANBERRA, [libcanberra-gtk3], have_canberra="yes", AC_MSG_WARN([no libcanberra-gtk3 support]))
-        else
+        elif test "x$with_gtk4" != "xyes"; then
             PKG_CHECK_MODULES(CANBERRA, [libcanberra-gtk], have_canberra="yes", AC_MSG_WARN([no libcanberra-gtk support]))
         fi
     fi
@@ -158,14 +180,16 @@ else
 fi
 
 if test "x$with_gtk" != "xno"; then
-    if test "x$with_gtk3" = "xyes"; then
+    if test "x$with_gtk4" = "xyes"; then
+        PKG_CHECK_MODULES(GTK, [gtk4 >= 4.0], have_gtk="yes", AC_MSG_WARN([no gtk4 support]))
+    elif test "x$with_gtk3" = "xyes"; then
         PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.22.0], have_gtk="yes", AC_MSG_WARN([no gtk3 support]))
     else
-        PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.18.0], have_gtk="yes", AC_MSG_WARN([no gtk2 support]))
+        PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.24.0], have_gtk="yes", AC_MSG_WARN([no gtk2 support]))
     fi
 
     if test "x$with_board3d" != "xno"; then
-        if test "x$with_gtk3" = "xyes"; then
+        if test "x$with_gtk3" = "xyes" || test "x$with_gtk4" = "xyes"; then
             PKG_CHECK_MODULES(EPOXY, [epoxy], have_epoxy="yes", AC_MSG_WARN([no epoxy support]))
         else
             PKG_CHECK_MODULES(GTKGLEXT, [gtkglext-1.0 >= 1.0], have_gtkglext="yes" , AC_MSG_WARN([no gtkglext support]))
@@ -195,29 +219,14 @@ if test "$with_sqlite" != "no" && test "x$have_sqlite" = "xyes"; then
 fi
 AM_CONDITIONAL(USE_SQLITE, test "$with_sqlite" != "no" && test "$have_sqlite" != "no" )
 
-dnl If OSX version < 10.6 (Prior to Snow Leopard) then try to build
-dnl with Quicktime, otherwise use CoreAudio if it is available
 if test "x$darwin" = "xyes"; then
-	needquicktime=no
-	AS_VERSION_COMPARE("$(uname -r)", "10.0", needquicktime=yes, [], [])
+	coreaudio=no
+	AC_CHECK_HEADER([AudioToolbox/AudioToolbox.h], [AC_CHECK_HEADER([CoreAudio/CoreAudioTypes.h],[coreaudio=yes])])
 
-	if test "x$needquicktime" = "xyes"; then
-		quicktime=no
-	 	AC_CHECK_HEADER([QuickTime/QuickTime.h], [quicktime=yes])
-
-		if test "x$quicktime" = "xyes"; then
-			AC_DEFINE(HAVE_APPLE_QUICKTIME,1, [Define if you have Apple QuickTime])
-			LDFLAGS="$LDFLAGS -framework QuickTime"
-		fi
-	else
-		coreaudio=no
-		AC_CHECK_HEADER([AudioToolbox/AudioToolbox.h], [AC_CHECK_HEADER([CoreAudio/CoreAudioTypes.h],[coreaudio=yes])])
-
-		if test "x$coreaudio" = "xyes"; then
-			AC_DEFINE(HAVE_APPLE_COREAUDIO,1, [Define if you have Apple CoreAudio])
-			LDFLAGS="$LDFLAGS -framework AudioUnit -framework CoreServices -framework AudioToolBox -framework CoreAudio"
-		fi
-    fi
+	if test "x$coreaudio" = "xyes"; then
+		AC_DEFINE(HAVE_APPLE_COREAUDIO,1, [Define if you have Apple CoreAudio])
+		LDFLAGS="$LDFLAGS -framework AudioUnit -framework CoreServices -framework AudioToolbox -framework CoreAudio"
+	fi
 fi
 
 if test "x$have_canberra" = "xyes"; then
@@ -346,17 +355,12 @@ AC_ARG_ENABLE( gtkdeprecated, [  --enable-gtkdeprecated  enable deprecated gtk f
 if test "x$gtkdeprecated" = "xno"; then
 	AC_DEFINE(GTK_DISABLE_DEPRECATED, 1, Define if you want to disable deprecated gtk functions)
 fi
-AC_MSG_RESULT($gtkprecated)
+AC_MSG_RESULT($gtkdeprecated)
 
 dnl
 dnl Check for gtk and gtkglext
 dnl
 
-no_gtk="yes"
-no_board3d="yes"
-AC_ARG_WITH(gtk,[  --with-gtk              use GTK+ 2.0 (Default if found)])
-AC_ARG_WITH(gtk3,[  --with-gtk3             use GTK+ 3.0 (Experimental, disabled by default)])
-AC_ARG_WITH(board3d,[  --with-board3d          compile with 3D boards (Default if found)])
 if test "$with_gtk" != "no" && test "x$have_gtk" = "xyes"; then
    AC_DEFINE(USE_GTK, 1, [Define if you want to use the gtk gui])
    no_gtk="no"
@@ -368,8 +372,9 @@ fi
 
 AC_CHECK_HEADERS(GL/glx.h)
 
-if test "$with_board3d" != "no" && test "$with_gtk3" = "yes"; then
-	if test "x$have_gtk" = "xyes" && test "x$have_epoxy" = "xyes"; then
+if test "$with_board3d" != "no" &&
+   test \( "x$with_gtk3" = "xyes" -o "x$with_gtk4" = "xyes" \); then
+	if test "x$have_gtk" = "xyes" && test "x$have_epoxy" = "xyes" && test "x$have_glu" = "xyes"; then
 		AC_DEFINE(USE_BOARD3D,1, [Define if you want to use the 3D boards])
 		no_board3d="no"
 	fi
@@ -381,7 +386,7 @@ else
 fi
 
 if test "$with_board3d" = "yes" && test "$no_board3d" = "yes"; then
-	AC_MSG_ERROR([board3d requested but gtk or gtkglext not found])
+	AC_MSG_ERROR([board3d requested but gtk, libepoxy, libglu or gtkglext not found])
 fi
 
 if test "$with_board3d" != "no" && test "$have_cglm" = "no"; then
@@ -426,7 +431,7 @@ AS_HELP_STRING([--with-python=program],
     ])
 
 if test "x$with_python" != "xno"; then
-    AM_PATH_PYTHON(2.6)
+    AM_PATH_PYTHON(3.6)
     AX_PYTHON_DEVEL([], [true])
     if test "x$ax_python_devel_found" != "xno"; then
         AC_DEFINE(USE_PYTHON,1,[Define if you want to use Python inside GNUbg])
@@ -607,7 +612,7 @@ dnl internationalization macros
 dnl
 AC_SUBST(GETTEXT_PACKAGE, gnubg)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [The package name, for gettext])
-ALL_LINGUAS="cs da de en_GB en_US el es fi fr is it ja ro ru tr"
+ALL_LINGUAS="cs da de en_GB en_US el es fi fr is it ja pt_BR ro ru tr"
 AM_GNU_GETTEXT(external)
 
 

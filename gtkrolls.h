@@ -13,14 +13,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtkrolls.h,v 1.4 2013/06/16 02:16:16 mdpetch Exp $
  */
 
 #ifndef GTKROLLS_H
 #define GTKROLLS_H
 
 extern void
- GTKShowRolls(const gint nDepth, evalcontext * pec, matchstate * pms);
+GTKShowRolls(gint nDepth, evalcontext * pec, matchstate * pms);
 
 #endif                          /* GTKROLLS_H */

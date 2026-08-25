@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2003-2021 Jon Kinsey <jonkinsey@gmail.com>
+ * Copyright (C) 2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -516,7 +517,7 @@ addHalfTube(Occluder * pOcc, float r, float h, unsigned int numSteps)
     float *xPts, *yPts;
     float step;
     unsigned int i;
-  
+
     if (numSteps == 0) {
         g_assert_not_reached();
         return;

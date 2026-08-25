@@ -30,26 +30,17 @@
 #include "backgammon.h"
 #include "drawboard.h"
 #if USE_GTK
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #endif
 #include "file.h"
 #include "positionid.h"
 #include "matchequity.h"
 
-#if !GLIB_CHECK_VERSION (2,26,0)
-#ifdef WIN32
-#define GStatBuf struct _g_stat_struct
-#else
-typedef struct stat GStatBuf;
-#endif
-#endif
-
 static int
 ParseSnowieTxt(char *sz,
-               int *pnMatchTo, int *pfJacoby, int *pfUnused1, int *pfUnused2,
+               int *pnMatchTo, int *pfJacoby, int *p1, int *p2,
                int *pfTurn, char aszPlayer[2][MAX_NAME_LEN], int *pfCrawfordGame,
                int anScore[2], int *pnCube, int *pfCubeOwner, TanBoard anBoard, int anDice[2]);
-
 
 static int
 IsValidMove(const TanBoard anBoard, const int anMove[8])
@@ -98,6 +89,7 @@ ParseSetDate(char *szFilename)
     }
 #endif
     /* date could not be parsed, use date of last modification */
+    // cppcheck-suppress knownConditionTrueFalse
     if (matchdate == NULL) {
         if (g_stat(szFilename, &filestat) == 0) {
             matchdate = localtime((time_t *) & filestat.st_mtime);
@@ -513,6 +505,9 @@ ExpandMatMove(const TanBoard anBoard, int anMove[8], int *pc, const unsigned int
                 an[4] = -1;
                 an[5] = -1;
 
+                an[6] = -1;
+                an[7] = -1;
+
                 /* no hits on the first part of the move */
                 if (anBoard[0][23 - an[1]] != 0)
                     continue;
@@ -540,6 +535,9 @@ ExpandMatMove(const TanBoard anBoard, int anMove[8], int *pc, const unsigned int
 
                 an[4] = -1;
                 an[5] = -1;
+
+                an[6] = -1;
+                an[7] = -1;
 
                 /* no hits on the first part of the move */
                 if (anBoard[0][23 - an[1]] != 0)
@@ -1431,7 +1429,7 @@ ImportOldmovesGame(FILE * pf, int iGame, int nLength, int n0, int n1)
 
     if (fgets(buf, sizeof(buf), pf) == NULL) {
         outputerr(_("Error reading oldmoves file"));
-        return 0;
+        return 1;
     }
     pch = strstr(buf, "is X");
     if (!pch)
@@ -2282,7 +2280,7 @@ ParseSGGOptions(const char *sz, matchinfo * pmi, int *pfCrawfordRule,
             *pbgv = VARIATION_STANDARD;
         else {
             outputl(_("Unknown variant in SGG file"));
-            outputl(_("Please send the SGG file to bug-gnubg@gnu.org"));
+            outputf(_("Please send the SGG file to %s\n"), PACKAGE_BUGREPORT);
             outputx();
             g_assert_not_reached();
         }
@@ -2491,7 +2489,7 @@ ParseTMGOptions(const char *sz, matchinfo * pmi, int *pfCrawfordRule,
             break;
         default:
             outputl(_("Unknown variation in TMG file"));
-            outputl(_("Please send the TMG file to bug-gnubg@gnu.org"));
+            outputf(_("Please send the TMG file to %s\n"), PACKAGE_BUGREPORT);
             outputx();
             g_assert_not_reached();
             return -1;
@@ -2745,7 +2743,7 @@ ImportTMGGame(FILE * pf, int i, int nLength, int n0, int n1,
 
             default:
 
-                outputl(_("Please send the TMG file to bug-gnubg@gnu.org"));
+                outputf(_("Please send the TMG file to %s\n"), PACKAGE_BUGREPORT);
                 outputx();
                 g_assert_not_reached();
 
@@ -3232,7 +3230,7 @@ WritePartyGame(FILE * fp, char *gameStr, int ns)
         char buf[100];
         char *moveStr = NULL;
         side = (move[0] == '2');
-        if ((side == 0) || (moveNum == 1 && side == 1)) {
+        if ((side == 0) || (moveNum == 1)) {
             fprintf(fp, "%3d) ", moveNum);
             if (moveNum == 1 && side == 1)
                 fprintf(fp, "%28s", " ");

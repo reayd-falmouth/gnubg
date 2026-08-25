@@ -34,13 +34,13 @@ typedef struct {
 extern int LogCube(int n);
 
 extern char *MatchID(const unsigned int anDice[2],
-                     const int fTurn,
-                     const int fResigned,
-                     const int fDoubled,
-                     const int fMove,
-                     const int fCubeOwner,
-                     const int fCrawford, const int nMatchTo, const int anScore[2], const int nCube,
-                     const int fJacoby, const gamestate gs);
+                     int fTurn,
+                     int fResigned,
+                     int fDoubled,
+                     int fMove,
+                     int fCubeOwner,
+                     int fCrawford, int nMatchTo, const int anScore[2],
+                     int nCube, int fJacoby, gamestate gs);
 
 extern int MatchFromID(unsigned int anDice[2],
             int *pfTurn,

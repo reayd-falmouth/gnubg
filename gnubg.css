@@ -16,11 +16,10 @@
  */
 
 /*
- * Default size was fine initially but becomes a bit small
- * for today (2025) typical 1920x1080 screen.
+ * Set font-size using pt rather than px for DPI-aware scaling.
  */
-* {
-    font-size: 16px;
+.gnubg-main {
+    font-size: 11pt;
 }
 
 /*

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2003-2020 Jon Kinsey <jon_kinsey@hotmail.com>
- * Copyright (C) 2003-2018 the AUTHORS
+ * Copyright (C) 2003-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ shadowInit(BoardData3d * bd3d, renderdata * prd)
 
 #if !GTK_CHECK_VERSION(3,0,0)
     int stencilBits;
-	
+
     /* Darkness as percentage of ambient light */
     prd->dimness = (float)(prd->lightLevels[1] * (100 - prd->shadowDarkness)) / (100.0f * 100.0f);
 
@@ -141,7 +141,7 @@ shadowDisplay(const BoardData * bd, const BoardData3d * bd3d, const renderdata *
     float specular[4];
     float diffuse[4];
 
-	/* Create shadow volume in stencil buffer */
+    /* Create shadow volume in stencil buffer */
     glEnable(GL_STENCIL_TEST);
     draw_shadow_volume_to_stencil(bd3d);
 
@@ -156,7 +156,7 @@ shadowDisplay(const BoardData * bd, const BoardData3d * bd3d, const renderdata *
     glGetLightfv(GL_LIGHT0, GL_SPECULAR, specular);
     glLightfv(GL_LIGHT0, GL_SPECULAR, zero);
 
-	drawBoard(bd, bd3d, prd);
+    drawBoard(bd, bd3d, prd);
 
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);

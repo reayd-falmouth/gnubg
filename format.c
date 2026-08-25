@@ -171,9 +171,7 @@ GetPredefinedChequerplaySetting(const evalcontext * pec, const movefilter aamf[M
             if (nPlies == 0)
                 return nEval;
 
-            /* see if there's a filter set which matches and uses the
-             * same eval context (world class and supremo use the same
-             * eval context and different filters) */
+            /* see if there's a filter set which matches and uses the same eval context */
             for (nFilter = 0; nFilter < NUM_SETTINGS; ++nFilter) {
                 /* see what filter set goes with the predefined settings */
                 if ((nPreset = aiSettingsMoveFilter[nFilter]) < 0)

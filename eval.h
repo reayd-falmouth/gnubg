@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1998-2002 Gary Wong <gtw@gnu.org>
- * Copyright (C) 2000-2017 the AUTHORS
+ * Copyright (C) 2000-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,10 @@
 #include "cache.h"
 
 #define EXP_LOCK_FUN(ret, name, ...) \
-	typedef ret (*f_##name)( __VA_ARGS__); \
-	extern f_##name name; \
-	extern ret name##NoLocking( __VA_ARGS__); \
-	extern ret name##WithLocking( __VA_ARGS__)
+    typedef ret (*f_##name)( __VA_ARGS__); \
+    extern f_##name name; \
+    extern ret name##NoLocking( __VA_ARGS__); \
+    extern ret name##WithLocking( __VA_ARGS__)
 
 #define WEIGHTS_VERSION "1.01"
 #define WEIGHTS_VERSION_BINARY 1.01f
@@ -51,7 +51,7 @@
                                  * rollouts do. */
 #define OUTPUT_CUBEFUL_EQUITY 6
 
-/* Cubeful evalutions */
+/* Cubeful evaluations */
 typedef enum {
     OUTPUT_OPTIMAL = 0,
     OUTPUT_NODOUBLE,
@@ -237,11 +237,11 @@ extern const char *aszDoubleTypes[NUM_DOUBLE_TYPES];
  */
 
 #define NUM_SETTINGS            9
-#define SETTINGS_4PLY           8
-#define SETTINGS_GRANDMASTER    7
-#define SETTINGS_SUPREMO        6
-#define SETTINGS_WORLDCLASS     5
-#define SETTINGS_EXPERT         4
+#define SETTINGS_4PLY		8
+#define SETTINGS_3PLY		7
+#define SETTINGS_2PLY		6
+#define SETTINGS_1PLY		5
+#define SETTINGS_0PLY		4
 #define SETTINGS_ADVANCED       3
 #define SETTINGS_INTERMEDIATE   2
 #define SETTINGS_NOVICE         1
@@ -252,7 +252,7 @@ extern evalcontext ecBasic;
 extern int aiSettingsMoveFilter[NUM_SETTINGS];
 extern const char *aszSettings[NUM_SETTINGS];
 
-#define NUM_MOVEFILTER_SETTINGS 5
+#define NUM_MOVEFILTER_SETTINGS 2
 
 extern const char *aszMoveFilterSettings[NUM_MOVEFILTER_SETTINGS];
 extern movefilter aaamfMoveFilterSettings[NUM_MOVEFILTER_SETTINGS][MAX_FILTER_PLIES][MAX_FILTER_PLIES];
@@ -366,7 +366,7 @@ EXP_LOCK_FUN(int, FindBestMove, int anMove[8], int nDice0, int nDice1,
 
 EXP_LOCK_FUN(int, FindnSaveBestMoves, movelist * pml,
              int nDice0, int nDice1, const TanBoard anBoard,
-             positionkey * keyMove, const float rThr,
+             positionkey * keyMove, int fAnalyse, const float rThr,
              const cubeinfo * pci, const evalcontext * pec, movefilter aamf[MAX_FILTER_PLIES][MAX_FILTER_PLIES]);
 
 extern void
@@ -389,8 +389,7 @@ extern int
 extern void
  SwapSides(TanBoard anBoard);
 
-extern int
- GameStatus(const TanBoard anBoard, const bgvariation bgv);
+extern int GameStatus(const TanBoard anBoard, bgvariation bgv);
 
 extern void EvalCacheFlush(void);
 extern int EvalCacheResize(unsigned int cNew);
@@ -407,14 +406,14 @@ extern unsigned int cCache;
 extern int
  GenerateMoves(movelist * pml, const TanBoard anBoard, int n0, int n1, int fPartial);
 
-extern int ApplySubMove(TanBoard anBoard, const int iSrc, const int nRoll, const int fCheckLegal);
+extern int ApplySubMove(TanBoard anBoard, int iSrc, int nRoll, int fCheckLegal);
 
-extern int ApplyMove(TanBoard anBoard, const int anMove[8], const int fCheckLegal);
+extern int ApplyMove(TanBoard anBoard, const int anMove[8], int fCheckLegal);
 
-extern positionclass ClassifyPosition(const TanBoard anBoard, const bgvariation bgv);
+extern positionclass ClassifyPosition(const TanBoard anBoard, bgvariation bgv);
 
 /* internal use only */
-extern void EvalRaceBG(const TanBoard anBoard, float arOutput[], const bgvariation bgv);
+extern void EvalRaceBG(const TanBoard anBoard, float arOutput[], bgvariation bgv);
 
 extern float
  Utility(float ar[NUM_OUTPUTS], const cubeinfo * pci);
@@ -423,13 +422,13 @@ extern float
  UtilityME(float ar[NUM_OUTPUTS], const cubeinfo * pci);
 
 extern int
- SetCubeInfoMoney(cubeinfo * pci, const int nCube, const int fCubeOwner,
-                 const int fMove, const int fJacoby, const int fBeavers, const bgvariation bgv);
+ SetCubeInfoMoney(cubeinfo * pci, int nCube, int fCubeOwner,
+                 int fMove, int fJacoby, int fBeavers, bgvariation bgv);
 
 extern int
- SetCubeInfo(cubeinfo * pci, const int nCube, const int fCubeOwner,
-            const int fMove, const int nMatchTo, const int anScore[2],
-            const int fCrawford, const int fJacoby, const int fBeavers, const bgvariation bgv);
+ SetCubeInfo(cubeinfo * pci, int nCube, int fCubeOwner,
+            int fMove, int nMatchTo, const int anScore[2],
+            int fCrawford, int fJacoby, int fBeavers, bgvariation bgv);
 
 extern void
  swap_us(unsigned int *p0, unsigned int *p1);
@@ -441,7 +440,7 @@ extern void
  SanityCheck(const TanBoard anBoard, float arOutput[]);
 
 extern int
- EvalOver(const TanBoard anBoard, float arOutput[], const bgvariation bgv, NNState * nnStates);
+ EvalOver(const TanBoard anBoard, float arOutput[], bgvariation bgv, NNState * nnStates);
 
 extern float
  KleinmanCount(int nPipOnRoll, int nPipNotOnRoll);
@@ -450,16 +449,16 @@ extern int
  GetDPEq(int *pfCube, float *prDPEq, const cubeinfo * pci);
 
 extern float
- mwc2eq(const float rMwc, const cubeinfo * pci);
+ mwc2eq(float rMwc, const cubeinfo * pci);
 
 extern float
- eq2mwc(const float rEq, const cubeinfo * pci);
+ eq2mwc(float rEq, const cubeinfo * pci);
 
 extern float
- se_mwc2eq(const float rMwc, const cubeinfo * pci);
+ se_mwc2eq(float rMwc, const cubeinfo * pci);
 
 extern float
- se_eq2mwc(const float rEq, const cubeinfo * pci);
+ se_eq2mwc(float rEq, const cubeinfo * pci);
 
 extern char
 *FormatEval(char *sz, evalsetup * pes);
@@ -479,7 +478,7 @@ extern int
  cmp_evalcontext(const evalcontext * pec1, const evalcontext * pec2);
 
 extern char
-*GetCubeRecommendation(const cubedecision cd);
+*GetCubeRecommendation(cubedecision cd);
 
 extern cubedecision
 FindBestCubeDecision(float arDouble[], float aarOutput[2][NUM_ROLLOUT_OUTPUTS], const cubeinfo * pci);
@@ -489,7 +488,7 @@ extern int
                       float arOutput[], const TanBoard anBoard, cubeinfo * pci, const evalcontext * pec);
 
 extern void
- getMoneyPoints(float aaarPoints[2][7][2], const int fJacoby, const int fBeavers, float aarRates[2][2]);
+ getMoneyPoints(float aaarPoints[2][7][2], int fJacoby, int fBeavers, float aarRates[2][2]);
 
 extern void
  getMatchPoints(float aaarPoints[2][4][2],
@@ -500,7 +499,7 @@ extern void
                         float arDouble[4], float aarOutput[2][NUM_ROLLOUT_OUTPUTS], const cubeinfo * pci);
 
 extern float
- getPercent(const cubedecision cd, const float arDouble[]);
+ getPercent(cubedecision cd, const float arDouble[]);
 
 extern void
  RefreshMoveList(movelist * pml, int *ai);
@@ -514,19 +513,19 @@ extern int
  isCloseCubedecision(const float arDouble[]);
 
 extern int
- isMissedDouble(float arDouble[], float aarOutput[2][NUM_ROLLOUT_OUTPUTS], const int fDouble, const cubeinfo * pci);
+ isMissedDouble(float arDouble[], float aarOutput[2][NUM_ROLLOUT_OUTPUTS], int fDouble, const cubeinfo * pci);
 
 extern unsigned int
  locateMove(const TanBoard anBoard, const int anMove[8], const movelist * pml);
 
 extern int
- equal_movefilter(const int i, const movefilter amf1[MAX_FILTER_PLIES], const movefilter amf2[MAX_FILTER_PLIES]);
+ equal_movefilter(int i, const movefilter amf1[MAX_FILTER_PLIES], const movefilter amf2[MAX_FILTER_PLIES]);
 
 extern int
  equal_movefilters(movefilter aamf1[MAX_FILTER_PLIES][MAX_FILTER_PLIES],
                    movefilter aamf2[MAX_FILTER_PLIES][MAX_FILTER_PLIES]);
 
-extern doubletype DoubleType(const int fDoubled, const int fMove, const int fTurn);
+extern doubletype DoubleType(int fDoubled, int fMove, int fTurn);
 
 extern int
  PerfectCubeful(bearoffcontext * pbc, const TanBoard anBoard, float arEquity[]);
@@ -539,10 +538,10 @@ extern float EvalEfficiency(const TanBoard anBoard, positionclass pc, int ply);
 extern float Cl2CfMoney(float arOutput[NUM_OUTPUTS], cubeinfo * pci, float rCubeX);
 extern float Cl2CfMatch(float arOutput[NUM_OUTPUTS], cubeinfo * pci, float rCubeX);
 extern float Noise(const evalcontext * pec, const TanBoard anBoard, int iOutput);
-extern int EvalKey(const evalcontext * pec, const int nPlies, const cubeinfo * pci, int fCubefulEquity);
-extern void MakeCubePos(const cubeinfo aciCubePos[], const int cci, const int fTop, cubeinfo aci[], const int fInvert);
+extern int EvalKey(const evalcontext * pec, int nPlies, const cubeinfo * pci, int fCubefulEquity);
+extern void MakeCubePos(const cubeinfo aciCubePos[], int cci, int fTop, cubeinfo aci[], int fInvert);
 extern void GetECF3(float arCubeful[], int cci, float arCf[], cubeinfo aci[]);
-extern int EvaluatePerfectCubeful(const TanBoard anBoard, float arEquity[], const bgvariation bgv);
+extern int EvaluatePerfectCubeful(const TanBoard anBoard, float arEquity[], bgvariation bgv);
 
 extern neuralnet nnContact, nnRace, nnCrashed;
 extern neuralnet nnpContact, nnpRace, nnpCrashed;

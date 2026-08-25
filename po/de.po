@@ -949,82 +949,72 @@ msgid "Clear initialized cube action and dice roll"
 msgstr ""
 
 #: commands.inc:197
-msgid "Records a log of the game in .gam format"
+msgid "Save the current game in .gam format"
 msgstr "Ein Protokoll der Partie im '.gam'-Format aufzeichen"
 
 #: commands.inc:199
-#, fuzzy
-msgid "Records a log of the game in Snowie .txt format"
-msgstr "Ein Protokoll der Partie im '.gam'-Format aufzeichen"
+msgid "Save the current game in Snowie .txt format"
+msgstr "Ein Protokoll der Partie im ' Snowie .txt'-Format aufzeichen"
 
 #: commands.inc:201
-#, fuzzy
-msgid "Records a log of the game in HTML format"
-msgstr "Ein Protokoll der Partie im '.gam'-Format aufzeichen"
+msgid "Save the current game in HTML format"
+msgstr "Ein Protokoll der Partie im 'HTML'-Format aufzeichen"
 
 #: commands.inc:203
-msgid "Records a log of the game in LaTeX format"
+msgid "Save the current game in LaTeX format"
 msgstr "Ein Protokoll der Partie im 'LaTex'-Format aufzeichen"
 
 #: commands.inc:205
-#, fuzzy
-msgid "Records a log of the game in PDF format"
-msgstr "Ein Protokoll der Partie im '.gam'-Format aufzeichen"
+msgid "Save the current game in PDF format"
+msgstr "Ein Protokoll der Partie im 'PDF'-Format aufzeichen"
 
 #: commands.inc:207
-#, fuzzy
-msgid "Records a log of the game in PS format"
-msgstr "Ein Protokoll der Partie im '.gam'-Format aufzeichen"
+msgid "Save the current game in PostScript format"
+msgstr "Ein Protokoll der Partie im 'PostScript'-Format aufzeichen"
 
 #: commands.inc:209
-msgid "Export a log of the game in text format"
+msgid "Save the current game in text format"
 msgstr "Exportiere ein Protokoll der Partie im Text-Format"
 
 #: commands.inc:213
-msgid "Records a log of the match in .mat format"
+msgid "Save the current match in .mat format"
 msgstr "Ein Protokoll des Matches im '.mat'-Format aufzeichen"
 
 #: commands.inc:215
-#, fuzzy
-msgid "Records a log of the match in Snowie .txt format"
-msgstr "Ein Protokoll des Matches im Text-Format aufzeichen"
+msgid "Save the current match in Snowie .txt format"
+msgstr "Ein Protokoll des Matches im 'Snowie .txt'-Format aufzeichen"
 
 #: commands.inc:217
-#, fuzzy
-msgid "Records a log of the match in HTML format"
-msgstr "Ein Protokoll des Matches im 'LaTex'-Format aufzeichen"
+msgid "Save the current match in HTML format"
+msgstr "Ein Protokoll des Matches im 'HTML'-Format aufzeichen"
 
 #: commands.inc:220
-msgid "Records a log of the match in LaTeX format"
+msgid "Save the current match in LaTeX format"
 msgstr "Ein Protokoll des Matches im 'LaTex'-Format aufzeichen"
 
 #: commands.inc:223
-msgid "Records a log of the match in text format"
+msgid "Save the current match in text format"
 msgstr "Ein Protokoll des Matches im Text-Format aufzeichen"
 
 #: commands.inc:225
-#, fuzzy
 msgid "Save the current match in PDF format"
-msgstr "Speichere die gegenwärtige Position im '.pos'-Format"
+msgstr ""
 
 #: commands.inc:227
-#, fuzzy
 msgid "Save the current match in PS format"
-msgstr "Speichere die gegenwärtige Position im '.pos'-Format"
+msgstr ""
 
 #: commands.inc:232
-#, fuzzy
 msgid ""
 "Copy the current position in HTML format to clipboard (special for BGonline)"
 msgstr ""
-"Kopiere die gegenwärtige Position im .html-Format in die Zwischenablage "
-"(speziell für GammOnline)"
+"Kopiere die gegenwärtige Position im HTML-Format in die Zwischenablage "
+"(speziell für BGonline)"
 
 #: commands.inc:236
-#, fuzzy
 msgid "Save the current position in HTML format (special for BGonline)"
 msgstr ""
-"Speichere die gegenwärtige Position im .html-Format (speziell für GammOnLine)"
+"Speichere die gegenwärtige Position im HTML-Format (speziell für BGonline)"
 
 #: commands.inc:240
 #, fuzzy
@@ -1047,7 +1037,7 @@ msgid "Save the current position in HTML format"
 msgstr "Speichere die gegenwärtige Position im '.pos'-Format"
 
 #: commands.inc:251
-msgid "Save the current position in Portable Network Graphics (PNG) format"
+msgid "Save the current position in PNG format"
 msgstr "Speichere die gegenwärtige Position im '.png'-Format"
 
 #: commands.inc:254
@@ -1063,20 +1053,19 @@ msgid "Save the current position in text format"
 msgstr "Speichere die gegenwärtige Position im Text-Format"
 
 #: commands.inc:265
-#, fuzzy
-msgid "Records a log of the session in HTML format"
-msgstr "Ein Protokoll der Sitzung im 'LaTex-Format' aufzeichen"
+msgid "Save the current session in HTML format"
+msgstr "Ein Protokoll der Sitzung im 'HTML-Format' aufzeichen"
 
 #: commands.inc:267
-msgid "Records a log of the session in LaTeX format"
+msgid "Save the current session in LaTeX format"
 msgstr "Ein Protokoll der Sitzung im 'LaTex-Format' aufzeichen"
 
 #: commands.inc:270
-msgid "Records a log of the session in text format"
+msgid "Save the current session in text format"
 msgstr "Ein Protokoll der Sitzung im 'Text-Format' aufzeichen"
 
 #: commands.inc:274 commands.inc:383
-msgid "Record a log of the game so far to a file"
+msgid "Save the current game to a file"
 msgstr "Speichere das bisherige Partie-Protokoll in eine Datei"
 
 #: commands.inc:276
@@ -1084,7 +1073,7 @@ msgid "Generate images to be used by the HTML export commands"
 msgstr "Erstelle die Images, die für den HTML-Export benötigt werden"
 
 #: commands.inc:278 commands.inc:386
-msgid "Record a log of the match so far to a file"
+msgid "Save the current match to a file"
 msgstr "Schreibe das Protokoll des bis hier gespielten Matches in eine Datei"
 
 #: commands.inc:280
@@ -1093,7 +1082,7 @@ msgid "Write the current position to a file"
 msgstr "Schreibe die gegenwärtige Position in eine Datei"
 
 #: commands.inc:282
-msgid "Record a log of the session so far to a file"
+msgid "Save the current session to a file"
 msgstr "Speichere das Protokoll der bis hier gespielten Sitzung in einer Datei"
 
 #: commands.inc:287
@@ -1250,7 +1239,7 @@ msgid "Test connexion to the external relational database"
 msgstr "Teste die externe relationale Datenbank"
 
 #: commands.inc:388
-msgid "Record the current board position to a file"
+msgid "Save the current position to a file"
 msgstr "Schreibe die gegenwärtige Position in eine Datei"
 
 #: commands.inc:390
@@ -7949,7 +7938,7 @@ msgid ""
 "Truncated rollouts are rollouts played to a certain number of moves as "
 "opposed to the end of the game or a double/pass cube action. They are faster "
 "and their results have a lower variance than full rollouts, but their "
-"accuracy depends on that of the static evaluation at the trucation point."
+"accuracy depends on that of the static evaluation at the truncation point."
 msgstr ""
 
 #: gtkgame.c:5807
@@ -8036,7 +8025,7 @@ msgstr "Bearoff-Verkürzung"
 
 #: gtkgame.c:5973
 msgid ""
-"Truncating the rollouts when reaching the bearoff databases slighly improves "
+"Truncating the rollouts when reaching the bearoff databases slightly improves "
 "the speed and decrease their variance. The first option is totally accurate "
 "and should be selected for practical use; the second one can be slightly "
 "inaccurate but is useful on average and its use is recommended."
@@ -9571,15 +9560,15 @@ msgstr "/Hilfe"
 msgid "GNU Backgammon - Annotation"
 msgstr "GNU Backgammon - Beurteilung"
 
-#: gtkpanels.c:757
-#, fuzzy, c-format
-msgid "Game %d: %d, %d Crawford"
-msgstr "Partie %d: %s, %d, %s, %d"
+#: gtkpanels.c:732
+#, c-format
+msgid "Game %d: %d - %d Crawford"
+msgstr "Partie %d: %d - %d Crawford"
 
-#: gtkpanels.c:759
-#, fuzzy, c-format
-msgid "Game %d: %d, %d"
-msgstr "Partie %d: %s, %d, %s, %d"
+#: gtkpanels.c:734
+#, c-format
+msgid "Game %d: %d - %d"
+msgstr "Partie %d: %d - %d"
 
 #: gtkpanels.c:830
 #, fuzzy

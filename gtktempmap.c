@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2002-2003 Joern Thyssen <jth@gnubg.org>
- * Copyright (C) 2003-2022 the AUTHORS
+ * Copyright (C) 2003-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,14 +33,14 @@
 #include "backgammon.h"
 #include "eval.h"
 #include "gtktempmap.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "drawboard.h"
 #include "format.h"
 #include "render.h"
 #include "renderprefs.h"
-#include "gtkboard.h"
-#include "gtkwindows.h"
-#include "gtkcube.h"
+#include "gtk/gtkboard.h"
+#include "gtk/gtkwindows.h"
+#include "gtk/gtkcube.h"
 
 #define SIZE_QUADRANT 52
 
@@ -182,17 +182,42 @@ static void
 UpdateStyle(GtkWidget * pw, const float r)
 {
 
-    GtkStyle *ps = gtk_style_copy(gtk_widget_get_style(pw));
     double *gbval;
 
     gbval = g_malloc(sizeof(*gbval));
     *gbval = 1.0 - (double)r;
     g_object_set_data_full(G_OBJECT(pw), "gbval", gbval, g_free);
 
+#if GTK_CHECK_VERSION(3,0,0)
+{
+    GtkCssProvider *provider = gtk_css_provider_new();
+    GtkStyleContext *context = gtk_widget_get_style_context(pw);
+    int gb = (int)((1.0f - r) * 255.0f);
+    gchar *css;
+
+    gb = CLAMP(gb, 0, 255);
+
+    css = g_strdup_printf("* { background-color: #ff%02x%02x; }",
+                          gb, gb);
+
+    gtk_css_provider_load_from_data(provider, css, -1, NULL);
+    gtk_style_context_add_provider(context,
+                                   GTK_STYLE_PROVIDER(provider),
+                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+    g_free(css);
+    g_object_unref(provider);
+}
+#else
+{
+    GtkStyle *ps = gtk_style_copy(gtk_widget_get_style(pw));
     ps->bg[GTK_STATE_NORMAL].red = 0xFFFF;
     ps->bg[GTK_STATE_NORMAL].blue = ps->bg[GTK_STATE_NORMAL].green = (guint16) ((1.0f - r) * 0xFFFF);
 
     gtk_widget_set_style(pw, ps);
+    g_object_unref(ps);
+}
+#endif
 
 }
 

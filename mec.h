@@ -13,8 +13,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: mec.h,v 1.4 2013/06/16 02:16:19 mdpetch Exp $
  */
 
 
@@ -24,14 +22,12 @@
 #include "matchequity.h"
 
 extern void
- mec(const float rGammonRate, const float rWinRate,
-     /* const */ float aarMetPC[2][MAXSCORE],
+mec(float rGammonRate, float rWinRate,
+     float aarMetPC[2][MAXSCORE],
      float aarMet[MAXSCORE][MAXSCORE]);
 
 extern void
-
-
-mec_pc(const float rGammonRate,
-       const float rFreeDrop2Away, const float rFreeDrop4Away, const float rWinRate, float arMetPC[MAXSCORE]);
+mec_pc(float rGammonRate,
+       float rFreeDrop2Away, float rFreeDrop4Away, float rWinRate, float arMetPC[MAXSCORE]);
 
 #endif                          /* MEC_H */

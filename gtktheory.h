@@ -13,14 +13,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtktheory.h,v 1.4 2013/06/16 02:16:17 mdpetch Exp $
  */
 
 #ifndef GTKTHEORY_H
 #define GTKTHEORY_H
 
 extern void
- GTKShowTheory(const int fActivePage);
+GTKShowTheory(int fActivePage);
 
 #endif

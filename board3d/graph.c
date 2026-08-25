@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2003-2019 Jon Kinsey <jonkinsey@gmail.com>
- * Copyright (C) 2006-2021 the AUTHORS
+ * Copyright (C) 2006-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #include "legacyGLinc.h"
 #include "fun3d.h"
 #include "renderprefs.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 #include <glib/gi18n.h>
 #include "common.h"
 #include "analysis.h"
@@ -282,7 +282,12 @@ StatGraph(GraphData * pgd)
     GtkWidget *pw;
 
     /* Drawing widget for OpenGL */
+#if GTK_CHECK_VERSION(3,0,0)
+    pw = gtk_drawing_area_new();
+    return pw;
+#else
     pw = GLWidgetCreate(realizeCB, configureCB, exposeCB, pgd);
+#endif
     if (pw == NULL)
         return NULL;
 

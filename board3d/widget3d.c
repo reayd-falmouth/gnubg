@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2003-2019 Jon Kinsey <jonkinsey@gmail.com>
- * Copyright (C) 2003-2018 the AUTHORS
+ * Copyright (C) 2003-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,13 +22,13 @@
 #include "legacyGLinc.h"
 #include "fun3d.h"
 #include "tr.h"
-#include "gtklocdefs.h"
-#include "gtkboard.h"
+#include "gtk/gtklocdefs.h"
+#include "gtk/gtkboard.h"
 
 static void
 configure_3dCB(GtkWidget * widget, void* data)
 {
-	BoardData* bd = (BoardData*)data;
+    BoardData* bd = (BoardData*)data;
     if (display_is_3d(bd->rd)) {
         static int curHeight = -1, curWidth = -1;
         GtkAllocation allocation;
@@ -37,9 +37,9 @@ configure_3dCB(GtkWidget * widget, void* data)
         width = allocation.width;
         height = allocation.height;
         if (width != curWidth || height != curHeight)
-		{
-			int viewport[4] = { 0, 0, width, height };
-			glSetViewport(viewport);
+        {
+            int viewport[4] = { 0, 0, width, height };
+            glSetViewport(viewport);
             SetupViewingVolume3d(bd, bd->bd3d, bd->rd, viewport);
 
             curWidth = width;
@@ -141,26 +141,26 @@ CreateGLWidget(BoardData * bd, int useMouseEvents)
 gboolean
 InitGTK3d(int *argc, char ***argv)
 {
-	gboolean initOkay = GLInit(argc, argv);
-	if (initOkay)
-	{
-		/* Call LoadTextureInfo to get texture details from textures.txt */
-		LoadTextureInfo();
-		SetupFlag();
-	}
+    gboolean initOkay = GLInit(argc, argv);
+    if (initOkay)
+    {
+        /* Call LoadTextureInfo to get texture details from textures.txt */
+        LoadTextureInfo();
+        SetupFlag();
+    }
 
-	return initOkay;
+    return initOkay;
 }
 
 gboolean
 RenderToBuffer3d(GtkWidget* widget, GdkEventExpose* UNUSED(eventData), void* data)
 {
-	const RenderToBufferData* renderToBufferData = (const RenderToBufferData*)data;
+    const RenderToBufferData* renderToBufferData = (const RenderToBufferData*)data;
     TRcontext *tr;
     GtkAllocation allocation;
-	BoardData3d *bd3d = renderToBufferData->bd->bd3d;
-	int fSaveBufs = bd3d->fBuffers;
-	int viewport[4] = { 0, 0, renderToBufferData->width, renderToBufferData->height };
+    BoardData3d *bd3d = renderToBufferData->bd->bd3d;
+    int fSaveBufs = bd3d->fBuffers;
+    int viewport[4] = { 0, 0, renderToBufferData->width, renderToBufferData->height };
 
     /* Sort out tile rendering stuff */
     tr = trNew();
@@ -171,8 +171,8 @@ RenderToBuffer3d(GtkWidget* widget, GdkEventExpose* UNUSED(eventData), void* dat
     trImageBuffer(tr, GL_RGB, GL_UNSIGNED_BYTE, renderToBufferData->puch);
 
     /* Sort out viewing perspective */
-	glSetViewport(viewport);
-	SetupViewingVolume3d(renderToBufferData->bd, bd3d, renderToBufferData->bd->rd, viewport);
+    glSetViewport(viewport);
+    SetupViewingVolume3d(renderToBufferData->bd, bd3d, renderToBufferData->bd->rd, viewport);
 
     if (renderToBufferData->bd->rd->planView)
         trOrtho(tr, -bd3d->horFrustrum, bd3d->horFrustrum, -bd3d->vertFrustrum, bd3d->vertFrustrum, 0.0, 5.0);
@@ -192,8 +192,8 @@ RenderToBuffer3d(GtkWidget* widget, GdkEventExpose* UNUSED(eventData), void* dat
     trDelete(tr);
 
     /* Reset viewing volume for main screen */
-	glGetIntegerv(GL_VIEWPORT, viewport);
-	SetupViewingVolume3d(renderToBufferData->bd, bd3d, renderToBufferData->bd->rd, viewport);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    SetupViewingVolume3d(renderToBufferData->bd, bd3d, renderToBufferData->bd->rd, viewport);
 
-	return FALSE;	// Don't swap buffers
+    return FALSE;	// Don't swap buffers
 }

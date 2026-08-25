@@ -51,10 +51,9 @@
 #include "SFMT.h"
 #include "isaac.h"
 #include <glib/gstdio.h>
-#include "glib-ext.h"
 
 #if USE_GTK
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #endif
 
 const char *aszRNG[NUM_RNGS] = {
@@ -188,7 +187,7 @@ InitRNGBBSFactors(char *sz0, char *sz1, rngcontext * rngctx)
         return -1;
     }
 
-    if (mpz_init_set_str(q, sz1, 10) || mpz_sgn(p) < 1) {
+    if (mpz_init_set_str(q, sz1, 10) || mpz_sgn(q) < 1) {
         mpz_clear(p);
         mpz_clear(q);
         return -1;
@@ -637,16 +636,9 @@ RNGSystemSeed(const rng rngx, void *p, unsigned long *pnSeed)
         /* Can be amended to support seeds > 32 bit */
         guint32 achState;
         mpz_t mpzn;
-
-#if GLIB_CHECK_VERSION (2,28,0)
         gint64 tv;
         tv = g_get_real_time();
         achState = (unsigned int) (((guint64)tv >> 32) ^ ((guint64)tv & 0xFFFFFFFF));
-#else
-        GTimeVal tv;
-        g_get_current_time(&tv);
-        achState = (unsigned int) tv.tv_sec ^ (unsigned int) tv.tv_usec;
-#endif
 
         mpz_init(mpzn);
         mpz_import(mpzn, 1, -1, sizeof(guint32), 0, 0, &achState);
@@ -692,15 +684,9 @@ RNGSystemSeed(const rng rngx, void *p, unsigned long *pnSeed)
 #endif
 
     if (!f) {
-#if GLIB_CHECK_VERSION (2,28,0)
         gint64 tv;
         tv = g_get_real_time();
         n = (unsigned int) (((guint64)tv >> 32) ^ ((guint64)tv & 0xFFFFFFFF));
-#else
-        GTimeVal tv;
-        g_get_current_time(&tv);
-        n = (unsigned int) tv.tv_sec ^ (unsigned int) tv.tv_usec;
-#endif
     }
 
     InitRNGSeed(n, rngx, rngctx);
@@ -796,7 +782,7 @@ RollDice(unsigned int anDice[2], rng * prng, rngcontext * rngctx)
 
     case RNG_MD5:{
             union _hash {
-                char ach[16];
+                unsigned char auch[16];
                 md5_uint32 an[2];
             } h;
 

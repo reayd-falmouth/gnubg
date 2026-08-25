@@ -874,8 +874,8 @@ msgid "Clear initialized cube action and dice roll"
 msgstr ""
 
 #: commands.inc:197
-msgid "Records a log of the game in .gam format"
-msgstr "Records a log of the game in .gam format"
+msgid "Record a log of the game in .gam format"
+msgstr "Record a log of the game in .gam format"
 
 #: commands.inc:199
 msgid "Records a log of the game in Snowie .txt format"
@@ -886,8 +886,8 @@ msgid "Records a log of the game in HTML format"
 msgstr ""
 
 #: commands.inc:203
-msgid "Records a log of the game in LaTeX format"
-msgstr "Records a log of the game in LaTeX format"
+msgid "Record a log of the game in LaTeX format"
+msgstr "Record a log of the game in LaTeX format"
 
 #: commands.inc:205
 msgid "Records a log of the game in PDF format"
@@ -902,8 +902,8 @@ msgid "Export a log of the game in text format"
 msgstr ""
 
 #: commands.inc:213
-msgid "Records a log of the match in .mat format"
-msgstr "Records a log of the match in .mat format"
+msgid "Record a log of the match in .mat format"
+msgstr "Record a log of the match in .mat format"
 
 #: commands.inc:215
 msgid "Records a log of the match in Snowie .txt format"
@@ -914,12 +914,12 @@ msgid "Records a log of the match in HTML format"
 msgstr ""
 
 #: commands.inc:220
-msgid "Records a log of the match in LaTeX format"
-msgstr "Records a log of the match in LaTeX format"
+msgid "Record a log of the match in LaTeX format"
+msgstr "Record a log of the match in LaTeX format"
 
 #: commands.inc:223
-msgid "Records a log of the match in text format"
-msgstr "Records a log of the match in text format"
+msgid "Record a log of the match in text format"
+msgstr "Record a log of the match in text format"
 
 #: commands.inc:225
 msgid "Save the current match in PDF format"
@@ -955,8 +955,8 @@ msgid "Save the current position in HTML format"
 msgstr ""
 
 #: commands.inc:251
-msgid "Save the current position in Portable Network Graphics (PNG) format"
-msgstr "Save the current position in Portable Network Graphics (PNG) format"
+msgid "Save the current position in PNG format"
+msgstr "Save the current position in PNG format"
 
 #: commands.inc:254
 msgid "Save the current position in .pos format"
@@ -975,12 +975,12 @@ msgid "Records a log of the session in HTML format"
 msgstr ""
 
 #: commands.inc:267
-msgid "Records a log of the session in LaTeX format"
-msgstr "Records a log of the session in LaTeX format"
+msgid "Record a log of the session in LaTeX format"
+msgstr "Record a log of the session in LaTeX format"
 
 #: commands.inc:270
-msgid "Records a log of the session in text format"
-msgstr "Records a log of the session in text format"
+msgid "Record a log of the session in text format"
+msgstr "Record a log of the session in text format"
 
 #: commands.inc:274 commands.inc:383
 msgid "Record a log of the game so far to a file"
@@ -7268,7 +7268,7 @@ msgid ""
 "Truncated rollouts are rollouts played to a certain number of moves as "
 "opposed to the end of the game or a double/pass cube action. They are faster "
 "and their results have a lower variance than full rollouts, but their "
-"accuracy depends on that of the static evaluation at the trucation point."
+"accuracy depends on that of the static evaluation at the truncation point."
 msgstr ""
 
 #: gtkgame.c:5807
@@ -7350,7 +7350,7 @@ msgstr "Bearoff Truncation"
 
 #: gtkgame.c:5973
 msgid ""
-"Truncating the rollouts when reaching the bearoff databases slighly improves "
+"Truncating the rollouts when reaching the bearoff databases slightly improves "
 "the speed and decrease their variance. The first option is totally accurate "
 "and should be selected for practical use; the second one can be slightly "
 "inaccurate but is useful on average and its use is recommended."
@@ -8780,14 +8780,14 @@ msgstr ""
 msgid "GNU Backgammon - Annotation"
 msgstr ""
 
-#: gtkpanels.c:757
+#: gtkpanels.c:732
 #, c-format
-msgid "Game %d: %d, %d Crawford"
+msgid "Game %d: %d - %d Crawford"
 msgstr ""
 
-#: gtkpanels.c:759
+#: gtkpanels.c:734
 #, c-format
-msgid "Game %d: %d, %d"
+msgid "Game %d: %d - %d"
 msgstr ""
 
 #: gtkpanels.c:830

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008-2009 Jon Kinsey <jonkinsey@gmail.com>
- * Copyright (C) 2008-2019 the AUTHORS
+ * Copyright (C) 2008-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ DBProviderType dbProviderType = (DBProviderType)INVALID_PROVIDER ;
 int storeGameStats = TRUE;
 
 #if defined(USE_PYTHON)
-#include "pylocdefs.h"
 
 static PyObject *pdict;
 static RowSet *ConvertPythonToRowset(PyObject * v);
@@ -63,102 +62,102 @@ static GList *SQLiteGetDatabaseList(const char *user, const char *password, cons
 static DBProvider providers[NUM_PROVIDERS] = {
 #if defined(USE_SQLITE)
     {
-	.Connect = SQLiteConnect,
-	.Disconnect = SQLiteDisconnect,
-	.Select = SQLiteSelect,
-	.UpdateCommand = SQLiteUpdateCommand,
-	.Commit = SQLiteCommit,
-	.GetDatabaseList = SQLiteGetDatabaseList,
-	.DeleteDatabase = SQLiteDeleteDatabase,
-	.name = "SQLite",
-	.shortname = "SQLite",
-	.desc = N_("Direct SQLite3 connection"),
-	.HasUserDetails = FALSE,
-	.storeGameStats = TRUE,
-	.database = NULL,
-	.username = NULL,
-	.password = NULL,
-	.hostname = NULL
+        .Connect = SQLiteConnect,
+        .Disconnect = SQLiteDisconnect,
+        .Select = SQLiteSelect,
+        .UpdateCommand = SQLiteUpdateCommand,
+        .Commit = SQLiteCommit,
+        .GetDatabaseList = SQLiteGetDatabaseList,
+        .DeleteDatabase = SQLiteDeleteDatabase,
+        .name = "SQLite",
+        .shortname = "SQLite",
+        .desc = N_("Direct SQLite3 connection"),
+        .HasUserDetails = FALSE,
+        .storeGameStats = TRUE,
+        .database = NULL,
+        .username = NULL,
+        .password = NULL,
+        .hostname = NULL
     },
 #endif
 #if defined(USE_PYTHON)
 #if !defined(USE_SQLITE)
     {
-	.Connect = PySQLiteConnect,
-	.Disconnect = PyDisconnect,
-	.Select = PySelect,
-	.UpdateCommand = PyUpdateCommand,
-	.Commit = PyCommit,
-	.GetDatabaseList = SQLiteGetDatabaseList,
-	.DeleteDatabase = SQLiteDeleteDatabase,
-	.name = "SQLite (Python)",
-	.shortname = "PythonSQLite",
-	.desc = N_("SQLite3 connection via Python"),
-	.HasUserDetails = FALSE,
-	.storeGameStats = TRUE,
-	.database = NULL,
-	.username = NULL,
-	.password = NULL,
-	.hostname = NULL
+        .Connect = PySQLiteConnect,
+        .Disconnect = PyDisconnect,
+        .Select = PySelect,
+        .UpdateCommand = PyUpdateCommand,
+        .Commit = PyCommit,
+        .GetDatabaseList = SQLiteGetDatabaseList,
+        .DeleteDatabase = SQLiteDeleteDatabase,
+        .name = "SQLite (Python)",
+        .shortname = "PythonSQLite",
+        .desc = N_("SQLite3 connection via Python"),
+        .HasUserDetails = FALSE,
+        .storeGameStats = TRUE,
+        .database = NULL,
+        .username = NULL,
+        .password = NULL,
+        .hostname = NULL
     },
 #endif
     {
-	.Connect = PyMySQLConnect,
-	.Disconnect = PyDisconnect,
-	.Select = PySelect,
-	.UpdateCommand = PyUpdateCommand,
-	.Commit = PyCommit,
-	.GetDatabaseList = PyMySQLGetDatabaseList,
-	.DeleteDatabase = PyMySQLDeleteDatabase,
-	.name = "MySQL (Python)",
-	.shortname = "PythonMySQL",
-	.desc = N_("MySQL/MariaDB connection via MySQLdb Python module"),
-	.HasUserDetails = TRUE,
-	.storeGameStats = TRUE,
-	.database = NULL,
-	.username = NULL,
-	.password = NULL,
-	.hostname = NULL
+        .Connect = PyMySQLConnect,
+        .Disconnect = PyDisconnect,
+        .Select = PySelect,
+        .UpdateCommand = PyUpdateCommand,
+        .Commit = PyCommit,
+        .GetDatabaseList = PyMySQLGetDatabaseList,
+        .DeleteDatabase = PyMySQLDeleteDatabase,
+        .name = "MySQL (Python)",
+        .shortname = "PythonMySQL",
+        .desc = N_("MySQL/MariaDB connection via MySQLdb Python module"),
+        .HasUserDetails = TRUE,
+        .storeGameStats = TRUE,
+        .database = NULL,
+        .username = NULL,
+        .password = NULL,
+        .hostname = NULL
     },
     {
-	.Connect = PyPostgreConnect,
-	.Disconnect = PyDisconnect,
-	.Select = PySelect,
-	.UpdateCommand = PyUpdateCommand,
-	.Commit = PyCommit,
-	.GetDatabaseList = PyPostgreGetDatabaseList,
-	.DeleteDatabase = PyPostgreDeleteDatabase,
-	.name = "PostgreSQL (Python)",
-	.shortname = "PythonPostgre",
-	.desc = N_("PostgreSQL connection via PyGreSQL Python module"),
-	.HasUserDetails = TRUE,
-	.storeGameStats = TRUE,
-	.database = NULL,
-	.username = NULL,
-	.password = NULL,
-	.hostname = NULL
+        .Connect = PyPostgreConnect,
+        .Disconnect = PyDisconnect,
+        .Select = PySelect,
+        .UpdateCommand = PyUpdateCommand,
+        .Commit = PyCommit,
+        .GetDatabaseList = PyPostgreGetDatabaseList,
+        .DeleteDatabase = PyPostgreDeleteDatabase,
+        .name = "PostgreSQL (Python)",
+        .shortname = "PythonPostgre",
+        .desc = N_("PostgreSQL connection via PyGreSQL Python module"),
+        .HasUserDetails = TRUE,
+        .storeGameStats = TRUE,
+        .database = NULL,
+        .username = NULL,
+        .password = NULL,
+        .hostname = NULL
     }
 #endif
 };
 #else
-DBProvider providers[1] = {
+static DBProvider providers[1] = {
     {
-	.Connect = NULL,
-	.Disconnect = NULL,
-	.Select = NULL,
-	.UpdateCommand = NULL,
-	.Commit = NULL,
-	.GetDatabaseList = NULL,
-	.DeleteDatabase = NULL,
-	.name = "No Providers",
-	.shortname = "No Providers",
-	.desc = N_("No database providers"),
-	.HasUserDetails = FALSE,
-	.storeGameStats = FALSE,
-	.database = NULL,
-	.username = NULL,
-	.password = NULL,
-	.hostname = NULL
+        .Connect = NULL,
+        .Disconnect = NULL,
+        .Select = NULL,
+        .UpdateCommand = NULL,
+        .Commit = NULL,
+        .GetDatabaseList = NULL,
+        .DeleteDatabase = NULL,
+        .name = "No Providers",
+        .shortname = "No Providers",
+        .desc = N_("No database providers"),
+        .HasUserDetails = FALSE,
+        .storeGameStats = FALSE,
+        .database = NULL,
+        .username = NULL,
+        .password = NULL,
+        .hostname = NULL
     }
 };
 #endif
@@ -213,12 +212,12 @@ FreeRowset(RowSet * pRow)
                 for (j = 0; j < pRow->cols; j++) {
                     g_free(pRow->data[i][j]);
                 }
-            g_free(pRow->data[i]);
+                g_free(pRow->data[i]);
             }
         }
 
         g_free(pRow->data);
-    }   
+    }
 
     g_free(pRow);
 }
@@ -303,7 +302,7 @@ SetDBParam(const char *db, const char *key, const char *value)
 
     if (!StrCaseCmp(key, "database")) {
         g_free(providers[type].database);
-        providers[type].database= g_strdup(value);
+        providers[type].database = g_strdup(value);
     } else if (!StrCaseCmp(key, "username")) {
         g_free(providers[type].username);
         providers[type].username = g_strdup(value);
@@ -312,7 +311,7 @@ SetDBParam(const char *db, const char *key, const char *value)
         providers[type].password = g_strdup(value);
     } else if (!StrCaseCmp(key, "hostname")) {
         g_free(providers[type].hostname);
-	providers[type].hostname = g_strdup(value);
+        providers[type].hostname = g_strdup(value);
     }
 }
 
@@ -326,7 +325,7 @@ void
 SetDBSettings(DBProviderType dbType, const char *database, const char *user, const char *password, const char *hostname)
 {
     dbProviderType = dbType;
-    
+
     g_free(providers[dbProviderType].database);
     providers[dbProviderType].database = g_strdup(database);
 
@@ -406,7 +405,7 @@ PyMySQLConnect(const char *dbfilename, const char *user, const char *password, c
     /* Connect to database */
     ret = PyRun_String(buf, Py_eval_input, pdict, pdict);
     g_free(buf);
-    if (ret == NULL || !PyInt_Check(ret) || (iret = PyInt_AsLong(ret)) < 0) {
+    if (ret == NULL || !PyLong_Check(ret) || (iret = PyLong_AsLong(ret)) < 0) {
         PyErr_Print();
         return -1;
     } else if (iret == 0L) {    /* New database - populate */
@@ -426,7 +425,7 @@ PyPostgreConnect(const char *dbfilename, const char *user, const char *password,
     /* Connect to database */
     ret = PyRun_String(buf, Py_eval_input, pdict, pdict);
     g_free(buf);
-    if (ret == NULL || !PyInt_Check(ret) || (iret = PyInt_AsLong(ret)) < 0) {
+    if (ret == NULL || !PyLong_Check(ret) || (iret = PyLong_AsLong(ret)) < 0) {
         PyErr_Print();
         return -1;
     } else if (iret == 0L) {    /* New database - populate */
@@ -527,8 +526,8 @@ ConvertPythonToRowset(PyObject * v)
     RowSet *pRow;
     Py_ssize_t row, col;
     int i, j;
-    if (PyInt_Check(v)) {
-        if (PyInt_AsLong(v) != 0)
+    if (PyLong_Check(v)) {
+        if (PyLong_AsLong(v) != 0)
             outputerrf(_("unexpected rowset error"));
         return NULL;
     }
@@ -571,9 +570,9 @@ ConvertPythonToRowset(PyObject * v)
                     g_strlcpy(buf, PyBytes_AsString(PyUnicode_AsUTF8String(e2)), sizeof(buf));
                 else if (PyBytes_Check(e2))
                     g_strlcpy(buf, PyBytes_AsString(e2), sizeof(buf));
-                else if (PyInt_Check(e2) || PyLong_Check(e2)
+                else if (PyLong_Check(e2) || PyLong_Check(e2)
                          || !StrCaseCmp(e2->ob_type->tp_name, "Decimal"))       /* Not sure how to check for decimal type directly */
-                    sprintf(buf, "%ld", PyInt_AsLong(e2));
+                    sprintf(buf, "%ld", PyLong_AsLong(e2));
                 else if (PyFloat_Check(e2))
                     sprintf(buf, "%.4f", PyFloat_AsDouble(e2));
                 else if (e2 == Py_None)

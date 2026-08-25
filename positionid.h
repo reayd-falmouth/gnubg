@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: positionid.h,v 1.38 2014/10/07 07:14:29 plm Exp $
  */
 
 #ifndef POSITIONID_H
@@ -38,7 +36,7 @@ extern void PositionFromKey(TanBoard anBoard, const positionkey * pkey);
 extern void PositionFromKeySwapped(TanBoard anBoard, const positionkey * pkey);
 
 /* Return 1 for success, 0 for invalid id */
-extern int PositionFromID(TanBoard anBoard, const char *szID);
+extern int PositionFromID(TanBoard anBoard, const char *pchEnc);
 
 extern void PositionFromBearoff(unsigned int anBoard[], unsigned int usID,
                                 unsigned int nPoints, unsigned int nChequers);
@@ -56,9 +54,9 @@ extern int CheckPosition(const TanBoard anBoard);
 
 extern void ClosestLegalPosition(TanBoard anBoard);
 
-extern unsigned int Combination(const unsigned int n, const unsigned int r);
+extern unsigned int Combination(unsigned int n, unsigned int r);
 
-extern unsigned char Base64(const unsigned char ch);
+extern unsigned char Base64(unsigned char ch);
 
 extern void oldPositionFromKey(TanBoard anBoard, const oldpositionkey * pkey);
 extern void oldPositionKey(const TanBoard anBoard, oldpositionkey * pkey);

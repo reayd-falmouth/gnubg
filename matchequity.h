@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: matchequity.h,v 1.31 2020/07/15 20:45:47 plm Exp $
  */
 
 #ifndef MATCHEQUITY_H
@@ -38,7 +36,7 @@ typedef struct {
 /* macros for getting match equities */
 
 #define GET_MET(i,j,aafMET) ( ( (i) < 0 ) ? 1.0f : ( ( (j) < 0 ) ? 0.0f : \
-						 (aafMET [ i ][ j ]) ) )
+                                                 (aafMET [ i ][ j ]) ) )
 #define GET_METPostCrawford(i,afBtilde) ( (i) < 0 ? 1.0f : afBtilde [ i ] )
 
 /* current match equity table used by gnubg */
@@ -56,14 +54,14 @@ extern float aaaafGammonPricesPostCrawford[MAXCUBELEVEL]
 extern metinfo miCurrent;
 
 extern float
-getME(const int nScore0, const int nScore1, const int nMatchTo,
-      const int fPlayer,
-      const int nPoints, const int fWhoWins,
-      const int fCrawford, float aafMET[MAXSCORE][MAXSCORE], float aafMETPostCrawford[2][MAXSCORE]);
+getME(int nScore0, int nScore1, int nMatchTo,
+      int fPlayer,
+      int nPoints, int fWhoWins,
+      int fCrawford, float aafMET[MAXSCORE][MAXSCORE], float aafMETPostCrawford[2][MAXSCORE]);
 
 extern float
-getMEAtScore(const int nScore0, const int nScore1, const int nMatchTo,
-             const int fPlayer, const int fCrawford,
+getMEAtScore(int nScore0, int nScore1, int nMatchTo,
+             int fPlayer, int fCrawford,
              float aafMET[MAXSCORE][MAXSCORE], float aafMETPostCrawford[2][MAXSCORE]);
 
 /* Initialise match equity table */
@@ -82,9 +80,9 @@ extern float
 extern void
  invertMET(void);
 
-/* enums for the entries in the arrays returned by getMEMultiple 
+/* enums for the entries in the arrays returned by getMEMultiple
  * DoublePass, DoubleTakeWin, DoubleTakeWinGammon... for the first 8
- * then the same values using CubePrimeValues 
+ * then the same values using CubePrimeValues
  * DP = Double/Pass, DTWG = double/take/wing gammon, etc
  * DPP = double/Pass with CubePrime values, etc.
  */
@@ -105,10 +103,10 @@ typedef enum {
 } met_indices;
 
 extern void
-getMEMultiple(const int nScore0, const int nScore1, const int nMatchTo,
-              const int nCube,
-              const int nCubePrime0, const int nCubePrime1,
-              const int fCrawford,
+getMEMultiple(int nScore0, int nScore1, int nMatchTo,
+              int nCube,
+              int nCubePrime0, int nCubePrime1,
+              int fCrawford,
               float aafMET[MAXSCORE][MAXSCORE], float aafMETPostCrawford[2][MAXSCORE], float *player0, float *player1);
 
-#endif
+#endif                          /* MATCHEQUITY_H */

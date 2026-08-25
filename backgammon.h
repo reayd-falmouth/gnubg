@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1999-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 1999-2023 the AUTHORS
+ * Copyright (C) 1999-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -241,6 +241,7 @@ typedef struct {
     movelist *pml;
     ConstTanBoard pboard;
     positionkey *keyMove;
+    int fAnalyse;
     float rThr;
     const cubeinfo *pci;
     const evalcontext *pec;
@@ -255,20 +256,20 @@ typedef struct {
 } scoreData;
 
 /* Defining structures for AnalyzeFileSetting.
-Other defined structures throughout the files: 
-- apwAnalyzeFileSetting (gtkgame.c); 
-- "set analysis filesetting" (gtkgame.c); 
+Other defined structures throughout the files:
+- apwAnalyzeFileSetting (gtkgame.c);
+- "set analysis filesetting" (gtkgame.c);
 - CommandSetAnalysisFileSetting (backgammon.h)
 */
 typedef enum {
-    AnalyzeFileBatch, 
-    AnalyzeFileRegular, 
-    AnalyzeFileSmart, 
+    AnalyzeFileBatch,
+    AnalyzeFileRegular,
+    AnalyzeFileSmart,
     NUM_AnalyzeFileSettings
     } analyzeFileSetting;
 extern analyzeFileSetting AnalyzeFileSettingDef;
 extern const char* aszAnalyzeFileSetting[NUM_AnalyzeFileSettings];
-extern const char* aszAnalyzeFileSettingCommands[NUM_AnalyzeFileSettings]; 
+extern const char* aszAnalyzeFileSettingCommands[NUM_AnalyzeFileSettings];
 
 typedef void (*AsyncFun) (void *);
 
@@ -459,17 +460,17 @@ extern char *SetupLanguage(const char *newLangCode);
 extern command *FindHelpCommand(command * pcBase, char *sz, char *pchCommand, char *pchUsage);
 extern float ParseReal(char **ppch);
 extern int AnalyzeMove(moverecord * pmr, matchstate * pms,
-                       const listOLD * plGame, statcontext * psc,
+                       const listOLD * plParentGame, statcontext * psc,
                        const evalsetup * pesChequer, evalsetup * pesCube,
                        movefilter aamf[MAX_FILTER_PLIES][MAX_FILTER_PLIES],
                        const int afAnalysePlayers[2], float *doubleError);
 extern void EvaluateRoll(float ar[NUM_ROLLOUT_OUTPUTS], int nDie1, int nDie2, const TanBoard anBoard,
                          const cubeinfo * pci, const evalcontext * pec);
 extern int CompareNames(char *sz0, char *sz1);
-extern int confirmOverwrite(const char *sz, const int f);
+extern int confirmOverwrite(const char *sz, int f);
 extern int EPC(const TanBoard anBoard, float *arEPC, float *arMu,
-               float *arSigma, int *pfSource, const int fOnlyBearoff);
-extern int EvalCmp(const evalcontext *, const evalcontext *, const int);
+               float *arSigma, int *pfSource, int fOnlyBearoff);
+extern int EvalCmp(const evalcontext *E1, const evalcontext *E2, int nElements);
 extern int getFinalScore(int *anScore);
 extern int GetInputYN(char *szPrompt);
 extern int GiveAdvice(skilltype Skill);
@@ -498,10 +499,10 @@ extern void FixMatchState(matchstate * pms, const moverecord * pmr);
 extern void FreeMatch(void);
 extern void GetMatchStateCubeInfo(cubeinfo * pci, const matchstate * pms);
 extern void HandleCommand(char *sz, command * ac);
-extern void InitBoard(TanBoard anBoard, const bgvariation bgv);
+extern void InitBoard(TanBoard anBoard, bgvariation bgv);
 extern void PortableSignal(int nSignal, void (*p) (int), psighandler * pOld, int fRestart);
 extern void PortableSignalRestore(int nSignal, psighandler * p);
-extern void PrintCheatRoll(const int fPlayer, const int n);
+extern void PrintCheatRoll(int fPlayer, int n);
 extern void ProgressEnd(void);
 extern void ProgressStart(const char *sz);
 extern void ProgressStartValue(char *sz, int iMax);
@@ -1049,9 +1050,7 @@ extern int fMatchCancelled;
 extern int fJustSwappedPlayers;
 
 extern void ProcessEvents(void);
-#if !defined(USE_MULTITHREAD)
-extern void CallbackProgress(void);
-#endif
+
 extern void SetRNG(rng * prng, rngcontext * rngctx, rng rngNew, char *szSeed);
 extern int check_resigns(cubeinfo * pci);
 extern int quick_roll(void);

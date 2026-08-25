@@ -18,13 +18,13 @@
 #include <glib/gi18n.h>
 
 typedef struct {
-	char* Name;
-	char* Type;
+    char *Name;
+    char *Type;
 } credEntry;
 
 typedef struct {
-	const char* Title;
-	credEntry *Entry;
+    const char *Title;
+    credEntry *Entry;
 } credits;
 
 extern credEntry ceAuthors[];
@@ -38,4 +38,3 @@ extern credits creditList[];
 extern const char aszAUTHORS[];
 
 extern const char aszCOPYRIGHT[];
-

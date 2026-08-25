@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2003 Joern Thyssen <jth@gnubg.org>
- * Copyright (C) 2003-2018 the AUTHORS
+ * Copyright (C) 2003-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,9 @@
 #include "multithread.h"
 
 #if defined(USE_GTK)
-#include "gtkgame.h"
-#include "gtkwindows.h"
+#include "gtk/gtkgame.h"
+#include "gtk/gtkwindows.h"
+#include "gtk/gtkutil.h"
 typedef enum {
     TITLE_C, RANK_C, TRIALS_C, WIN_C, WIN_G_C, WIN_BG_C, LOSE_G_C, LOSE_BG_C, CLESS_C, CFUL_C, CFUL_S_C, JSD_C,
     N_ROLLOUT_COLS
@@ -245,7 +246,7 @@ GTKStatPageWin(const rolloutstat * prs, const int cGames)
 
     pwLabel = gtk_label_new(_("Win statistics"));
 
-    gtk_box_pack_start(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
 
     /* create treeview */
     model = create_win_model(prs, cGames, &cGamesCount);
@@ -253,7 +254,7 @@ GTKStatPageWin(const rolloutstat * prs, const int cGames)
     g_object_unref(model);
     add_stat_columns(GTK_TREE_VIEW(treeview), _("Cube"), headers, 3);
 
-    gtk_box_pack_start(GTK_BOX(pw), treeview, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pw), treeview, TRUE, TRUE, 0);
 
     /* Truncated should be the number of games truncated at the
      * 2-sided bearoff database, but there is another possible
@@ -267,7 +268,9 @@ GTKStatPageWin(const rolloutstat * prs, const int cGames)
                          cGames);
 
     pwLabel = gtk_label_new(sz);
-    gtk_box_pack_start(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
+
+    box_append_compat(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
+
     g_free(sz);
 
     return pw;
@@ -340,7 +343,7 @@ GTKStatPageCube(const rolloutstat * prs, const int cGames)
 
     pwLabel = gtk_label_new(_("Cube statistics"));
 
-    gtk_box_pack_start(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
 
     /* create treeview */
     model = create_cube_model(prs, cGames, anTotal);
@@ -348,20 +351,20 @@ GTKStatPageCube(const rolloutstat * prs, const int cGames)
     g_object_unref(model);
     add_stat_columns(GTK_TREE_VIEW(treeview), _("Cube"), headers, 2);
 
-    gtk_box_pack_start(GTK_BOX(pw), treeview, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pw), treeview, TRUE, TRUE, 0);
 
     if (anTotal[1] + anTotal[0]) {
         sprintf(sz, _("Cube efficiency for %s: %7.4f"), ap[0].szName,
                 (float) anTotal[0] / (float) (anTotal[1] + anTotal[0]));
         pwLabel = gtk_label_new(sz);
-        gtk_box_pack_start(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
+        box_append_compat(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
     }
 
     if (anTotal[2] + anTotal[3]) {
         sprintf(sz, _("Cube efficiency for %s: %7.4f"), ap[1].szName,
                 (float) anTotal[2] / (float) (anTotal[3] + anTotal[2]));
         pwLabel = gtk_label_new(sz);
-        gtk_box_pack_start(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
+        box_append_compat(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
     }
     return pw;
 
@@ -423,7 +426,7 @@ GTKStatPageBearoff(const rolloutstat * prs, const int UNUSED(cGames))
 
     pwLabel = gtk_label_new(_("Bearoff statistics"));
 
-    gtk_box_pack_start(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
 
     /* create treeview */
     model = create_bearoff_model(prs);
@@ -431,7 +434,7 @@ GTKStatPageBearoff(const rolloutstat * prs, const int UNUSED(cGames))
     g_object_unref(model);
     add_stat_columns(GTK_TREE_VIEW(treeview), "", headers, 1);
 
-    gtk_box_pack_start(GTK_BOX(pw), treeview, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pw), treeview, TRUE, TRUE, 0);
 
     return pw;
 }
@@ -487,7 +490,7 @@ GTKStatPageClosedOut(const rolloutstat * prs, const int UNUSED(cGames))
 
     pwLabel = gtk_label_new(_("Close-out statistics"));
 
-    gtk_box_pack_start(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
 
     /* create treeview */
     model = create_closed_out_model(prs);
@@ -495,7 +498,7 @@ GTKStatPageClosedOut(const rolloutstat * prs, const int UNUSED(cGames))
     g_object_unref(model);
     add_stat_columns(GTK_TREE_VIEW(treeview), "", headers, 1);
 
-    gtk_box_pack_start(GTK_BOX(pw), treeview, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pw), treeview, TRUE, TRUE, 0);
 
     return pw;
 
@@ -557,7 +560,7 @@ GTKStatPageHit(const rolloutstat * prs, const int cGames)
 
     pwLabel = gtk_label_new(_("Hit statistics"));
 
-    gtk_box_pack_start(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), pwLabel, FALSE, FALSE, 4);
 
     /* create treeview */
     model = create_hit_model(prs, cGames);
@@ -565,7 +568,7 @@ GTKStatPageHit(const rolloutstat * prs, const int cGames)
     g_object_unref(model);
     add_stat_columns(GTK_TREE_VIEW(treeview), "", headers, 1);
 
-    gtk_box_pack_start(GTK_BOX(pw), treeview, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pw), treeview, TRUE, TRUE, 0);
 
     return pw;
 
@@ -595,17 +598,23 @@ GTKRolloutStatPage(const rolloutstat * prs, const int cGames)
     pwHit = GTKStatPageHit(prs, cGames);
     pwClosedOut = GTKStatPageClosedOut(prs, cGames);
 
+#if GTK_CHECK_VERSION(4,0,0)
+    psw = gtk_scrolled_window_new();
+#else
     psw = gtk_scrolled_window_new(NULL, NULL);
+#endif
 
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(psw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-    gtk_box_pack_start(GTK_BOX(pw), pwWin, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pw), pwCube, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pw), pwBearoff, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pw), pwClosedOut, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pw), pwHit, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pw), pwWin, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pw), pwCube, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pw), pwBearoff, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pw), pwClosedOut, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pw), pwHit, FALSE, FALSE, 0);
 
-#if GTK_CHECK_VERSION(3, 8, 0)
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(psw), pw);
+#elif GTK_CHECK_VERSION(3,8,0)
     gtk_container_add(GTK_CONTAINER(psw), pw);
 #else
     gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(psw), pw);
@@ -645,9 +654,20 @@ GTKViewRolloutStatistics(GtkWidget * UNUSED(widget), gpointer data)
 
     pwNotebook = gtk_notebook_new();
 
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_widget_set_margin_top(pwNotebook, 4);
+    gtk_widget_set_margin_bottom(pwNotebook, 4);
+    gtk_widget_set_margin_start(pwNotebook, 4);
+    gtk_widget_set_margin_end(pwNotebook, 4);
+#else
     gtk_container_set_border_width(GTK_CONTAINER(pwNotebook), 4);
+#endif
 
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_box_append(GTK_BOX(DialogArea(pwDialog, DA_MAIN)), pwNotebook);
+#else
     gtk_container_add(GTK_CONTAINER(DialogArea(pwDialog, DA_MAIN)), pwNotebook);
+#endif
 
     for (i = 0; i < nRollouts; i++) {
         GtkTreeIter iter;
@@ -786,12 +806,27 @@ GTKRolloutProgressStart(const cubeinfo * UNUSED(pci), const int n,
     pwButtons = DialogArea(prp->pwRolloutDialog, DA_BUTTONS);
     prp->pwRolloutOK = DialogArea(prp->pwRolloutDialog, DA_OK);
 
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_box_append(GTK_BOX(pwButtons), prp->pwRolloutStop);
+#else
     gtk_container_add(GTK_CONTAINER(pwButtons), prp->pwRolloutStop);
-    if (multiple)
-        gtk_container_add(GTK_CONTAINER(pwButtons), prp->pwRolloutStopAll);
+#endif
 
-    if (aars && (prc->nGamesDone == 0))
+    if (multiple) {
+#if GTK_CHECK_VERSION(4,0,0)
+        gtk_box_append(GTK_BOX(pwButtons), prp->pwRolloutStopAll);
+#else
+        gtk_container_add(GTK_CONTAINER(pwButtons), prp->pwRolloutStopAll);
+#endif
+    }
+
+    if (aars && (prc->nGamesDone == 0)) {
+#if GTK_CHECK_VERSION(4,0,0)
+        gtk_box_append(GTK_BOX(pwButtons), prp->pwRolloutViewStat);
+#else
         gtk_container_add(GTK_CONTAINER(pwButtons), prp->pwRolloutViewStat);
+#endif
+    }
 
     gtk_widget_set_sensitive(prp->pwRolloutOK, FALSE);
     gtk_widget_set_sensitive(prp->pwRolloutViewStat, FALSE);
@@ -819,8 +854,8 @@ GTKRolloutProgressStart(const cubeinfo * UNUSED(pci), const int n,
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR(prp->pwRolloutProgress), "");
 #endif
 
-    gtk_box_pack_start(GTK_BOX(pwVbox), prp->pwRolloutResult, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(pwVbox), prp->pwRolloutProgress, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwVbox), prp->pwRolloutResult, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwVbox), prp->pwRolloutProgress, FALSE, FALSE, 0);
 
     /* time elapsed and left */
 
@@ -829,23 +864,29 @@ GTKRolloutProgressStart(const cubeinfo * UNUSED(pci), const int n,
 #else
     pwhbox = gtk_hbox_new(FALSE, 4);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwVbox), pwhbox, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwVbox), pwhbox, FALSE, FALSE, 0);
 
-    gtk_box_pack_start(GTK_BOX(pwhbox), gtk_label_new(_("Time elapsed")), FALSE, FALSE, 4);
-    gtk_box_pack_start(GTK_BOX(pwhbox), prp->pwElapsed = gtk_label_new(_("n/a")), FALSE, FALSE, 4);
-    gtk_box_pack_start(GTK_BOX(pwhbox), gtk_label_new(_("Estimated time left")), FALSE, FALSE, 4);
-    gtk_box_pack_start(GTK_BOX(pwhbox), prp->pwLeft = gtk_label_new(_("n/a")), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwhbox), gtk_label_new(_("Time elapsed")), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwhbox), prp->pwElapsed = gtk_label_new(_("n/a")), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwhbox), gtk_label_new(_("Estimated time left")), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwhbox), prp->pwLeft = gtk_label_new(_("n/a")), FALSE, FALSE, 4);
     if (asz && asz[0] && *asz[0])
         sz = g_strdup_printf(_("Estimated SE for \"%s\" after %u trials "), asz[0], prc->nTrials);
     else
         sz = g_strdup_printf(_("Estimated SE after %u trials "), prc->nTrials);
 
-    gtk_box_pack_start(GTK_BOX(pwhbox), gtk_label_new(sz), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwhbox), gtk_label_new(sz), FALSE, FALSE, 4);
     g_free(sz);
-    gtk_box_pack_start(GTK_BOX(pwhbox), prp->pwSE = gtk_label_new(_("n/a")), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwhbox), prp->pwSE = gtk_label_new(_("n/a")), FALSE, FALSE, 4);
 
+
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_box_append(GTK_BOX(DialogArea(prp->pwRolloutDialog, DA_MAIN)), pwVbox);
+    gtk_widget_show(prp->pwRolloutDialog);
+#else
     gtk_container_add(GTK_CONTAINER(DialogArea(prp->pwRolloutDialog, DA_MAIN)), pwVbox);
     gtk_widget_show_all(prp->pwRolloutDialog);
+#endif
 
     /* record start time */
     time(&prp->tStart);
@@ -984,11 +1025,17 @@ GTKRolloutProgressEnd(void **pp, gboolean destroy)
     g_free(gsz);
 
     g_signal_handler_disconnect(G_OBJECT(prp->pwRolloutDialog), prp->nRolloutSignal);
-    if (destroy)
+    if (destroy) {
+#if GTK_CHECK_VERSION(4,0,0)
+        gtk_window_destroy(GTK_WINDOW(prp->pwRolloutDialog));
+#else
         gtk_widget_destroy(prp->pwRolloutDialog);
-    else {
+#endif
+    } else {
+#if !GTK_CHECK_VERSION(4,0,0)
         g_signal_connect(G_OBJECT(prp->pwRolloutDialog), "destroy", G_CALLBACK(gtk_main_quit), NULL);
         gtk_main();
+#endif
     }
 
     prp->pwRolloutProgress = NULL;

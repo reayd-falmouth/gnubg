@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2016-2019 Jon Kinsey <jonkinsey@gmail.com>
- * Copyright (C) 2019-2020 the AUTHORS
+ * Copyright (C) 2019-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

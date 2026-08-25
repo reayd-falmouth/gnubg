@@ -1040,9 +1040,8 @@ msgid "Records a log of the session in HTML format"
 msgstr ""
 
 #: commands.inc:267
-#, fuzzy
-msgid "Records a log of the session in LaTeX format"
-msgstr "Los tableros se mostrarán en formato simple.\n"
+msgid "Record a log of the session in LaTeX format"
+msgstr ""
 
 #: commands.inc:270
 msgid "Records a log of the session in text format"
@@ -1061,9 +1060,8 @@ msgid "Record a log of the match so far to a file"
 msgstr ""
 
 #: commands.inc:280
-#, fuzzy
 msgid "Write the current position to a file"
-msgstr "Posición actual"
+msgstr ""
 
 #: commands.inc:282
 msgid "Record a log of the session so far to a file"
@@ -8024,7 +8022,7 @@ msgid ""
 "Truncated rollouts are rollouts played to a certain number of moves as "
 "opposed to the end of the game or a double/pass cube action. They are faster "
 "and their results have a lower variance than full rollouts, but their "
-"accuracy depends on that of the static evaluation at the trucation point."
+"accuracy depends on that of the static evaluation at the truncation point."
 msgstr ""
 
 #: gtkgame.c:5807
@@ -8111,7 +8109,7 @@ msgstr "Truncado de saques de fichas («bear-off»)"
 
 #: gtkgame.c:5973
 msgid ""
-"Truncating the rollouts when reaching the bearoff databases slighly improves "
+"Truncating the rollouts when reaching the bearoff databases slightly improves "
 "the speed and decrease their variance. The first option is totally accurate "
 "and should be selected for practical use; the second one can be slightly "
 "inaccurate but is useful on average and its use is recommended."
@@ -9634,15 +9632,15 @@ msgstr "Ayuda"
 msgid "GNU Backgammon - Annotation"
 msgstr "GNU Backgammon - Evaluación"
 
-#: gtkpanels.c:757
-#, fuzzy, c-format
-msgid "Game %d: %d, %d Crawford"
-msgstr "Juego %d: %d, %d"
-
-#: gtkpanels.c:759
+#: gtkpanels.c:732
 #, c-format
-msgid "Game %d: %d, %d"
-msgstr "Juego %d: %d, %d"
+msgid "Game %d: %d - %d Crawford"
+msgstr "Juego %d: %d - %d Crawford"
+
+#: gtkpanels.c:734
+#, c-format
+msgid "Game %d: %d - %d"
+msgstr "Juego %d: %d - %d"
 
 #: gtkpanels.c:830
 #, fuzzy

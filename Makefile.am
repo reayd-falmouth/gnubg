@@ -127,7 +127,6 @@ gnubg_SOURCES = \
 		positionid.h \
 		progress.c \
 		progress.h \
-		pylocdefs.h \
 		randomorg.h \
 		randomorg.c \
 		relational.c \
@@ -156,17 +155,21 @@ gnubg_SOURCES = \
 		util.c 
 
 if USE_GTK
-gnubg_SOURCES += gtkboard.c gtkboard.h gtkgame.c gtkgame.h gtkfile.c gtkfile.h \
-		 gtkprefs.c gtkprefs.h gtk-multiview.c gtk-multiview.h gtktheory.c \
-		 gtktheory.h gtkexport.c gtkexport.h gtkcube.c gtkcube.h \
-		 gtkchequer.c gtkchequer.h gtkrace.c gtkrace.h gtkmovefilter.c \
-		 gtkmovefilter.h gtkmet.c gtkmet.h gtksplash.c \
+gnubg_SOURCES += gtk/gtkboard.c gtk/gtkboard.h gtk/gtkgame.c gtk/gtkgame.h gtk/gtkfile.c gtk/gtkfile.h \
+		 gtk/gtkprefs.c gtk/gtkprefs.h gtk/gtk-multiview.c gtk/gtk-multiview.h \
+		 gtktheory.c gtktheory.h \
+		 gtk/gtkexport.c gtk/gtkexport.h gtk/gtkcube.c gtk/gtkcube.h \
+		 gtk/gtkchequer.c gtk/gtkchequer.h gtkrace.c gtkrace.h \
+		 gtk/gtkmovefilter.c gtk/gtkmovefilter.h \
+		 gtk/gtkmet.c gtk/gtkmet.h gtksplash.c \
 		 gtksplash.h gtkrolls.c gtkrolls.h gtktempmap.c gtktempmap.h \
-		 gtkoptions.h gtkoptions.c gtktoolbar.h gtktoolbar.c \
-		 gtkgamelist.c gtkpanels.c gtkpanels.h gtkmovelist.c gtkmovelistctrl.c gtkmovelistctrl.h \
-		 gtkwindows.c gtkwindows.h gtkrelational.c gtkrelational.h gnubgstock.c gnubgstock.h \
-		 gtkuidefs.h gtklocdefs.c gtklocdefs.h \
-		 gtkscoremap.h gtkscoremap.c
+		 gtk/gtkoptions.h gtk/gtkoptions.c gtktoolbar.h gtktoolbar.c \
+		 gtk/gtkgamelist.c gtk/gtkpanels.c gtk/gtkpanels.h gtk/gtkmovelist.c \
+		 gtk/gtkmovelistctrl.c gtk/gtkmovelistctrl.h \
+		 gtk/gtkwindows.c gtk/gtkwindows.h gtk/gtkrelational.c gtk/gtkrelational.h \
+		 gnubgstock.c gnubgstock.h \
+		 gtkuidefs.h gtk/gtklocdefs.c gtk/gtklocdefs.h \
+		 gtk/gtkscoremap.h gtk/gtkscoremap.c gtk/gtkutil.c gtk/gtkutil.h
 endif
 
 

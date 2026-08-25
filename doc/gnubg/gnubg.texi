@@ -1682,7 +1682,7 @@ this package at your nearest CTAN mirror (the produced LaTeX file
 also needs epic, textcomp and ucs, but these are more common in
 LaTeX distributions so you probably already have these).
 
-Note that these prerequiste packages are only compatible with
+Note that these prerequisite packages are only compatible with
 the original LaTeX, not PDFLaTeX.
 
 @node Entering live tournament matches, Analysing matches, Retrieving and storing backgammon files, Working with matches

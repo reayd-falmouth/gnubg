@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1998-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 1999-2013 the AUTHORS
+ * Copyright (C) 1999-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,33 +18,14 @@
 
 /* Default movefilters */
 
-#define MOVEFILTER_TINY	\
-  { { { .Accept = 0, .Extra = 5, .Threshold = 0.08f }, { .Accept = 0, .Extra = 0 }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 5, .Threshold = 0.08f }, { .Accept = -1            }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 5, .Threshold = 0.08f }, { .Accept = -1            }, { .Accept = 0, .Extra = 2, .Threshold = 0.02f }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 5, .Threshold = 0.08f }, { .Accept = -1            }, { .Accept = 0, .Extra = 2, .Threshold = 0.02f }, { .Accept = -1            } } }
-
-#define MOVEFILTER_NARROW \
-  { { { .Accept = 0, .Extra = 8, .Threshold = 0.12f }, { .Accept = 0, .Extra = 0 }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 8, .Threshold = 0.12f }, { .Accept = -1            }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 8, .Threshold = 0.12f }, { .Accept = -1            }, { .Accept = 0, .Extra = 2, .Threshold = 0.03f }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 8, .Threshold = 0.12f }, { .Accept = -1            }, { .Accept = 0, .Extra = 2, .Threshold = 0.03f }, { .Accept = -1            } } }
-
 #define MOVEFILTER_NORMAL \
-  { { { .Accept = 0, .Extra = 8, .Threshold = 0.16f }, { .Accept = 0, .Extra = 0 }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 8, .Threshold = 0.16f }, { .Accept = -1            }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 8, .Threshold = 0.16f }, { .Accept = -1            }, { .Accept = 0, .Extra = 2, .Threshold = 0.04f }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 8, .Threshold = 0.16f }, { .Accept = -1            }, { .Accept = 0, .Extra = 2, .Threshold = 0.04f }, { .Accept = -1            } } }
+  { { { .Accept = 0, .Extra = 12, .Threshold = 0.24f }, { .Accept = 0, .Extra =  0                     }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0                     } }, \
+    { { .Accept = 0, .Extra = 12, .Threshold = 0.24f }, { .Accept = 0, .Extra =  6, .Threshold = 0.12f }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0                     } }, \
+    { { .Accept = 0, .Extra = 16, .Threshold = 0.32f }, { .Accept = 0, .Extra =  8, .Threshold = 0.16f }, { .Accept = 0, .Extra = 4, .Threshold = 0.06f }, { .Accept = 0, .Extra = 0                     } }, \
+    { { .Accept = 0, .Extra = 16, .Threshold = 0.32f }, { .Accept = 0, .Extra = 12, .Threshold = 0.16f }, { .Accept = 0, .Extra = 6, .Threshold = 0.08f }, { .Accept = 0, .Extra = 4, .Threshold = 0.06f } } }
 
 #define MOVEFILTER_LARGE \
-  { { { .Accept = 0, .Extra = 16, .Threshold = 0.32f }, { .Accept = 0, .Extra = 0 }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 16, .Threshold = 0.32f }, { .Accept = -1            }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 16, .Threshold = 0.32f }, { .Accept = -1            }, { .Accept = 0, .Extra = 4, .Threshold = 0.08f }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 16, .Threshold = 0.32f }, { .Accept = -1            }, { .Accept = 0, .Extra = 4, .Threshold = 0.08f }, { .Accept = -1            } } }
-
-#define MOVEFILTER_HUGE	\
-  { { { .Accept = 0, .Extra = 20, .Threshold = 0.44f }, { .Accept = 0, .Extra = 0 }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 20, .Threshold = 0.44f }, { .Accept = -1            }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 20, .Threshold = 0.44f }, { .Accept = -1            }, { .Accept = 0, .Extra = 6, .Threshold = 0.11f }, { .Accept = 0, .Extra = 0 } }, \
-    { { .Accept = 0, .Extra = 20, .Threshold = 0.44f }, { .Accept = -1            }, { .Accept = 0, .Extra = 6, .Threshold = 0.11f }, { .Accept = -1            } } }
-
+  { { { .Accept = 0, .Extra = 16, .Threshold = 0.32f }, { .Accept = 0, .Extra =  0                     }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0                     } }, \
+    { { .Accept = 0, .Extra = 16, .Threshold = 0.32f }, { .Accept = 0, .Extra =  8, .Threshold = 0.16f }, { .Accept = 0, .Extra = 0                     }, { .Accept = 0, .Extra = 0                     } }, \
+    { { .Accept = 0, .Extra = 24, .Threshold = 0.40f }, { .Accept = 0, .Extra = 12, .Threshold = 0.20f }, { .Accept = 0, .Extra = 6, .Threshold = 0.08f }, { .Accept = 0, .Extra = 0                     } }, \
+    { { .Accept = 0, .Extra = 32, .Threshold = 0.40f }, { .Accept = 0, .Extra = 16, .Threshold = 0.20f }, { .Accept = 0, .Extra = 8, .Threshold = 0.10f }, { .Accept = 0, .Extra = 6, .Threshold = 0.08f } } }

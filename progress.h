@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: progress.h,v 1.13 2019/12/16 22:21:25 plm Exp $
  */
 
 #ifndef PROGRESS_H
@@ -26,8 +24,9 @@
 #include "drawboard.h"
 
 extern void
-RolloutProgressStart(const cubeinfo * pci, const int n,
-                     rolloutstat aars[2][2], rolloutcontext * pes, char asz[][FORMATEDMOVESIZE], gboolean multiple,
+RolloutProgressStart(const cubeinfo * pci, int n,
+                     rolloutstat aars[2][2], rolloutcontext * prc,
+                     char asz[][FORMATEDMOVESIZE], gboolean multiple,
                      void **pp);
 
 extern void
@@ -36,10 +35,10 @@ RolloutProgress(float aarOutput[][NUM_ROLLOUT_OUTPUTS],
                 const rolloutcontext * prc,
                 const cubeinfo aci[],
                 unsigned int initial_game_count,
-                const int iGame,
-                const int iAlternative,
-                const int nRank,
-                const float rJsd, const int fStopped, const int fShowRanks, int fCubeRollout, void *pUserData);
+                int iGame,
+                int iAlternative,
+                int nRank,
+                float rJsd, int fStopped, int fShowRanks, int fCubeRollout, void *pUserData);
 
 extern int
 RolloutProgressEnd(void **pp, gboolean destroy);

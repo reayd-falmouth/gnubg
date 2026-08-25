@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1996-2001 Gary Wong <gtw@gnu.org>
- * Copyright (C) 2004-2007 the AUTHORS
+ * Copyright (C) 2004-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: list.c,v 1.14 2021/06/09 21:11:55 plm Exp $
  */
 
 /* No configuration used in this file
@@ -29,7 +27,6 @@
 int
 ListCreate(listOLD * pl)
 {
-
     pl->plPrev = pl->plNext = pl;
     pl->p = NULL;
 
@@ -39,7 +36,6 @@ ListCreate(listOLD * pl)
 listOLD *
 ListInsert(listOLD * pl, void *p)
 {
-
     listOLD *plNew = g_malloc(sizeof(listOLD));
 
     plNew->p = p;
@@ -56,7 +52,6 @@ ListInsert(listOLD * pl, void *p)
 void
 ListDelete(listOLD * pl)
 {
-
     pl->plPrev->plNext = pl->plNext;
     pl->plNext->plPrev = pl->plPrev;
 
@@ -66,9 +61,15 @@ ListDelete(listOLD * pl)
 void
 ListDeleteAll(const listOLD * pl)
 {
+    listOLD *pc = pl->plNext;
 
-    while (pl->plNext->p) {
-        g_free(pl->plNext->p);
-        ListDelete(pl->plNext);
+    while (pc != pl) {
+        listOLD *pn = pc->plNext;
+
+        g_free(pc->p);
+        ListDelete(pc);
+        pc = pn;
     }
+
+    g_assert(ListEmpty(pl));
 }

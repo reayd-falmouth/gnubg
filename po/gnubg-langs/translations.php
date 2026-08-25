@@ -40,9 +40,11 @@
 
 <TR><TH> is.po <TD>Hlynur Sigurgislason
 
-<TR><TH> it.po <TD>Renzo Campagna  and Giulio De Marco
+<TR><TH> it.po <TD>Renzo Campagna and Giulio De Marco
 
 <TR><TH> ja.po <TD>Yoshito Takeuchi
+
+<TR><TH> pt_BR.po <TD>Annibal Biondi Mendes da Silva
 
 <TR><TH> ro.po <TD>Mihai Varzaru
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2003 Joern Thyssen <jth@gnubg.org>
- * Copyright (C) 2003-2019 the AUTHORS
+ * Copyright (C) 2003-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,6 +87,16 @@ errorRateMP(const float rn, const float ru, const int nMatchTo)
     } else {
         return g_strdup_printf("   %+*.*f   (%+7.3f)", n + 5, n, rErrorRateFactor * rn, ru);
     }
+}
+
+static char *
+errorRateMPsnowie(const float rn)
+{
+
+    int n = fOutputDigits - (int) (log10f(rErrorRateFactor) - 0.5f);
+    n = MAX(n, 0);
+
+    return g_strdup_printf("   %+*.*f", n + 5, n, rErrorRateFactor * rn);
 }
 
 static char *
@@ -408,7 +418,7 @@ formatGS(const statcontext * psc, const int nMatchTo, const formatgs fg)
                     int n = psc->anTotalMoves[0] + psc->anTotalMoves[1];
 
                     if (n > 0)
-                        aasz[i + 1] = errorRateMP(-aaaar[COMBINED][TOTAL][i][NORMALISED] / (float) n, 0.0f, nMatchTo);
+                        aasz[i + 1] = errorRateMPsnowie(-aaaar[COMBINED][TOTAL][i][NORMALISED] / (float) n);
                     else
                         aasz[i + 1] = g_strdup(_("n/a"));
                 }

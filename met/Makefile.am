@@ -14,14 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#
-# $Id: Makefile.am,v 1.8 2019/09/15 17:54:57 plm Exp $
-# 
-
 metfiles = catalog.xml catalog.dtd met.dtd met.xsl README \
 	g11.xml jac050.xml jac100.xml jacobs.xml \
 	mec.xml  mec26.xml ortega.xml Rockwell-Kazaross.xml snowie.xml \
-	woolsey.xml zadeh.xml Kazaross-XG2.xml cubeless.xml
+	woolsey.xml zadeh.xml Kazaross-XG2.xml cubeless.xml galaxycoin.xml
 metdir = $(pkgdatadir)/met
 met_DATA = $(metfiles)
 EXTRA_DIST = $(metfiles)

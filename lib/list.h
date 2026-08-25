@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1996-1999 Gary Wong <gtw@gnu.org>
- * Copyright (C) 2004-2007 the AUTHORS
+ * Copyright (C) 2004-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: list.h,v 1.9 2013/06/16 02:16:24 mdpetch Exp $
  */
 
 #ifndef LIST_H
@@ -29,11 +27,13 @@ typedef struct list {
 /* Renamed to listOLD - use GList instead (hopefullly replace existing usage eventually */
 
 extern int ListCreate(listOLD * pl);
-/* #define ListDestroy( pl ) ( assert( ListEmpty( pl ) ) ) */
-
-#define ListEmpty( pl ) ( (pl)->plNext == (pl) )
 extern listOLD *ListInsert(listOLD * pl, void *p);
 extern void ListDelete(listOLD * pl);
 extern void ListDeleteAll(const listOLD * pl);
+
+static inline int ListEmpty(const listOLD *pl)
+{
+    return ((pl->plNext == pl) && (pl->plPrev == pl));
+}
 
 #endif

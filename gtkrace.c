@@ -30,7 +30,7 @@
 #include "gtkrace.h"
 #include "osr.h"
 #include "format.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 
 typedef struct {
     GtkWidget *apwEPC[2];

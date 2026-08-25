@@ -13,15 +13,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: osr.h,v 1.9 2018/04/23 21:49:59 plm Exp $
  */
 
 #ifndef OSR_H
 #define OSR_H
 
 extern void
- raceProbs(const TanBoard anBoard, const unsigned int nGames, float arOutput[NUM_OUTPUTS], float arMu[2]);
-
+raceProbs(const TanBoard anBoard, unsigned int nGames, float arOutput[NUM_OUTPUTS], float arMu[2]);
 
 #endif                          /* OSR_H */

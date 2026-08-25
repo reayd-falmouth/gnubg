@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1999-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 1999-2024 the AUTHORS
+ * Copyright (C) 1999-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,8 +67,8 @@ today to correct the title manually.
 #include "lib/simd.h"
 
 #if defined (USE_GTK)
-#include "gtkboard.h"
-#include "gtkwindows.h"
+#include "gtk/gtkboard.h"
+#include "gtk/gtkwindows.h"
 #endif
 #if defined(USE_BOARD3D)
 #include "inc3d.h"
@@ -190,11 +190,10 @@ NewMoveRecord(void)
 }
 
 static int
- CheatDice(unsigned int anDice[2], matchstate * pms, const int fBest);
-
+CheatDice(unsigned int anDice[2], matchstate * pms, int fBest);
 
 #if defined (USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 
 static int anLastMove[8], fLastMove, fLastPlayer;
 #endif
@@ -491,13 +490,20 @@ PopGame(const listOLD * plDelete, int fInclusive)
 {
 
     listOLD *pl;
-    int i;
+#if defined (USE_GTK)
+    int i = 0;
+#endif
 
-    for (i = 0, pl = lMatch.plNext; pl != &lMatch && pl->p != plDelete; pl = pl->plNext, i++);
+    for (pl = lMatch.plNext; pl != &lMatch && pl->p != plDelete; pl = pl->plNext);
 
+#if defined (USE_GTK)
+    i++;
+#endif
     if (pl->p && !fInclusive) {
         pl = pl->plNext;
+#if defined (USE_GTK)
         i++;
+#endif
     }
 
     if (!pl->p)
@@ -1429,6 +1435,7 @@ ComputerTurn(void)
 
             fd.pml = &pmr->ml;
             fd.pboard = (ConstTanBoard) anBoardMove;
+            fd.fAnalyse = FALSE;
             fd.keyMove = NULL;
             fd.rThr = 0.0f;
             fd.pci = &ci;
@@ -3025,7 +3032,7 @@ CommandNewSession(char *sz)
 // #endif
 
     if (sz == NULL)
-	nSessionLen = LONG_MAX;
+        nSessionLen = LONG_MAX;
     else {
         nSessionLen = strtol(sz, NULL, 10);
         if (nSessionLen <= 0)
@@ -4079,7 +4086,7 @@ CommandRoll(char *UNUSED(sz))
     if (!move_not_last_in_match_ok())
         return;
 
-    if (fTutor && fTutorCube && ms.fCubeUse && !GiveAdvice(tutor_double(FALSE)))
+    if (fTutor && fTutorCube && ms.fCubeUse && ms.nCube < MAX_CUBE && !GiveAdvice(tutor_double(FALSE)))
         return;
 
     if (!fCheat || CheatDice(ms.anDice, &ms, afCheatRoll[ms.fMove]))
@@ -4479,7 +4486,7 @@ pmr_hint_destroy(void)
 }
 
 static void
- OptimumRoll(TanBoard anBoard, const cubeinfo * pci, const evalcontext * pec, const int fBest, unsigned int anDice[2]);
+OptimumRoll(TanBoard anBoard, const cubeinfo * pci, const evalcontext * pec, int fBest, unsigned int anDice[2]);
 
 static int
 CheatDice(unsigned int anDice[2], matchstate * pms, const int fBest)

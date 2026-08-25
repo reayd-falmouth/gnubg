@@ -25,7 +25,7 @@
 #include <gtk/gtk.h>
 
 #include "analysis.h"	/* for statcontext */
-#include "gtkboard.h"	/* for BoardData */ 
+#include "gtk/gtkboard.h"	/* for BoardData */ 
 #include "render.h"	/* for renderdata */
 
 #include "board3d/types3d.h"

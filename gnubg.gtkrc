@@ -38,9 +38,7 @@
 
 style "default"
 {
-# Default size was fine initially but becomes a bit small
-# for today (2025) typical 1920x1080 screen.
-font_name = "12"
+font_name = "11"
 
 # base, text, bg, fg are possible
 bg[SELECTED] = { 0.67, 0.67, 0.67 }

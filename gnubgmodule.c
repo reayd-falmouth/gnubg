@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2003-2004 Joern Thyssen <jth@gnubg.org>
- * Copyright (C) 2003-2022 the AUTHORS
+ * Copyright (C) 2003-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@
 #include "lib/simd.h"
 
 #if defined(USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include <gtk/gtk.h>
 #endif
 
@@ -69,8 +69,8 @@ BoardToPy(const TanBoard anBoard)
     unsigned int k;
 
     for (k = 0; k < 25; ++k) {
-        PyTuple_SET_ITEM(b0, k, PyInt_FromLong(anBoard[0][k]));
-        PyTuple_SET_ITEM(b1, k, PyInt_FromLong(anBoard[1][k]));
+        PyTuple_SET_ITEM(b0, k, PyLong_FromLong(anBoard[0][k]));
+        PyTuple_SET_ITEM(b1, k, PyLong_FromLong(anBoard[1][k]));
     }
 
     PyTuple_SET_ITEM(b, 0, b0);
@@ -86,7 +86,7 @@ Board1ToPy(unsigned int anBoard[25])
     PyObject *b = PyTuple_New(25);
 
     for (k = 0; k < 25; ++k) {
-        PyTuple_SET_ITEM(b, k, PyInt_FromLong(anBoard[k]));
+        PyTuple_SET_ITEM(b, k, PyLong_FromLong(anBoard[k]));
     }
 
     return b;
@@ -116,9 +116,9 @@ PyToMove(PyObject * p, signed int anMove[8])
         for (j = 0; j < tuplelen && anIndex < 8; ++j) {
             PyObject *pi = PySequence_Fast_GET_ITEM(p, j);
             if (!PySequence_Check(pi))
-                if (PyInt_Check(pi))
+                if (PyLong_Check(pi))
                     /* Found value like findbestmove returns */
-                    anMove[anIndex++] = (int) PyInt_AsLong(pi) - 1;
+                    anMove[anIndex++] = (int) PyLong_AsLong(pi) - 1;
                 else
                     /* Value not an integer */
                     return 0;
@@ -129,8 +129,8 @@ PyToMove(PyObject * p, signed int anMove[8])
                     /* Process inner tuple */
                     for (k = 0; k < 2 && anIndex < 8; ++k, anIndex++) {
                         PyObject *pii = PySequence_Fast_GET_ITEM(pi, k);
-                        if (PyInt_Check(pii))
-                            anMove[anIndex] = (int) PyInt_AsLong(pii) - 1;
+                        if (PyLong_Check(pii))
+                            anMove[anIndex] = (int) PyLong_AsLong(pii) - 1;
                         else
                             /* Value not an integer */
                             return 0;
@@ -161,7 +161,7 @@ PyToBoard1(PyObject * p, unsigned int anBoard[25])
         for (j = 0; j < 25; ++j) {
             PyObject *pi = PySequence_Fast_GET_ITEM(p, j);
 
-            anBoard[j] = (int) PyInt_AsLong(pi);
+            anBoard[j] = (int) PyLong_AsLong(pi);
         }
         return 1;
     }
@@ -196,7 +196,7 @@ PyToDice(PyObject * p, int anDice[2])
         for (j = 0; j < 2; ++j) {
             PyObject *pi = PySequence_Fast_GET_ITEM(p, j);
 
-            anDice[j] = (int) PyInt_AsLong(pi);
+            anDice[j] = (int) PyLong_AsLong(pi);
         }
         return 1;
     }
@@ -282,14 +282,14 @@ PyToCubeInfo(PyObject * p, cubeinfo * pci)
         case 6:
         case 7:
             /* simple integer */
-            if (!PyInt_Check(pyValue)) {
+            if (!PyLong_Check(pyValue)) {
                 /* unknown dict value */
                 PyErr_SetString(PyExc_ValueError,
                                 _("invalid value in cubeinfo " "(see gnubg.cubeinfo() for an example)"));
                 return -1;
             }
 
-            *((int *) apv[iKey]) = (int) PyInt_AsLong(pyValue);
+            *((int *) apv[iKey]) = (int) PyLong_AsLong(pyValue);
 
             break;
 
@@ -369,13 +369,13 @@ PyToMoveFilter(PyObject * p, movefilter * pmf, int *ply, int *level)
         case 2:
         case 3:
             /* simple integer */
-            if (!PyInt_Check(pyValue)) {
+            if (!PyLong_Check(pyValue)) {
                 /* unknown dict value */
                 PyErr_SetString(PyExc_ValueError, _("invalid value in movefilter "
                                                     "(see gnubg.getevalhintfilter() for an example)"));
                 return -1;
             }
-            *((int *) apv[iKey]) = (int) PyInt_AsLong(pyValue);
+            *((int *) apv[iKey]) = (int) PyLong_AsLong(pyValue);
             break;
 
         case 4:
@@ -490,8 +490,8 @@ PythonSetEvalHintFilter(PyObject * UNUSED(self), PyObject * args)
     }
 
     if (!pyMoveFilters) {
-        PyErr_SetString(PyExc_StandardError, _("requires 1 argument: a list of move filters "
-                                               "(see gnubg.getevalhintfilter() for an example))"));
+        PyErr_SetString(PyExc_Exception, _("requires 1 argument: a list of move filters "
+                                           "(see gnubg.getevalhintfilter() for an example))"));
         return NULL;
     }
 
@@ -583,22 +583,22 @@ PyToPosInfo(PyObject * p, posinfo * ppi)
         case 1:
         case 2:
             /* simple integer */
-            if (!PyInt_Check(pyValue)) {
+            if (!PyLong_Check(pyValue)) {
                 /* unknown dict value */
                 PyErr_SetString(PyExc_ValueError, _("invalid value in posinfo " "(see gnubg.posinfo() for an example)"));
                 return -1;
             }
-            *((int *) apv[iKey]) = (int) PyInt_AsLong(pyValue);
+            *((int *) apv[iKey]) = (int) PyLong_AsLong(pyValue);
             break;
 
         case 3:
             /* simple unsigned integer (gamestate) */
-            if (!PyInt_Check(pyValue)) {
+            if (!PyLong_Check(pyValue)) {
                 /* unknown dict value */
                 PyErr_SetString(PyExc_ValueError, _("invalid value in posinfo " "(see gnubg.posinfo() for an example)"));
                 return -1;
             }
-            *((gamestate *) apv[iKey]) = (gamestate) PyInt_AsLong(pyValue);
+            *((gamestate *) apv[iKey]) = (gamestate) PyLong_AsLong(pyValue);
             break;
 
         case 4:
@@ -670,14 +670,14 @@ PyToEvalContext(PyObject * p, evalcontext * pec)
         case 2:
         case 3:
             /* simple integer */
-            if (!PyInt_Check(pyValue)) {
+            if (!PyLong_Check(pyValue)) {
                 /* not an integer */
                 PyErr_SetString(PyExc_ValueError,
                                 _("invalid value in evalcontext " "(see gnubg.evalcontext() for an example)"));
                 return -1;
             }
 
-            i = (int) PyInt_AsLong(pyValue);
+            i = (int) PyLong_AsLong(pyValue);
 
             if (!iKey)
                 pec->fCubeful = i ? 1 : 0;
@@ -737,7 +737,7 @@ PythonCubeInfo(PyObject * UNUSED(self), PyObject * args)
         return NULL;
 
     if (SetCubeInfo(&ci, nCube, fCubeOwner, fMove, nMatchTo, anScore, fCrawford, fJacobyRule, fBeavers, bgv)) {
-        PyErr_SetString(PyExc_StandardError, _("error in SetCubeInfo\n"));
+        PyErr_SetString(PyExc_Exception, _("error in SetCubeInfo\n"));
         return NULL;
     }
 
@@ -762,7 +762,7 @@ PythonPosInfo(PyObject * UNUSED(self), PyObject * args)
         return NULL;
 
     if (SetPosInfo(&pi, fTurn, fResigned, fDoubled, gs, anDice)) {
-        PyErr_SetString(PyExc_StandardError, _("error in SetPosInfo\n"));
+        PyErr_SetString(PyExc_Exception, _("error in SetPosInfo\n"));
         return NULL;
     }
 
@@ -865,21 +865,21 @@ PythonHint(PyObject * UNUSED(self), PyObject * args)
         nMaxMoves = MAX_MOVES;
 
     if ((ms.gs != GAME_PLAYING)) {
-        PyErr_SetString(PyExc_StandardError, _("You must set up a board first."));
+        PyErr_SetString(PyExc_Exception, _("You must set up a board first."));
     } else
         /* hint on cube decision */
     if (!ms.anDice[0] && !ms.fDoubled && !ms.fResigned) {
-        PyErr_SetString(PyExc_StandardError, _("Hints for cube actions not yet implemented"));
+        PyErr_SetString(PyExc_Exception, _("Hints for cube actions not yet implemented"));
         /*        hint_double(TRUE, -1); */
     } else
         /* Give hint on resignation */
     if (ms.fResigned) {
-        PyErr_SetString(PyExc_StandardError, _("Hints for resignations not yet implemented"));
+        PyErr_SetString(PyExc_Exception, _("Hints for resignations not yet implemented"));
         /*        HintResigned(); */
     } else
         /* Give hint on take decision */
     if (ms.fDoubled) {
-        PyErr_SetString(PyExc_StandardError, _("Hints for take actions not yet implemented"));
+        PyErr_SetString(PyExc_Exception, _("Hints for take actions not yet implemented"));
         /*        hint_take(TRUE, -1); */
     } else if (ms.anDice[0]) {
         sprintf(szNumber, "%d", nMaxMoves);
@@ -891,7 +891,7 @@ PythonHint(PyObject * UNUSED(self), PyObject * args)
         hint_move(szNumber, FALSE, (void *) &prochint);
         if (MT_SafeGet(&fInterrupt)) {
             ResetInterrupt();
-            PyErr_SetString(PyExc_StandardError, _("interrupted/errno in hint_move"));
+            PyErr_SetString(PyExc_Exception, _("interrupted/errno in hint_move"));
             return NULL;
         }
         szHintType = "chequer";
@@ -914,8 +914,13 @@ PythonUpdateUI(PyObject * UNUSED(self), PyObject * UNUSED(args))
 {
 #if defined(USE_GTK)
     if (fX) {
+#if GTK_CHECK_VERSION(4,0,0)
+        while (g_main_context_pending(NULL))
+            g_main_context_iteration(NULL, FALSE);
+#else
         while (gtk_events_pending())
             gtk_main_iteration();
+#endif
     }
 #endif
 
@@ -1060,8 +1065,8 @@ PythonParseMove(PyObject * UNUSED(self), PyObject * args)
         PyObject *pyMoveR;
         int moveidx;
 
-        pyMoveL = PyInt_FromLong(an[movesidx * 2]);
-        pyMoveR = PyInt_FromLong(an[movesidx * 2 + 1]);
+        pyMoveL = PyLong_FromLong(an[movesidx * 2]);
+        pyMoveR = PyLong_FromLong(an[movesidx * 2 + 1]);
 
         if (!(pyMove = PyTuple_New(2)))
             return NULL;
@@ -1103,7 +1108,7 @@ PythonLuckRating(PyObject * UNUSED(self), PyObject * args)
     if (!PyArg_ParseTuple(args, "f", &r))
         return NULL;
 
-    return PyInt_FromLong(getLuckRating(r));
+    return PyLong_FromLong(getLuckRating(r));
 
 }
 
@@ -1120,16 +1125,16 @@ PythonClassifyPosition(PyObject * UNUSED(self), PyObject * args)
         return NULL;
 
     if (pyBoard && !PyToBoard(pyBoard, anBoard)) {
-        PyErr_SetString(PyExc_StandardError, _("Invalid board as argument "));
+        PyErr_SetString(PyExc_Exception, _("Invalid board as argument "));
         return NULL;
     }
 
     if (iVariant >= NUM_VARIATIONS) {
-        PyErr_SetString(PyExc_StandardError, _("Variation unknown "));
+        PyErr_SetString(PyExc_Exception, _("Variation unknown "));
         return NULL;
     }
 
-    return PyInt_FromLong(ClassifyPosition((ConstTanBoard) anBoard, iVariant));
+    return PyLong_FromLong(ClassifyPosition((ConstTanBoard) anBoard, iVariant));
 }
 
 static PyObject *
@@ -1140,7 +1145,7 @@ PythonErrorRating(PyObject * UNUSED(self), PyObject * args)
     if (!PyArg_ParseTuple(args, "f", &r))
         return NULL;
 
-    return PyInt_FromLong(GetRating(r));
+    return PyLong_FromLong(GetRating(r));
 
 }
 
@@ -1177,12 +1182,12 @@ PythonMoveTuple2String(PyObject * UNUSED(self), PyObject * args)
     }
 
     if (!PyToMove(pyMove, anMove)) {
-        PyErr_SetString(PyExc_StandardError, _("Invalid move tuple as argument"));
+        PyErr_SetString(PyExc_Exception, _("Invalid move tuple as argument"));
         return NULL;
     }
 
     if (!PyToBoard(pyBoard, anBoard)) {
-        PyErr_SetString(PyExc_StandardError, _("Invalid board as argument "));
+        PyErr_SetString(PyExc_Exception, _("Invalid board as argument "));
         return NULL;
     }
 
@@ -1203,7 +1208,7 @@ PythonCalculateGammonPrice(PyObject * UNUSED(self), PyObject * pyCubeInfo)
 
     if (SetCubeInfo(&ci, ci.nCube, ci.fCubeOwner, ci.fMove, ci.nMatchTo, ci.anScore,
                     ci.fCrawford, ci.fJacoby, ci.fBeavers, ci.bgv)) {
-        PyErr_SetString(PyExc_StandardError, _("error in SetCubeInfo\n"));
+        PyErr_SetString(PyExc_Exception, _("error in SetCubeInfo\n"));
         return NULL;
     }
 
@@ -1254,7 +1259,7 @@ PythonEvaluate(PyObject * UNUSED(self), PyObject * args)
     if ((RunAsyncProcess((AsyncFun) asyncMoveDecisionE, &dd, _("Considering move...")) != 0) || MT_SafeGet(&fInterrupt)) {
         fShowProgress = fSaveShowProg;
         ResetInterrupt();
-        PyErr_SetString(PyExc_StandardError, _("interrupted/errno in asyncMoveDecisionE"));
+        PyErr_SetString(PyExc_Exception, _("interrupted/errno in asyncMoveDecisionE"));
         return NULL;
     }
     fShowProgress = fSaveShowProg;
@@ -1311,7 +1316,7 @@ PythonEvaluateCubeful(PyObject * UNUSED(self), PyObject * args)
     if ((RunAsyncProcess((AsyncFun) asyncCubeDecisionE, &dd, _("Considering cube decision...")) != 0) || MT_SafeGet(&fInterrupt)) {
         fShowProgress = fSaveShowProg;
         ResetInterrupt();
-        PyErr_SetString(PyExc_StandardError, _("interrupted/errno in asyncCubeDecisionE"));
+        PyErr_SetString(PyExc_Exception, _("interrupted/errno in asyncCubeDecisionE"));
         return NULL;
     }
     fShowProgress = fSaveShowProg;
@@ -1324,7 +1329,7 @@ PythonEvaluateCubeful(PyObject * UNUSED(self), PyObject * args)
         for (k = 0; k < NUM_CUBEFUL_OUTPUTS; ++k) {
             PyTuple_SET_ITEM(p, k, PyFloat_FromDouble(arCube[k]));
         }
-        PyTuple_SET_ITEM(p, NUM_CUBEFUL_OUTPUTS, PyInt_FromLong(cp));
+        PyTuple_SET_ITEM(p, NUM_CUBEFUL_OUTPUTS, PyLong_FromLong(cp));
         PyTuple_SET_ITEM(p, NUM_CUBEFUL_OUTPUTS + 1, PyUnicode_FromString(GetCubeRecommendation(cp)));
 
         return p;
@@ -1361,7 +1366,7 @@ PythonFindBestMove(PyObject * UNUSED(self), PyObject * args)
         return NULL;
 
     if (fd.anDice[0] == 0) {
-        PyErr_SetString(PyExc_StandardError, _("What? No dice?\n"));
+        PyErr_SetString(PyExc_Exception, _("What? No dice?\n"));
         return NULL;
     }
 
@@ -1379,6 +1384,7 @@ PythonFindBestMove(PyObject * UNUSED(self), PyObject * args)
 
     fd.pml = &ml;
     fd.pboard = (ConstTanBoard) anBoard;
+    fd.fAnalyse = FALSE;
     fd.keyMove = NULL;
     fd.rThr = 0.0f;
     fd.pci = &ci;
@@ -1389,7 +1395,7 @@ PythonFindBestMove(PyObject * UNUSED(self), PyObject * args)
     if ((RunAsyncProcess((AsyncFun) asyncFindBestMoves, &fd, _("Considering move...")) != 0) || MT_SafeGet(&fInterrupt)) {
         fShowProgress = fSaveShowProg;
         ResetInterrupt();
-        PyErr_SetString(PyExc_StandardError, _("interrupted/errno in asyncFindBestMoves"));
+        PyErr_SetString(PyExc_Exception, _("interrupted/errno in asyncFindBestMoves"));
         return NULL;
     }
     fShowProgress = fSaveShowProg;
@@ -1408,7 +1414,7 @@ PythonFindBestMove(PyObject * UNUSED(self), PyObject * args)
                 if ((nMove == -1) && ((k % 2) == 0))
                     break;
 
-                PyTuple_SET_ITEM(p, k, PyInt_FromLong(nMove + 1));
+                PyTuple_SET_ITEM(p, k, PyLong_FromLong(nMove + 1));
             }
             if (k < 8)
                 _PyTuple_Resize(&p, k);
@@ -1495,8 +1501,8 @@ PythonDiceRolls(PyObject * UNUSED(self), PyObject * args)
 
         RollDice(anDice, &rngCurrent, rngctxCurrent);
 
-        pyDie1 = PyInt_FromLong(anDice[0]);
-        pyDie2 = PyInt_FromLong(anDice[1]);
+        pyDie1 = PyLong_FromLong(anDice[0]);
+        pyDie2 = PyLong_FromLong(anDice[1]);
 
         if (!(pyDiceRoll = PyTuple_New(2)))
             return NULL;
@@ -1812,7 +1818,7 @@ PythonPositionKey(PyObject * UNUSED(self), PyObject * args)
         PyObject *a = PyTuple_New(10);
         int i;
         for (i = 0; i < 10; ++i) {
-            PyTuple_SET_ITEM(a, i, PyInt_FromLong(key.auch[i]));
+            PyTuple_SET_ITEM(a, i, PyLong_FromLong(key.auch[i]));
         }
         return a;
     }
@@ -1838,7 +1844,7 @@ PythonPositionFromKey(PyObject * UNUSED(self), PyObject * args)
             if (!(py = PyList_GetItem(pyKey, i)))
                 return NULL;
 
-            key.auch[i] = (unsigned char) PyInt_AsLong(py);
+            key.auch[i] = (unsigned char) PyLong_AsLong(py);
         }
 
     } else {
@@ -1870,7 +1876,7 @@ PythonPositionBearoff(PyObject * UNUSED(self), PyObject * args)
     if (pyBoard && !PyToBoard1(pyBoard, anBoard[0]))
         return NULL;
 
-    return PyInt_FromLong(PositionBearoff(anBoard[0], nPoints, nChequers));
+    return PyLong_FromLong(PositionBearoff(anBoard[0], nPoints, nChequers));
 }
 
 static PyObject *
@@ -1931,7 +1937,7 @@ diffContext(const evalcontext * c, PyMatchState * ms)
         }
 
         if (c->nPlies != s->nPlies) {
-            DictSetItemSteal(context, "plies", PyInt_FromLong(c->nPlies));
+            DictSetItemSteal(context, "plies", PyLong_FromLong(c->nPlies));
         }
 
         if (c->fDeterministic != s->fDeterministic) {
@@ -1964,63 +1970,63 @@ diffRolloutContext(const rolloutcontext * c, PyMatchState * ms)
         PyObject *context = PyDict_New();
 
         if (c->fCubeful != s->fCubeful) {
-            DictSetItemSteal(context, "cubeful", PyInt_FromLong(c->fCubeful));
+            DictSetItemSteal(context, "cubeful", PyLong_FromLong(c->fCubeful));
         }
 
         if (c->fVarRedn != s->fVarRedn) {
-            DictSetItemSteal(context, "variance-reduction", PyInt_FromLong(c->fVarRedn));
+            DictSetItemSteal(context, "variance-reduction", PyLong_FromLong(c->fVarRedn));
         }
 
         if (c->fInitial != s->fInitial) {
-            DictSetItemSteal(context, "initial-position", PyInt_FromLong(c->fInitial));
+            DictSetItemSteal(context, "initial-position", PyLong_FromLong(c->fInitial));
         }
 
         if (c->fRotate != s->fRotate) {
-            DictSetItemSteal(context, "quasi-random-dice", PyInt_FromLong(c->fRotate));
+            DictSetItemSteal(context, "quasi-random-dice", PyLong_FromLong(c->fRotate));
         }
 
         if (c->fLateEvals != s->fLateEvals) {
-            DictSetItemSteal(context, "late-eval", PyInt_FromLong(c->fLateEvals));
+            DictSetItemSteal(context, "late-eval", PyLong_FromLong(c->fLateEvals));
         }
 
         if (c->fDoTruncate != s->fDoTruncate) {
-            DictSetItemSteal(context, "truncated-rollouts", PyInt_FromLong(c->fDoTruncate));
+            DictSetItemSteal(context, "truncated-rollouts", PyLong_FromLong(c->fDoTruncate));
         }
 
         if (c->fTruncBearoff2 != s->fTruncBearoff2) {
-            DictSetItemSteal(context, "truncate-bearoff2", PyInt_FromLong(c->fTruncBearoff2));
+            DictSetItemSteal(context, "truncate-bearoff2", PyLong_FromLong(c->fTruncBearoff2));
         }
 
         if (c->fTruncBearoffOS != s->fTruncBearoffOS) {
-            DictSetItemSteal(context, "truncate-bearoffOS", PyInt_FromLong(c->fTruncBearoffOS));
+            DictSetItemSteal(context, "truncate-bearoffOS", PyLong_FromLong(c->fTruncBearoffOS));
         }
 
         if (c->fStopOnSTD != s->fStopOnSTD) {
-            DictSetItemSteal(context, "stop-on-std", PyInt_FromLong(c->fStopOnSTD));
+            DictSetItemSteal(context, "stop-on-std", PyLong_FromLong(c->fStopOnSTD));
         }
 
         if (c->fStopMoveOnJsd != s->fStopMoveOnJsd) {
-            DictSetItemSteal(context, "stop-on-jsd", PyInt_FromLong(c->fStopMoveOnJsd));
+            DictSetItemSteal(context, "stop-on-jsd", PyLong_FromLong(c->fStopMoveOnJsd));
         }
 
         if (c->nTruncate != s->nTruncate) {
-            DictSetItemSteal(context, "n-truncation", PyInt_FromLong(c->nTruncate));
+            DictSetItemSteal(context, "n-truncation", PyLong_FromLong(c->nTruncate));
         }
 
         if (c->nTrials != s->nTrials) {
-            DictSetItemSteal(context, "trials", PyInt_FromLong(c->nTrials));
+            DictSetItemSteal(context, "trials", PyLong_FromLong(c->nTrials));
         }
 
         if (c->nSeed != s->nSeed) {
-            DictSetItemSteal(context, "seed", PyInt_FromLong(c->nSeed));
+            DictSetItemSteal(context, "seed", PyLong_FromLong(c->nSeed));
         }
 
         if (c->nLate != s->nLate) {
-            DictSetItemSteal(context, "late-on-move-n", PyInt_FromLong(c->nLate));
+            DictSetItemSteal(context, "late-on-move-n", PyLong_FromLong(c->nLate));
         }
 
         if (c->nMinimumGames != s->nMinimumGames) {
-            DictSetItemSteal(context, "minimum-games", PyInt_FromLong(c->nMinimumGames));
+            DictSetItemSteal(context, "minimum-games", PyLong_FromLong(c->nMinimumGames));
         }
 
         if (c->rStdLimit != s->rStdLimit) {
@@ -2028,7 +2034,7 @@ diffRolloutContext(const rolloutcontext * c, PyMatchState * ms)
         }
 
         if (c->nMinimumJsdGames != s->nMinimumJsdGames) {
-            DictSetItemSteal(context, "minimum-jsd-games", PyInt_FromLong(c->nMinimumJsdGames));
+            DictSetItemSteal(context, "minimum-jsd-games", PyLong_FromLong(c->nMinimumJsdGames));
         }
 
         if (c->rJsdLimit != s->rJsdLimit) {
@@ -2242,11 +2248,12 @@ PyMoveAnalysis(const movelist * pml, PyMatchState * ms)
             case EVAL_EVAL:
                 {
                     PyObject *m = PyMove(pmi->anMove);
-                    v = Py_BuildValue("{s:s,s:O,s:(fffff),s:f}",
+                    v = Py_BuildValue("{s:s,s:O,s:(fffff),s:f,s:i}",
                                       "type", "eval",
                                       "move", m,
                                       "probs", pmi->arEvalMove[0], pmi->arEvalMove[1],
-                                      pmi->arEvalMove[2], pmi->arEvalMove[3], pmi->arEvalMove[4], "score", pmi->rScore);
+                                      pmi->arEvalMove[2], pmi->arEvalMove[3], pmi->arEvalMove[4],
+                                      "score", pmi->rScore, "cmark", pmi->cmark);
                     Py_DECREF(m);
 
                     {
@@ -2266,7 +2273,7 @@ PyMoveAnalysis(const movelist * pml, PyMatchState * ms)
                     const float *s = pmi->arEvalStdDev;
 
                     v = Py_BuildValue("{s:s,s:O,s:i,s:(fffff),s:f,s:f"
-                                      ",s:(fffff),s:f,s:f}",
+                                      ",s:(fffff),s:f,s:f,s:i}",
                                       "type", "rollout",
                                       "move", m,
                                       "trials", pes->rc.nGamesDone,
@@ -2274,7 +2281,8 @@ PyMoveAnalysis(const movelist * pml, PyMatchState * ms)
                                       "match-eq", p[OUTPUT_EQUITY],
                                       "cubeful-eq", p[OUTPUT_CUBEFUL_EQUITY],
                                       "probs-std", s[0], s[1], s[2], s[3], s[4],
-                                      "match-eq-std", s[OUTPUT_EQUITY], "cubeful-eq-std", s[OUTPUT_CUBEFUL_EQUITY]);
+                                      "match-eq-std", s[OUTPUT_EQUITY], "cubeful-eq-std", s[OUTPUT_CUBEFUL_EQUITY],
+                                      "cmark", pmi->cmark);
                     Py_DECREF(m);
 
                     {
@@ -2307,6 +2315,7 @@ SIMD_STACKALIGN static PyObject *
 PyDoubleAnalysis(const evalsetup * pes,
                  float aarOutput[][NUM_ROLLOUT_OUTPUTS],
                  float aarStdDev[][NUM_ROLLOUT_OUTPUTS],
+                 CMark cmark,
                  PyMatchState * ms, const int verbose)
 {
     PyObject *dict = 0;
@@ -2317,8 +2326,8 @@ PyDoubleAnalysis(const evalsetup * pes,
             const float *p = aarOutput[0];
 
             dict =
-                Py_BuildValue("{s:s,s:(fffff),s:f,s:f}",
-                              "type", "eval",
+                Py_BuildValue("{s:s,s:i,s:(fffff),s:f,s:f}",
+                              "type", "eval", "cmark", cmark,
                               "probs", p[0], p[1], p[2], p[3], p[4],
                               "nd-cubeful-eq", p[OUTPUT_CUBEFUL_EQUITY],
                               "dt-cubeful-eq", aarOutput[1][OUTPUT_CUBEFUL_EQUITY]);
@@ -2344,12 +2353,12 @@ PyDoubleAnalysis(const evalsetup * pes,
             const float *dts = aarStdDev[1];
 
             dict =
-                Py_BuildValue("{s:s,s:i,"
+                Py_BuildValue("{s:s,s:i,s:i,"
                               "s:(fffff),s:f,s:f,"
                               "s:(fffff),s:f,s:f,"
                               "s:(fffff),s:f,s:f,"
                               "s:(fffff),s:f,s:f}",
-                              "type", "rollout",
+                              "type", "rollout", "cmark", cmark,
                               "trials", pes->rc.nGamesDone,
                               "nd-probs", nd[0], nd[1], nd[2], nd[3], nd[4],
                               "nd-match-eq", nd[OUTPUT_EQUITY],
@@ -2407,7 +2416,7 @@ PyGameStats(const statcontext * sc, const int fIsMatch, const int nMatchTo)
             {
                 skilltype st;
                 for (st = SKILL_VERYBAD; st <= SKILL_NONE; st++) {
-                    DictSetItemSteal(m, skillString(st, 0), PyInt_FromLong(sc->anMoves[side][st]));
+                    DictSetItemSteal(m, skillString(st, 0), PyLong_FromLong(sc->anMoves[side][st]));
                 }
             }
 
@@ -2492,7 +2501,7 @@ PyGameStats(const statcontext * sc, const int fIsMatch, const int nMatchTo)
             {
                 lucktype lt;
                 for (lt = LUCK_VERYBAD; lt <= LUCK_VERYGOOD; lt++) {
-                    DictSetItemSteal(m, luckString(lt, 0), PyInt_FromLong(sc->anLuck[0][lt]));
+                    DictSetItemSteal(m, luckString(lt, 0), PyLong_FromLong(sc->anLuck[0][lt]));
                 }
             }
 
@@ -2599,8 +2608,8 @@ PythonGame(const listOLD * plGame,
         return NULL;
     }
 
-    DictSetItemSteal(gameInfoDict, "score-X", PyInt_FromLong(g->anScore[0]));
-    DictSetItemSteal(gameInfoDict, "score-O", PyInt_FromLong(g->anScore[1]));
+    DictSetItemSteal(gameInfoDict, "score-X", PyLong_FromLong(g->anScore[0]));
+    DictSetItemSteal(gameInfoDict, "score-O", PyLong_FromLong(g->anScore[1]));
 
     /* Set Crawford info only if it is relevant, i.e. if any side is 1 point away
      * from winning the match */
@@ -2612,7 +2621,7 @@ PythonGame(const listOLD * plGame,
     if (g->fWinner >= 0) {
         DictSetItemSteal(gameInfoDict, "winner", PyUnicode_FromString(g->fWinner ? "O" : "X"));
 
-        DictSetItemSteal(gameInfoDict, "points-won", PyInt_FromLong(g->nPoints));
+        DictSetItemSteal(gameInfoDict, "points-won", PyLong_FromLong(g->nPoints));
 
         DictSetItemSteal(gameInfoDict, "resigned", PyBool_FromLong(g->fResigned));
     } else {
@@ -2621,7 +2630,7 @@ PythonGame(const listOLD * plGame,
     }
 
     if (g->nAutoDoubles) {
-        DictSetItemSteal(gameInfoDict, "initial-cube", PyInt_FromLong(1 << g->nAutoDoubles));
+        DictSetItemSteal(gameInfoDict, "initial-cube", PyLong_FromLong(1 << g->nAutoDoubles));
     }
 
     DictSetItemSteal(gameDict, "info", gameInfoDict);
@@ -2698,7 +2707,7 @@ PythonGame(const listOLD * plGame,
                             PyObject *d = PyDoubleAnalysis(&pmr->CubeDecPtr->esDouble,
                                                            pmr->CubeDecPtr->aarOutput,
                                                            pmr->CubeDecPtr->aarStdDev,
-                                                           ms, verbose);
+                                                           pmr->CubeDecPtr->cmark, ms, verbose);
                             {
                                 int s = PyDict_Merge(analysis, d, 1);
                                 g_assert(s != -1);
@@ -2714,7 +2723,7 @@ PythonGame(const listOLD * plGame,
                             if (a) {
                                 DictSetItemSteal(analysis, "moves", a);
 
-                                DictSetItemSteal(analysis, "imove", PyInt_FromLong(pmr->n.iMove));
+                                DictSetItemSteal(analysis, "imove", PyLong_FromLong(pmr->n.iMove));
                             }
                         }
 
@@ -2739,7 +2748,7 @@ PythonGame(const listOLD * plGame,
                         cubedecisiondata *c = pmr->CubeDecPtr;
                         if (c->esDouble.et != EVAL_NONE) {
                             PyObject *d = PyDoubleAnalysis(&c->esDouble, c->aarOutput,
-                                                           c->aarStdDev, ms, verbose);
+                                                           c->aarStdDev, c->cmark, ms, verbose);
                             {
                                 int s = PyDict_Merge(analysis, d, 1);
                                 g_assert(s != -1);
@@ -2821,7 +2830,7 @@ PythonGame(const listOLD * plGame,
             case MOVE_SETCUBEVAL:
                 {
                     action = "set";
-                    DictSetItemSteal(recordDict, "cube", PyInt_FromLong(pmr->scv.nCube));
+                    DictSetItemSteal(recordDict, "cube", PyLong_FromLong(pmr->scv.nCube));
                     break;
                 }
 
@@ -2850,7 +2859,7 @@ PythonGame(const listOLD * plGame,
             }
 
             if (points != -1) {
-                DictSetItemSteal(recordDict, "points", PyInt_FromLong(points));
+                DictSetItemSteal(recordDict, "points", PyLong_FromLong(points));
             }
 
             if (analysis) {
@@ -2925,7 +2934,7 @@ PythonMatch(PyObject * UNUSED(self), PyObject * args, PyObject * keywds)
     }
 
     if (g->i != 0) {
-        PyErr_SetString(PyExc_StandardError, _("First game missing from match"));
+        PyErr_SetString(PyExc_Exception, _("First game missing from match"));
         return NULL;
     }
 
@@ -2942,7 +2951,7 @@ PythonMatch(PyObject * UNUSED(self), PyObject * args, PyObject * keywds)
         }
     }
 
-    DictSetItemSteal(matchInfoDict, "match-length", PyInt_FromLong(g->nMatch));
+    DictSetItemSteal(matchInfoDict, "match-length", PyLong_FromLong(g->nMatch));
 
     if (mi.nYear) {
         PyObject *date = Py_BuildValue("(iii)", mi.nDay, mi.nMonth, mi.nYear);
@@ -2965,7 +2974,7 @@ PythonMatch(PyObject * UNUSED(self), PyObject * args, PyObject * keywds)
             else if (anFinalScore[1] > g->nMatch)
                 result = 1;
         }
-        DictSetItemSteal(matchInfoDict, "result", PyInt_FromLong(result));
+        DictSetItemSteal(matchInfoDict, "result", PyLong_FromLong(result));
     }
 
     {
@@ -3053,7 +3062,7 @@ PythonMatch(PyObject * UNUSED(self), PyObject * args, PyObject * keywds)
 
         /* No need for that, I think */
         /*     DictSetItemSteal(matchInfoDict, "sgf-rollout-version", */
-        /*                   PyInt_FromLong(SGF_ROLLOUT_VER)); */
+        /*                   PyLong_FromLong(SGF_ROLLOUT_VER)); */
     }
 
     return matchDict;
@@ -3395,8 +3404,8 @@ static PyMethodDef gnubgMethods[] = {
      "    arguments: float luck per move\n" "    returns: int 0..5"}
     ,
     {"errorrating", (PyCFunction) PythonErrorRating, METH_VARARGS,
-     "convert an error per move amount to a rating 0 = awful..7=supernatural\n"
-     "    arguments: float error per move\n" "    returns: int\n"}
+     "convert an error per move amount to a rating 0..6 for beginner to super grandmaster\n"
+     "    arguments: float error per move\n" "    returns: int 0..6\n"}
     ,
     {"updateui", (PyCFunction) PythonUpdateUI, METH_VARARGS,
      "Allows the UI to update itself\n" "    arguments: none\n" "    returns: None"}
@@ -3445,16 +3454,22 @@ PythonGnubgModule(void)
 }
 
 extern
-MOD_INIT(gnubg)
+PyMODINIT_FUNC PyInit_gnubg(void)
 {
     PyObject *module;
 
-    MOD_DEF(module, "gnubg", NULL, gnubgMethods);
+    static struct PyModuleDef moduledef = {
+        PyModuleDef_HEAD_INIT,
+        "gnubg",
+        NULL,
+        -1,
+        gnubgMethods,
+        NULL, NULL, NULL, NULL
+    };
 
-    if (module == NULL)
-        return MOD_ERROR_VAL;
+    module = PyModule_Create(&moduledef);
 
-    return MOD_SUCCESS_VAL(module);
+    return module;
 }
 
 extern void
@@ -3546,7 +3561,7 @@ PythonRun(const char *sz)
 
         if (fX && (py_ret = PyRun_String("gnubg_InteractivePyShell_gui()",
                                          Py_eval_input, PythonGnubgModule(), py_dict)))
-            if (PyInt_Check(py_ret) && PyInt_AsLong(py_ret))
+            if (PyLong_Check(py_ret) && PyLong_AsLong(py_ret))
                 success = TRUE;
         if (py_ret) {
             Py_DECREF(py_ret);

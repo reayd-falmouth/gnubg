@@ -1,13 +1,13 @@
 <?php
 // Configuration of translations status script
 
-// Setup ViewCVS web access here, must point to the directory with .po files:
-$cvs_url="http://cvs.savannah.gnu.org/viewcvs/gnubg/gnubg/po/";
+// Setup repository web access here, must point to the directory with .po files:
+$git_url="https://cgit.git.savannah.gnu.org/cgit/gnubg.git/tree/po";
 
-// CVS branch used to generate the page:
-$cvs_branch="HEAD";
+// branch used to generate the page:
+$git_branch="master";
 
-// Name of POT file (in cvs_url directory):
+// Name of POT file (in git_url directory):
 $potfile="gnubg.pot";
 
 // Path to images (1x16 bars):

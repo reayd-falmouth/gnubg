@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: dice.h,v 1.37 2019/12/09 19:59:49 plm Exp $
  */
 
 #ifndef DICE_H
@@ -40,13 +38,13 @@ extern rngcontext *rngctxCurrent;
 rngcontext *CopyRNGContext(rngcontext * rngctx);
 
 extern void free_rngctx(rngcontext * rngctx);
-extern void *InitRNG(unsigned long *pnSeed, int *pfInitFrom, const int fSet, const rng rngx);
-extern void CloseRNG(const rng rngx, rngcontext * rngctx);
-extern void DestroyRNG(const rng rngx, rngcontext ** rngctx);
-extern void PrintRNGSeed(const rng rngx, rngcontext * rngctx);
-extern void PrintRNGCounter(const rng rngx, rngcontext * rngctx);
-extern void InitRNGSeed(unsigned int n, const rng rngx, rngcontext * rngctx);
-extern int RNGSystemSeed(const rng rngx, void *p, unsigned long *pnSeed);
+extern void *InitRNG(unsigned long *pnSeed, int *pfInitFrom, int fSet, rng rngx);
+extern void CloseRNG(rng rngx, rngcontext * rngctx);
+extern void DestroyRNG(rng rngx, rngcontext ** rngctx);
+extern void PrintRNGSeed(rng rngx, rngcontext * rngctx);
+extern void PrintRNGCounter(rng rngx, rngcontext * rngctx);
+extern void InitRNGSeed(unsigned int n, rng rngx, rngcontext * rngctx);
+extern int RNGSystemSeed(rng rngx, void *p, unsigned long *pnSeed);
 
 extern int RollDice(unsigned int anDice[2], rng * prng, rngcontext * rngctx);
 

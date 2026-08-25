@@ -158,7 +158,7 @@ extern void CalculateArea(renderdata * prd, unsigned char *puch, int nStride,
                           int fDiceColour, const int anCubePosition[2],
                           int nLogCube, int nCubeOrientation,
                           const int anResignPosition[2],
-                          int fResign, int fResignOrientation,
+                          int fResign, int nResignOrientation,
                           int anArrowPosition[2], int fPlaying, int nPlayer, int x, int y, int cx, int cy,
                           void *board_data);
 

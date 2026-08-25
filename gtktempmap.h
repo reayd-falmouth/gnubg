@@ -13,14 +13,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtktempmap.h,v 1.7 2015/02/06 23:25:00 plm Exp $
  */
 
 #ifndef GTKTEMPMAP_H
 #define GTKTEMPMAP_H
 
 extern void
- GTKShowTempMap(const matchstate ams[], const int n, gchar * aszTitle[], const int fInvert);
+GTKShowTempMap(const matchstate ams[], int n, gchar * aszTitle[], int fInvert);
 
 #endif                          /* GTKTEMPMAP_H */

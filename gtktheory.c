@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2002-2003 Joern Thyssen <jthyssen@dk.ibm.com>
- * Copyright (C) 2002-2022 the AUTHORS
+ * Copyright (C) 2002-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  */
 
 #include "config.h"
-#include "gtklocdefs.h"
+#include "gtk/gtklocdefs.h"
 
 #include <gtk/gtk.h>
 
@@ -30,7 +30,7 @@
 #include "gtktheory.h"
 #include "matchequity.h"
 #include "multithread.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 
 #define MAXPLY 4
 
@@ -332,7 +332,8 @@ add_mw_match_rows(theorywidget * ptw, const cubeinfo * pci, float aarRates[2][2]
 static void
 TheoryUpdated(GtkWidget * UNUSED(pw), theorywidget * ptw)
 {
-    cubeinfo ci;
+    /* Initialize ci for a money game, this will be corrected if necessary by TheoryGetValues() */
+    cubeinfo ci = { .nCube = 1, .fCrawford = FALSE, .fJacoby = TRUE, .fBeavers = TRUE, .bgv = VARIATION_STANDARD };
     float aarRates[2][2];
 
     int i, j;
@@ -360,9 +361,9 @@ TheoryUpdated(GtkWidget * UNUSED(pw), theorywidget * ptw)
     /* update match play widget */
 
     if ((ci.anScore[0] != ci.nMatchTo - 1) && (ci.anScore[1] != ci.nMatchTo - 1)) {
-	    /* Crawford impossible score (expect DMP) */
-	    ci.fCrawford = 0;
-	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ptw->pwCrawford), FALSE);
+        /* Crawford impossible score (expect DMP) */
+        ci.fCrawford = 0;
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ptw->pwCrawford), FALSE);
     }
 
     gtk_widget_set_sensitive(ptw->pwCrawford,
@@ -385,9 +386,9 @@ TheoryUpdated(GtkWidget * UNUSED(pw), theorywidget * ptw)
     }
 
     if (ci.fCrawford) {
-	    ci.nCube = 1;
-            gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ptw->apwCube[0]), TRUE);
-	    gtk_widget_set_sensitive(ptw->pwCubeFrame, FALSE);
+        ci.nCube = 1;
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ptw->apwCube[0]), TRUE);
+        gtk_widget_set_sensitive(ptw->pwCubeFrame, FALSE);
     }
 
 
@@ -539,10 +540,52 @@ GraphDraw(GtkWidget * pwGraph, cairo_t * cr, theorywidget * ptw)
     for (i = 0; i < 3; i++)
         ax[i] = x + (int) ((float) cx * ptw->aar[iPlayer][i]);
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+    GtkStyleContext *context = gtk_widget_get_style_context(pwGraph);
+    gtk_style_context_save(context);
+    gtk_style_context_set_state(context, GTK_STATE_FLAG_NORMAL);
+
+    gtk_render_background(context, cr, x, 12, cx, cy);
+    gtk_render_frame(context, cr, x, 12, cx, cy);
+
+    cairo_save(cr);
+    cairo_rectangle(cr, x + 1, 13, ax[0] - x, cy - 2);
+    cairo_set_source_rgb(cr, 0.0, 0.5, 0.0);
+    cairo_fill(cr);
+    cairo_restore(cr);
+
+    gtk_style_context_restore(context);
+#else
     gtk_locdef_paint_box(gtk_widget_get_style(pwGraph), gtk_widget_get_window(pwGraph), cr, GTK_STATE_NORMAL,
                          GTK_SHADOW_IN, NULL, pwGraph, "doubling-window", x, 12, cx, cy);
+#endif
 
     /* FIXME it's horrible to abuse the "state" parameters like this */
+#if GTK_CHECK_VERSION(3, 0, 0)
+    if (ptw->aar[iPlayer][1] > ptw->aar[iPlayer][0]) {
+        gtk_style_context_save(context);
+        gtk_style_context_set_state(context, GTK_STATE_FLAG_ACTIVE);
+        gtk_render_background(context, cr, ax[0], 13, ax[1] - ax[0], cy - 2);
+        gtk_render_frame(context, cr, ax[0], 13, ax[1] - ax[0], cy - 2);
+        gtk_style_context_restore(context);
+    }
+
+    if (ptw->aar[iPlayer][2] > ptw->aar[iPlayer][1]) {
+        gtk_style_context_save(context);
+        gtk_style_context_set_state(context, GTK_STATE_FLAG_PRELIGHT);
+        gtk_render_background(context, cr, ax[1], 13, ax[2] - ax[1], cy - 2);
+        gtk_render_frame(context, cr, ax[1], 13, ax[2] - ax[1], cy - 2);
+        gtk_style_context_restore(context);
+    }
+
+    if (ptw->aar[iPlayer][2] < 1.0f) {
+        gtk_style_context_save(context);
+        gtk_style_context_set_state(context, GTK_STATE_FLAG_SELECTED);
+        gtk_render_background(context, cr, ax[2], 13, x + cx - ax[2], cy - 2);
+        gtk_render_frame(context, cr, ax[2], 13, x + cx - ax[2], cy - 2);
+        gtk_style_context_restore(context);
+    }
+#else
     if (ptw->aar[iPlayer][1] > ptw->aar[iPlayer][0])
         gtk_locdef_paint_box(gtk_widget_get_style(pwGraph), gtk_widget_get_window(pwGraph), cr,
                              GTK_STATE_ACTIVE, GTK_SHADOW_OUT, NULL, pwGraph, "take", ax[0], 13, ax[1] - ax[0], cy - 2);
@@ -554,6 +597,7 @@ GraphDraw(GtkWidget * pwGraph, cairo_t * cr, theorywidget * ptw)
     if (ptw->aar[iPlayer][2] < 1.0f)
         gtk_locdef_paint_box(gtk_widget_get_style(pwGraph), gtk_widget_get_window(pwGraph), cr,
                              GTK_STATE_SELECTED, GTK_SHADOW_OUT, NULL, pwGraph, "too-good", ax[2], 13, x + cx - ax[2], cy - 2);
+#endif
 
     return TRUE;
 }
@@ -1045,7 +1089,7 @@ GTKShowTheory(const int fActivePage)
         gtk_container_add(GTK_CONTAINER(pwFrame), ptw->apwGraph[i]);
         gtk_widget_set_halign(ptw->apwGraph[i], GTK_ALIGN_FILL);
         gtk_widget_set_valign(ptw->apwGraph[i], GTK_ALIGN_CENTER);
-	/* FIXME? gtk_container_set_border_width(...) */
+        /* FIXME? gtk_container_set_border_width(...) */
 #else
         gtk_container_add(GTK_CONTAINER(pwFrame), pwAlign = gtk_alignment_new(0.5f, 0.5f, 1, 0));
         gtk_container_add(GTK_CONTAINER(pwAlign), ptw->apwGraph[i]);
@@ -1073,8 +1117,21 @@ GTKShowTheory(const int fActivePage)
 
     font_desc = pango_font_description_from_string("Monospace");
 #if GTK_CHECK_VERSION(3,0,0)
-    /* FIXME: this is deprecated since version 3.16, use the CSS instead */
-    gtk_widget_override_font(ptw->pwGammonPrice, font_desc);
+{
+    GtkCssProvider *provider = gtk_css_provider_new();
+    GtkStyleContext *context =
+        gtk_widget_get_style_context(ptw->pwGammonPrice);
+
+    gtk_css_provider_load_from_data(provider,
+                                    "textview { font-family: Monospace; }",
+                                    -1, NULL);
+
+    gtk_style_context_add_provider(context,
+                                   GTK_STYLE_PROVIDER(provider),
+                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+    g_object_unref(provider);
+}
 #else
     gtk_widget_modify_font(ptw->pwGammonPrice, font_desc);
 #endif

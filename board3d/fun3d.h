@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2006-2021 Jon Kinsey <jonkinsey@gmail.com>
- * Copyright (C) 2007-2021 the AUTHORS
+ * Copyright (C) 2007-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 #include "common.h"
 #include "inc3d.h"
 #include "matrix.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 
 #include "types3d.h"
 
@@ -60,23 +60,23 @@ void ModelManagerCopyModelToBuffer(ModelManager* modelHolder, int modelNumber);
 extern OglModel* curModel;
 #define CALL_OGL(modelManager, modelNumber, fun, ...) \
 { \
-	curModel = modelManager.models[modelNumber];\
-	OglModelInit(modelManager, modelNumber);\
-	fun(__VA_ARGS__);\
-	OglModelAlloc(modelManager, modelNumber);\
-	fun(__VA_ARGS__); \
+    curModel = modelManager.models[modelNumber];\
+    OglModelInit(modelManager, modelNumber);\
+    fun(__VA_ARGS__);\
+    OglModelAlloc(modelManager, modelNumber);\
+    fun(__VA_ARGS__); \
 }
 #define UPDATE_OGL(modelManager, modelNumber, fun, ...) \
 { \
     curModel = modelManager.models[modelNumber]; \
     curModel->data = g_malloc(sizeof(float) * curModel->dataLength); \
     curModel->dataLength = 0; \
-	fun(__VA_ARGS__);\
+    fun(__VA_ARGS__);\
     ModelManagerCopyModelToBuffer((ModelManager*)modelManager, modelNumber); \
 }
 
 typedef struct {
-	double data[3];
+    double data[3];
 } Point3d;
 
 #if defined(WIN32)
@@ -87,21 +87,21 @@ typedef struct {
 #endif
 
 typedef struct {
-	GArray* conPoints;
+    GArray* conPoints;
 } Contour;
 
 typedef struct {
-	GArray* contours;
-	unsigned int numPoints;
+    GArray* contours;
+    unsigned int numPoints;
 } Vectoriser;
 
 typedef struct {
-	GArray* tessPoints;
-	GLenum meshType;
-} Tesselation;
+    GArray* tessPoints;
+    GLenum meshType;
+} Tessellation;
 
 typedef struct {
-	GArray* tesselations;
+    GArray* tessellations;
 } Mesh;
 
 #define TT_COUNT 3              /* 3 texture types: general, piece and hinge */
@@ -113,9 +113,9 @@ void calculateEigthPoints(EigthPoints* eigthPoints, float radius, unsigned int a
 
 /* Used to calculate correct viewarea for board/fov angles */
 typedef struct {
-	float top;
-	float bottom;
-	float width;
+    float top;
+    float bottom;
+    float width;
 } viewArea;
 
 typedef struct {
@@ -152,14 +152,14 @@ extern void getPiecePos(unsigned int point, unsigned int pos, float v[3]);
 /* Misc functions */
 void SetupSimpleMat(Material* pMat, float r, float g, float b);
 void SetupMat(Material* pMat, float r, float g, float b, float dr, float dg, float db, float sr, float sg, float sb,
-	int shin, float a);
+    int shin, float a);
 void setMaterial(const Material* pMat);
 void SetPickColour(float colour);
 void setMaterialReset(const Material* pMat);
 void SetColour3d(float r, float g, float b, float a);
 float randRange(float range);
 void setupPath(const BoardData* bd, Path* p, float* pRotate, unsigned int fromPoint, unsigned int fromDepth,
-	unsigned int toPoint, unsigned int toDepth);
+    unsigned int toPoint, unsigned int toDepth);
 int finishedPath(const Path* p);
 void getProjectedPieceDragPos(int x, int y, float pos[3]);
 void updateMovingPieceOccPos(const BoardData* bd, BoardData3d* bd3d);
@@ -177,10 +177,10 @@ extern void InitBoard3d(BoardData* bd, BoardData3d* bd3d);
 extern void SetupVisual(void);
 
 typedef struct {
-	unsigned int width;
-	unsigned int height;
-	BoardData* bd;
-	unsigned char* puch;
+    unsigned int width;
+    unsigned int height;
+    BoardData* bd;
+    unsigned char* puch;
 } RenderToBufferData;
 
 gboolean RenderToBuffer3d(GtkWidget* widget, GdkEventExpose* eventData, void* data);

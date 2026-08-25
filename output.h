@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: output.h,v 1.6 2022/01/27 22:14:47 plm Exp $
  */
 
 #ifndef OUTPUT_H
@@ -32,7 +30,7 @@ extern void output(const char *sz);
 /* Write a string to stdout/status bar/popup window, and append \n */
 extern void outputl(const char *sz);
 /* Write a character to stdout/status bar/popup window */
-extern void outputc(const char ch);
+extern void outputc(char ch);
 /* Write an error message, perror() style */
 extern void outputerr(const char *sz);
 

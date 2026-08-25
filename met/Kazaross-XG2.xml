@@ -18,14 +18,12 @@
      notice and this notice are preserved.  This file is offered as-is,
      without any warranty.
 
-     $Id: Kazaross-XG2.xml,v 1.3 2011/08/25 05:50:53 mdpetch Exp $
-
  -->
 
 <met>
   <info>
     <name>Kazaross XG2 25 point MET</name>
-    <description>Generated using XG rollouts to 9pts, GNUbg Supremo full rollouts to 15 points. Extended to 25pts by projecting take points.</description>
+    <description>Generated using XG rollouts to 9pts, GNUbg 0.90 2-ply full rollouts to 15 points. Extended to 25pts by projecting take points.</description>
     <length>25</length>
   </info>
 

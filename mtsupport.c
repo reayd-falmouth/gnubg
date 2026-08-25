@@ -39,9 +39,7 @@ MT_CreateThreadLocalData(int id)
     ThreadLocalData *tld = (ThreadLocalData *) g_malloc(sizeof(ThreadLocalData));
     tld->id = id;
     tld->pnnState = (NNState *) g_malloc(sizeof(NNState) * 3);
-    // cppcheck-suppress duplicateExpression
     tld->pnnState[CLASS_RACE - CLASS_RACE].savedBase = g_malloc0(nnRace.cHidden * sizeof(float));
-    // cppcheck-suppress duplicateExpression
     tld->pnnState[CLASS_RACE - CLASS_RACE].savedIBase = g_malloc0(nnRace.cInput * sizeof(float));
     tld->pnnState[CLASS_CRASHED - CLASS_RACE].savedBase = g_malloc0(nnCrashed.cHidden * sizeof(float));
     tld->pnnState[CLASS_CRASHED - CLASS_RACE].savedIBase = g_malloc0(nnCrashed.cInput * sizeof(float));
@@ -58,14 +56,8 @@ MT_CreateThreadLocalData(int id)
 unsigned int mainThreadID;
 #endif
 
-#if GLIB_CHECK_VERSION (2,32,0)
 static GMutex condMutex;        /* Extra mutex needed for waiting */
-#else
-static GMutex *condMutex = NULL;        /* Extra mutex needed for waiting */
-#endif
 
-#if GLIB_CHECK_VERSION (2,32,0)
-/* Dynamic allocation of GPrivate is deprecated */
 static GPrivate private_item = G_PRIVATE_INIT(free);
 
 extern void
@@ -73,13 +65,6 @@ TLSCreate(TLSItem * pItem)
 {
     *pItem = &private_item;
 }
-#else
-extern void
-TLSCreate(TLSItem * pItem)
-{
-    *pItem = g_private_new(g_free);
-}
-#endif
 
 extern void
 TLSSetValue(TLSItem pItem, size_t value)
@@ -93,11 +78,8 @@ extern void
 InitManualEvent(ManualEvent * pME)
 {
     ManualEvent pNewME = g_malloc(sizeof(*pNewME));
-#if GLIB_CHECK_VERSION (2,32,0)
+
     g_cond_init(&pNewME->cond);
-#else
-    pNewME->cond = g_cond_new();
-#endif
     pNewME->signalled = FALSE;
     *pME = pNewME;
 }
@@ -105,50 +87,33 @@ InitManualEvent(ManualEvent * pME)
 extern void
 FreeManualEvent(ManualEvent ME)
 {
-#if GLIB_CHECK_VERSION (2,32,0)
     g_cond_clear(&ME->cond);
-#else
-    g_cond_free(ME->cond);
-#endif
     g_free(ME);
 }
 
 extern void
 WaitForManualEvent(ManualEvent ME)
 {
-#if GLIB_CHECK_VERSION (2,32,0)
     gint64 end_time;
-#else
-    GTimeVal tv;
-#endif
+
     multi_debug("wait for manual event asks lock (condMutex)");
-#if GLIB_CHECK_VERSION (2,32,0)
+
     g_mutex_lock(&condMutex);
     end_time = g_get_monotonic_time() + 10 * G_TIME_SPAN_SECOND;
-#else
-    g_mutex_lock(condMutex);
-#endif
+
     multi_debug("wait for manual event gets lock (condMutex)");
+
     while (!ME->signalled) {
         multi_debug("waiting for manual event");
-#if GLIB_CHECK_VERSION (2,32,0)
+
         if (!g_cond_wait_until(&ME->cond, &condMutex, end_time))
-#else
-        g_get_current_time(&tv);
-        g_time_val_add(&tv, 10 * 1000 * 1000);
-        if (g_cond_timed_wait(ME->cond, condMutex, &tv))
-#endif
             break;
         else {
             multi_debug("still waiting for manual event");
         }
     }
 
-#if GLIB_CHECK_VERSION (2,32,0)
     g_mutex_unlock(&condMutex);
-#else
-    g_mutex_unlock(condMutex);
-#endif
     multi_debug("wait for manual event unlocks (condMutex)");
 }
 
@@ -156,17 +121,11 @@ extern void
 ResetManualEvent(ManualEvent ME)
 {
     multi_debug("reset manual event asks lock (condMutex)");
-#if GLIB_CHECK_VERSION (2,32,0)
     g_mutex_lock(&condMutex);
     multi_debug("reset manual event gets lock (condMutex)");
+
     ME->signalled = FALSE;
     g_mutex_unlock(&condMutex);
-#else
-    g_mutex_lock(condMutex);
-    multi_debug("reset manual event gets lock (condMutex)");
-    ME->signalled = FALSE;
-    g_mutex_unlock(condMutex);
-#endif
     multi_debug("reset manual event unlocks (condMutex)");
 }
 
@@ -174,23 +133,16 @@ extern void
 SetManualEvent(ManualEvent ME)
 {
     multi_debug("set manual event asks lock (condMutex)");
-#if GLIB_CHECK_VERSION (2,32,0)
     g_mutex_lock(&condMutex);
     multi_debug("set manual event gets lock (condMutex)");
+
     ME->signalled = TRUE;
     g_cond_broadcast(&ME->cond);
+
     g_mutex_unlock(&condMutex);
-#else
-    g_mutex_lock(condMutex);
-    multi_debug("set manual event gets lock (condMutex)");
-    ME->signalled = TRUE;
-    g_cond_broadcast(ME->cond);
-    g_mutex_unlock(condMutex);
-#endif
     multi_debug("set manual event unlocks (condMutex)");
 }
 
-#if GLIB_CHECK_VERSION (2,32,0)
 extern void
 InitMutex(Mutex * pMutex)
 {
@@ -203,49 +155,22 @@ FreeMutex(Mutex * mutex)
     g_assert(MT_GetThreadID() == -1);
     g_mutex_clear(mutex);
 }
-#else
-extern void
-InitMutex(Mutex * pMutex)
-{
-    *pMutex = g_mutex_new();
-}
-
-extern void
-FreeMutex(Mutex * mutex)
-{
-    g_assert(MT_GetThreadID() == -1);
-    g_mutex_free(*mutex);
-}
-#endif
 
 extern void
 Mutex_Lock(Mutex * mutex)
 {
-#if GLIB_CHECK_VERSION (2,32,0)
     g_mutex_lock(mutex);
-#else
-    g_mutex_lock(*mutex);
-#endif
 }
 
 extern void
 Mutex_Release(Mutex * mutex)
 {
-#if GLIB_CHECK_VERSION (2,32,0)
     g_mutex_unlock(mutex);
-#else
-    g_mutex_unlock(*mutex);
-#endif
 }
 
 extern void
 MT_InitThreads(void)
 {
-#if !GLIB_CHECK_VERSION (2,32,0)
-    if (!g_thread_supported())
-        g_thread_init(NULL);
-    g_assert(g_thread_supported());
-#endif
     td.tasks = NULL;
     MT_SafeSet(&td.doneTasks, 0);
     td.addedTasks = 0;
@@ -261,10 +186,6 @@ MT_InitThreads(void)
     InitMutex(&td.queueLock);
     InitManualEvent(&td.syncStart);
     InitManualEvent(&td.syncEnd);
-#if !GLIB_CHECK_VERSION (2,32,0)
-    if (condMutex == NULL)
-        condMutex = g_mutex_new();
-#endif
     td.numThreads = 0;
 }
 
@@ -351,16 +272,7 @@ multi_debug(const char *str, ...)
     else
         sprintf(tn, "T%d", id);
 
-#if GLIB_CHECK_VERSION (2,28,0)
     printf("%" G_GINT64_FORMAT " %s: %s\n", g_get_monotonic_time(), tn, buf);
-#else
-    {
-        GTimeVal tv;
-
-        g_get_current_time(&tv);
-        printf("%lu %s: %s\n", 1000000UL * tv.tv_sec + tv.tv_usec, tn, buf);
-    }
-#endif
 
     va_end(vl);
 

@@ -30,7 +30,7 @@
 
 #include "backgammon.h"
 #if defined(USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #endif
 #include "matchid.h"
 #include "positionid.h"

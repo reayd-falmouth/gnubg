@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: sgf.c,v 1.174 2022/02/26 20:22:15 plm Exp $
  */
 
 #include "config.h"
@@ -33,7 +31,7 @@
 #include "dice.h"
 #include "eval.h"
 #if USE_GTK
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #endif
 #include "analysis.h"
 #include "positionid.h"
@@ -514,12 +512,12 @@ Point(char ch, int f)
 static void
 RestoreRolloutScore(move * pm, const char *sz)
 {
-    char *pc = strstr(sz, "Score");
+    char *pc = (char *)strstr(sz, "Score");
 
     if (pc) {
         pc += 6;
         pm->rScore = (float) g_ascii_strtod(pc, &pc);
-        pm->rScore2 = (float) g_ascii_strtod(pc, &pc);
+        pm->rScore2 = (float) g_ascii_strtod(pc, NULL);
     } else {
         pm->rScore = -99999;
         pm->rScore2 = -99999;
@@ -532,7 +530,7 @@ static void
 RestoreRolloutTrials(unsigned int *piTrials, const char *sz)
 {
 
-    char *pc = strstr(sz, "Trials");
+    const char *pc = strstr(sz, "Trials");
 
     *piTrials = 0;
 
@@ -547,7 +545,7 @@ static void
 RestoreRolloutOutput(float ar[NUM_ROLLOUT_OUTPUTS], const char *sz, const char *szKeyword)
 {
 
-    char *pc = strstr(sz, szKeyword);
+    char *pc = (char *)strstr(sz, szKeyword);
     int i;
 
     for (i = 0; i < NUM_ROLLOUT_OUTPUTS; i++)
@@ -602,7 +600,7 @@ static void
 RestoreRolloutContextEvalContext(evalcontext * pec, const char *sz, const char *szKeyword)
 {
 
-    char *pc = strstr(sz, szKeyword);
+    char *pc = (char *)strstr(sz, szKeyword);
 
     InitEvalContext(pec);
 
@@ -623,7 +621,7 @@ static void
 RestoreRolloutRolloutContext(rolloutcontext * prc, const char *sz)
 {
 
-    char *pc = strstr(sz, "RC");
+    const char *pc = strstr(sz, "RC");
     char szTemp[1024];
     int fCubeful, fVarRedn, fInitial, fRotate, fTruncBearoff2, fTruncBearoffOS;
 
@@ -686,7 +684,7 @@ static void
 RestoreCubeRolloutOutput(float arOutput[], float arStdDev[], const char *sz, const char *szKeyword)
 {
 
-    char *pc = strstr(sz, szKeyword);
+    const char *pc = strstr(sz, szKeyword);
 
     memset(arOutput, 0, NUM_ROLLOUT_OUTPUTS * sizeof(float));
     memset(arStdDev, 0, NUM_ROLLOUT_OUTPUTS * sizeof(float));
@@ -718,7 +716,7 @@ static void
 RestoreRolloutInternals(evalsetup * pes, const char *sz)
 {
 
-    char *pc;
+    const char *pc;
     if ((pc = strstr(sz, "SK")) != 0)
         sscanf(pc, "SK %d", &pes->rc.nSkip);
 }
@@ -746,7 +744,7 @@ static void
 RestoreRolloutMoveFilter(const char *sz, char *name, movefilter mf[MAX_FILTER_PLIES][MAX_FILTER_PLIES], int nPlies)
 {
 
-    char *pc = strstr(sz, name);
+    char *pc = (char *)strstr(sz, name);
     int i;
 
     if (pc == 0)
@@ -764,7 +762,7 @@ static void
 RestoreExtendedRolloutContext(rolloutcontext * prc, const char *sz)
 {
 
-    char *pc = strstr(sz, "RC");
+    const char *pc = strstr(sz, "RC");
     char szTemp[1024];
     int fCubeful, fVarRedn, fInitial, fRotate, fTruncBearoff2, fTruncBearoffOS;
     int fLateEvals, fDoTruncate;
@@ -823,7 +821,7 @@ RestoreExtendedCubeRollout(char *sz,
                            float aarStdDev[][NUM_ROLLOUT_OUTPUTS], evalsetup * pes)
 {
     /* we assume new versions will still begin with Eq 4 floats
-     * Trials int 
+     * Trials int
      */
     RestoreRolloutTrials(&pes->rc.nGamesDone, sz);
     RestoreCubeRolloutOutput(aarOutput[0], aarStdDev[0], sz, "NoDouble");
@@ -841,7 +839,7 @@ RestoreExtendedRollout(move * pm, char *sz)
     evalsetup *pes = &pm->esMove;
 
     /* we assume new versions will still begin with Score 2 floats
-     * Trials int 
+     * Trials int
      */
     pes->et = EVAL_ROLLOUT;
     RestoreRolloutScore(pm, sz);
@@ -1391,7 +1389,7 @@ RestoreGame(listOLD * pl)
 
     if (pmr->g.fResigned) {
         /* setting fTurn = fMove = -1 results in the board being
-         * inverted when shown. /jth 2003-10-12 
+         * inverted when shown. /jth 2003-10-12
          * ms.fTurn = ms.fMove = -1; */
 
         moverecord *pmrResign = NewMoveRecord();
@@ -1593,9 +1591,15 @@ CommandLoadMatch(char *sz)
                 pmr = pl->p;
             }
             CommandPrevious(NULL);
-        } else if (fGotoFirstGame)
+#if defined (USE_GTK)
+            GTKSetGame(nGames);
+#endif
+        } else if (fGotoFirstGame) {
             CommandFirstGame(NULL);
-
+#if defined (USE_GTK)
+            GTKSetGame(0);
+#endif
+        }
     }
 }
 
@@ -1713,7 +1717,7 @@ WriteRolloutAnalysis(FILE * pf, int fIsMove,
     int i;
     gchar buffer[G_ASCII_DTOSTR_BUF_SIZE];
 
-    /* identify what version we're writing to avoid future problems 
+    /* identify what version we're writing to avoid future problems
      * the version is defined in eval.h
      */
     if (fIsMove) {
@@ -2331,6 +2335,7 @@ CommandSaveGame(char *sz)
 {
 
     FILE *pf;
+    int fDontClose = FALSE;
 
     sz = NextToken(&sz);
 
@@ -2347,16 +2352,17 @@ CommandSaveGame(char *sz)
     if (!confirmOverwrite(sz, fConfirmSave))
         return;
 
-    if (!strcmp(sz, "-"))
+    if (!strcmp(sz, "-")) {
         pf = stdout;
-    else if (!(pf = g_fopen(sz, "w"))) {
+        fDontClose = TRUE;
+    } else if (!(pf = g_fopen(sz, "w"))) {
         outputerr(sz);
         return;
     }
 
     SaveGame(pf, plGame);
 
-    if (pf != stdout)
+    if (!fDontClose)
         fclose(pf);
 
     setDefaultFileName(sz);
